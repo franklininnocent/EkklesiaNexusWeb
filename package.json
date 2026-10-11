@@ -1,0 +1,48 @@
+{
+  "name": "ekklesiasoft-web",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "next dev -p 3010",
+    "build": "next build --webpack",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "validate:content": "tsx scripts/validate-marketing-content.ts",
+    "test:unit": "tsx src/lib/contact-form-validation.test.ts && tsx src/lib/pricing-expand.test.ts && tsx src/lib/pricing/map-public-plans.test.ts && tsx scripts/seo-metadata.test.ts && tsx src/lib/api/rate-limit.test.ts && tsx src/lib/api/secrets.test.ts && tsx src/lib/marketing/ga4-id.test.ts && tsx src/lib/api/client-ip.test.ts",
+    "test:e2e": "bash scripts/ensure-webkit-host-libs.sh && playwright test",
+    "generate:og": "python3 scripts/generate-og-preview.py",
+    "generate:brand-webp": "bash scripts/export-brand-webp.sh",
+    "generate:product-webp": "bash scripts/export-product-webp.sh",
+    "export:content": "tsx scripts/export-marketing-content-json.ts",
+    "validate:export": "tsx scripts/validate-marketing-json.ts",
+    "prepublish:cms": "bash scripts/pre-publish-cms.sh",
+    "qa": "bash scripts/run-marketing-qa.sh",
+    "smoke": "bash scripts/smoke-production.sh",
+    "scan:security": "bash scripts/scan-marketing-security.sh",
+    "prebuild": "npm run validate:content"
+  },
+  "dependencies": {
+    "lucide-react": "^1.53.0",
+    "motion": "^14.0.0",
+    "next": "16.4.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@playwright/test": "^1.56.1",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.0",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.15",
+    "typescript": "^5"
+  }
+}
