@@ -10,10 +10,11 @@ import {
   MassIntentionsScreen,
 } from "@/components/mockup/devices";
 import { MockupContainer, SectionHeading } from "@/components/mockup/container";
-import { mockupSlider } from "@/data/mockup-page";
+import { SLIDER_ITEMS } from "@/data/mockup-structure";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 import { usePerView } from "@/hooks/use-per-view";
 
-type SlideItem = (typeof mockupSlider.items)[number];
+type SlideItem = (typeof SLIDER_ITEMS)[number];
 
 const frames: Record<SlideItem["frame"], string> = {
   emerald: "from-emerald-200 via-emerald-300 to-lime-200",
@@ -29,14 +30,14 @@ function SlideMock({ id }: { id: string }) {
   return <DesktopDashboard gid={`chart-slide-${id}`} />;
 }
 
-function SlideVisual({ item }: { item: SlideItem }) {
+function SlideVisual({ item, imageAlt }: { item: SlideItem; imageAlt?: string }) {
   return (
     <div className="h-[230px]">
-      {item.image ? (
+      {"image" in item && item.image ? (
         <div className="relative h-full overflow-hidden rounded-xl bg-white shadow-inner">
           <Image
             src={item.image}
-            alt={item.imageAlt ?? "EkklesiaNexus product screenshot"}
+            alt={imageAlt ?? "EkklesiaNexus product screenshot"}
             fill
             sizes="(max-width: 768px) 92vw, (max-width: 1024px) 46vw, 30vw"
             className="object-cover object-center"
@@ -56,7 +57,8 @@ function sliderPerView(width: number): number {
 }
 
 export function MockupSlider() {
-  const items = mockupSlider.items;
+  const { t } = useI18n();
+  const items = SLIDER_ITEMS;
   const [index, setIndex] = useState(0);
   const perView = usePerView(sliderPerView);
 
@@ -89,13 +91,13 @@ export function MockupSlider() {
       <div className="pointer-events-none absolute right-16 top-24 h-8 w-8 rotate-12 rounded-md bg-sky-400/70" />
 
       <MockupContainer>
-        <SectionHeading title={mockupSlider.title} subtitle={mockupSlider.subtitle} />
+        <SectionHeading title={t("home.slider.title")} subtitle={t("home.slider.subtitle")} />
 
         <div className="mb-4 flex items-center justify-center gap-2 sm:hidden">
           <button
             type="button"
             onClick={prev}
-            aria-label="Previous slides"
+            aria-label={t("a11y.prevSlides")}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-lg shadow-slate-300/60"
           >
             <ChevronLeft className="h-5 w-5 text-slate-600" />
@@ -103,7 +105,7 @@ export function MockupSlider() {
           <button
             type="button"
             onClick={next}
-            aria-label="Next slides"
+            aria-label={t("a11y.nextSlides")}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-lg shadow-slate-300/60"
           >
             <ChevronRight className="h-5 w-5 text-slate-600" />
@@ -114,7 +116,7 @@ export function MockupSlider() {
           <button
             type="button"
             onClick={prev}
-            aria-label="Previous slides"
+            aria-label={t("a11y.prevSlides")}
             className="absolute -left-2 top-[42%] z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg shadow-slate-300/60 sm:flex sm:-left-5"
           >
             <ChevronLeft className="h-5 w-5 text-slate-600" />
@@ -122,7 +124,7 @@ export function MockupSlider() {
           <button
             type="button"
             onClick={next}
-            aria-label="Next slides"
+            aria-label={t("a11y.nextSlides")}
             className="absolute -right-2 top-[42%] z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg shadow-slate-300/60 sm:flex sm:-right-5"
           >
             <ChevronRight className="h-5 w-5 text-slate-600" />
@@ -133,23 +135,30 @@ export function MockupSlider() {
               className="flex transition-transform duration-500 ease-out"
               style={{ transform: `translateX(-${slideIndex * (100 / perView)}%)` }}
             >
-              {items.map((item) => (
-                <article
-                  key={item.id}
-                  className="min-w-0 shrink-0 px-2 sm:px-3"
-                  style={{ width: `${100 / perView}%` }}
-                >
-                  <div
-                    className={`rounded-[1.9rem] bg-gradient-to-br p-4 shadow-lg shadow-slate-300/40 ${frames[item.frame]}`}
+              {items.map((item) => {
+                const slideKey = item.id;
+                const imageAlt =
+                  slideKey === "familyFinancial" ? t("home.slider.familyFinancial.imageAlt") : undefined;
+                return (
+                  <article
+                    key={item.id}
+                    className="min-w-0 shrink-0 px-2 sm:px-3"
+                    style={{ width: `${100 / perView}%` }}
                   >
-                    <SlideVisual item={item} />
-                  </div>
-                  <h3 className="mt-5 text-center text-lg font-bold text-slate-900">{item.title}</h3>
-                  <p className="mx-auto mt-2 max-w-[240px] text-center text-sm leading-relaxed text-slate-500">
-                    {item.body}
-                  </p>
-                </article>
-              ))}
+                    <div
+                      className={`rounded-[1.9rem] bg-gradient-to-br p-4 shadow-lg shadow-slate-300/40 ${frames[item.frame]}`}
+                    >
+                      <SlideVisual item={item} imageAlt={imageAlt} />
+                    </div>
+                    <h3 className="mt-5 text-center text-lg font-bold text-slate-900">
+                      {t(`home.slider.${slideKey}.title`)}
+                    </h3>
+                    <p className="mx-auto mt-2 max-w-[240px] text-center text-sm leading-relaxed text-slate-500">
+                      {t(`home.slider.${slideKey}.body`)}
+                    </p>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </div>

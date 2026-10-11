@@ -1,75 +1,28 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
+import { ContactCaptchaField } from "@/components/contact/contact-captcha-field";
 import { trackEvent } from "@/lib/analytics";
 import { COUNTRIES } from "@/lib/countries";
+import { useContactCaptcha } from "@/hooks/use-contact-captcha";
+import { useTranslations, useI18n } from "@/lib/i18n/i18n-provider";
+import { X_EN_LOCALE_HEADER } from "@/lib/i18n/constants";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
 export function DemoForm() {
+  const { locale } = useI18n();
+  const t = useTranslations();
   const [state, setState] = useState<FormState>("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [message, setMessage] = useState("");
-  const [captchaId, setCaptchaId] = useState<string | null>(null);
-  const [captchaImage, setCaptchaImage] = useState<string | null>(null);
-  const [captchaLoading, setCaptchaLoading] = useState(true);
-
-  const loadCaptcha = useCallback(async () => {
-    setCaptchaLoading(true);
-    try {
-      const res = await fetch("/api/contact-captcha", { cache: "no-store" });
-      const json = (await res.json()) as {
-        success?: boolean;
-        data?: { challenge_id: string; image: string };
-      };
-      if (!res.ok || !json.success || !json.data) {
-        setCaptchaId(null);
-        setCaptchaImage(null);
-        return;
-      }
-      setCaptchaId(json.data.challenge_id);
-      setCaptchaImage(json.data.image);
-    } catch {
-      setCaptchaId(null);
-      setCaptchaImage(null);
-    } finally {
-      setCaptchaLoading(false);
-    }
-  }, []);
+  const formId = useId();
+  const [captchaResponse, setCaptchaResponse] = useState("");
+  const captcha = useContactCaptcha(() => setCaptchaResponse(""));
+  const { captchaId, loadCaptcha } = captcha;
 
   useEffect(() => {
     trackEvent("demo_form_open");
-    let cancelled = false;
-
-    async function loadInitialCaptcha() {
-      try {
-        const res = await fetch("/api/contact-captcha", { cache: "no-store" });
-        const json = (await res.json()) as {
-          success?: boolean;
-          data?: { challenge_id: string; image: string };
-        };
-        if (cancelled) return;
-        if (!res.ok || !json.success || !json.data) {
-          setCaptchaId(null);
-          setCaptchaImage(null);
-          return;
-        }
-        setCaptchaId(json.data.challenge_id);
-        setCaptchaImage(json.data.image);
-      } catch {
-        if (!cancelled) {
-          setCaptchaId(null);
-          setCaptchaImage(null);
-        }
-      } finally {
-        if (!cancelled) setCaptchaLoading(false);
-      }
-    }
-
-    void loadInitialCaptcha();
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -92,14 +45,14 @@ export function DemoForm() {
       role: String(data.get("role") ?? ""),
       message: String(data.get("message") ?? ""),
       captcha_challenge_id: captchaId ?? "",
-      captcha_response: String(data.get("captcha_response") ?? ""),
+      captcha_response: captchaResponse,
       company_website: String(data.get("company_website") ?? ""),
     };
 
     try {
       const res = await fetch("/api/demo-requests", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", [X_EN_LOCALE_HEADER]: locale },
         body: JSON.stringify(payload),
       });
       const json = (await res.json()) as {
@@ -111,19 +64,19 @@ export function DemoForm() {
       if (res.ok && json.success) {
         setState("success");
         trackEvent("demo_form_submit");
-        setMessage(json.message ?? "Thank you. Your demo request has been received.");
+        setMessage(json.message ?? t("forms.demo.successDefault"));
         form.reset();
         void loadCaptcha();
         return;
       }
 
       setState("error");
-      setMessage(json.message ?? "Something went wrong. Please try again.");
+      setMessage(json.message ?? t("forms.bff.requestFailed"));
       if (json.errors) setErrors(json.errors);
       void loadCaptcha();
     } catch {
       setState("error");
-      setMessage("We couldn't complete your request right now. Please try again shortly.");
+      setMessage(t("forms.bff.requestFailed"));
       void loadCaptcha();
     }
   }
@@ -193,36 +146,24 @@ export function DemoForm() {
       </div>
 
       <div>
-        <label htmlFor="captcha_response" className="text-sm font-medium text-brand-navy">Security check *</label>
-        <div className="mt-1 flex flex-wrap items-center gap-2">
-          <div className="flex h-16 min-w-[220px] items-center justify-center rounded-[var(--radius-md)] border border-[var(--border-subtle)] bg-slate-50">
-            {captchaLoading ? (
-              <span className="text-xs text-slate-500">Loading check…</span>
-            ) : captchaImage ? (
-              <img src={captchaImage} alt="" width={220} height={64} className="h-16 w-full max-w-[220px] object-contain" />
-            ) : (
-              <span className="px-2 text-center text-xs text-red-700">Unavailable</span>
-            )}
-          </div>
-          <button
-            type="button"
-            className="rounded-[var(--radius-md)] border border-[var(--border-subtle)] px-3 py-2 text-sm"
-            onClick={() => void loadCaptcha()}
-            aria-label="Refresh security check"
-          >
-            Refresh
-          </button>
-        </div>
-        <input
-          id="captcha_response"
-          name="captcha_response"
-          autoComplete="off"
-          spellCheck={false}
-          className={fieldClass}
-          aria-invalid={!!errors.captcha_response}
+        <label htmlFor={`${formId}-captcha`} className="text-sm font-medium text-brand-navy">
+          {t("forms.contact.labels.securityCheck")} *
+        </label>
+        <ContactCaptchaField
+          variant="stacked"
+          captcha={captcha}
+          inputId={`${formId}-captcha`}
+          helpId={`${formId}-captcha-help`}
+          describedBy={errors.captcha_response ? `${formId}-captcha-error` : undefined}
+          value={captchaResponse}
+          invalid={!!errors.captcha_response}
+          onValueChange={setCaptchaResponse}
+          onBlur={() => undefined}
         />
         {errors.captcha_response ? (
-          <p className="mt-1 text-xs text-red-700" role="alert">{errors.captcha_response}</p>
+          <p id={`${formId}-captcha-error`} className="mt-1 text-xs text-red-700" role="alert">
+            {errors.captcha_response}
+          </p>
         ) : null}
       </div>
 

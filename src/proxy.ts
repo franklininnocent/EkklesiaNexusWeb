@@ -8,9 +8,27 @@ import { PREVIEW_COOKIE, previewCookieOptions } from "@/lib/preview/preview-cook
  * www and plain HTTP on that host redirect permanently. Other hosts
  * (local development, the parish app, and the API) are left unchanged.
  */
+function visitorCountryFromEdge(request: NextRequest): string | null {
+  const keys = ["cf-ipcountry", "x-vercel-ip-country", "cloudfront-viewer-country", "x-country-code"];
+  for (const key of keys) {
+    const raw = request.headers.get(key)?.trim();
+    if (raw && raw.length === 2) {
+      const code = raw.toUpperCase();
+      if (/^[A-Z]{2}$/.test(code) && code !== "XX" && code !== "T1") {
+        return code;
+      }
+    }
+  }
+  return null;
+}
+
 export async function proxy(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-en-pathname", request.nextUrl.pathname);
+  const country = visitorCountryFromEdge(request);
+  if (country) {
+    requestHeaders.set("x-en-country", country);
+  }
 
   if (request.nextUrl.pathname.startsWith("/preview/plans")) {
     const token = request.nextUrl.searchParams.get("token")?.trim();

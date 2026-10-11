@@ -24,7 +24,11 @@ export function scrollToSection(id: string): boolean {
 
 function isHomeHashHref(href: string): boolean {
   const path = href.split("#")[0];
-  return path === "" || path === "/";
+  return path === "" || path === "/" || path === "/pt-br";
+}
+
+function isCurrentHomePath(pathname: string): boolean {
+  return pathname === "/" || pathname === "/pt-br";
 }
 
 /** Same-page hash links: scroll reliably (Next.js Link does not always scroll to #). */
@@ -35,7 +39,7 @@ export function handleAnchorNav(
 ): void {
   const id = sectionIdFromHref(href);
   if (!id || !isHomeHashHref(href)) return;
-  if (typeof window === "undefined" || window.location.pathname !== "/") return;
+  if (typeof window === "undefined" || !isCurrentHomePath(window.location.pathname)) return;
 
   event.preventDefault();
   scrollToSection(id);

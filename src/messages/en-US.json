@@ -1,0 +1,438 @@
+{
+  "common": {
+    "actions": {
+      "getStarted": "Get Started",
+      "getStartedHeader": "Get Started",
+      "requestDemo": "Request a Demo",
+      "sendMessage": "Send Message",
+      "sending": "Sending…",
+      "tryAgain": "Try again",
+      "refresh": "Refresh",
+      "showPrice": "Show Price",
+      "hidePrice": "Hide Price",
+      "goToHomepage": "Go to homepage",
+      "returnHome": "Return to homepage"
+    },
+    "states": {
+      "loadingCheck": "Loading check…",
+      "unavailable": "Unavailable"
+    },
+    "pricing": {
+      "perMonth": "/ month",
+      "perYear": "/ year",
+      "orAnnual": "or {annual}",
+      "includes": "Includes",
+      "pricingRegionLabel": "{planName} pricing"
+    }
+  },
+  "navigation": {
+    "features": "Features",
+    "solutions": "Solutions",
+    "pricing": "Pricing",
+    "demo": "Demo",
+    "contact": "Contact"
+  },
+  "footer": {
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "blog": "Blog",
+    "copyright": "All rights reserved © EkklesiaNexus {year}",
+    "socialFacebook": "Facebook",
+    "socialTwitter": "Twitter",
+    "socialInstagram": "Instagram",
+    "socialLinkedIn": "LinkedIn"
+  },
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "primaryNav": "Primary",
+    "footerNav": "Footer",
+    "homeLogo": "EkklesiaNexus home",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "languageSwitcher": "Language",
+    "refreshCaptcha": "Refresh security check",
+    "contactForm": "Contact form",
+    "prevSlides": "Previous slides",
+    "nextSlides": "Next slides"
+  },
+  "home": {
+    "hero": {
+      "titleLead": "EkklesiaNexus",
+      "subtitle": "The Next Generation of Church Management System.",
+      "primaryCta": "Request a Demo"
+    },
+    "trust": {
+      "title": "Trusted by Forward-Thinking Ministries"
+    },
+    "features": {
+      "title": "Features",
+      "subtitle": "EkklesiaNexus unifies people, giving, and ministry workflows — selected by forward-thinking ministries.",
+      "members": {
+        "title": "Families & Members",
+        "body": "Maintain households, members, and roles in one connected member directory."
+      },
+      "giving": {
+        "title": "Stewardship & Finance",
+        "body": "Record gifts, pledges, and stewardship in a family-first giving workflow."
+      },
+      "events": {
+        "title": "Intelligent Analytics",
+        "body": "Transforms raw parish operational data into executive leadership health indicators and visual stewardship metrics."
+      },
+      "comms": {
+        "title": "Sacramental Registers",
+        "body": "Preserve your parish’s sacramental history accurately and make important records available when they are needed."
+      },
+      "groups": {
+        "title": "Ministries & Groups",
+        "body": "Organize life groups, ministries, and small-group participation in one place."
+      },
+      "volunteers": {
+        "title": "Church-Native Workflows",
+        "body": "Engineered around authentic parish structures, Catholic sacramental canons, BCC wards, and Mass intentions."
+      }
+    },
+    "slider": {
+      "title": "A Connected Parish. A Clearer Mission.",
+      "subtitle": "Uniting every dimension of parish life through one intelligent platform.",
+      "dashboard": {
+        "title": "Dynamic Dashboard",
+        "body": "Your entire parish, thoughtfully connected in one intelligent view."
+      },
+      "mobile": {
+        "title": "Community Dashboard View",
+        "body": "Monitor your Basic Christian Community's growth, demographics, and membership status."
+      },
+      "familyFinancial": {
+        "title": "Detailed Financial Insights",
+        "body": "Monitor parish stewardship health, outstanding contributions, and financial trends with precision.",
+        "imageAlt": "Parish financial stewardship overview with collection health and weekly collection trend"
+      },
+      "calendar": {
+        "title": "Family Profile & Details",
+        "body": "A unified view of every parish family, relationships, and sacramental connections.\nStrengthen parish connections."
+      },
+      "insights": {
+        "title": "Mass & Intentions",
+        "body": "Where every celebration is sacred, and every intention is cherished. Honor every Mass intention with reverence, precision, and pastoral care."
+      }
+    },
+    "tech": {
+      "title": "Performance & Security",
+      "subtitle": "Engineered for Excellence: Lightning-fast performance, enterprise-grade security, and uncompromising data protection you can trust.",
+      "next": {
+        "title": "Scalable Cloud SaaS",
+        "body": "Zero local server infrastructure needed. Automatic continuous updates and high availability multi-region cloud access."
+      },
+      "perf": {
+        "title": "Modern & Intuitive",
+        "body": "Clean desktop and mobile responsive interface designed for rapid adoption by priests, staff, and volunteers."
+      },
+      "ui": {
+        "title": "Enterprise Security",
+        "body": "Strict role-based access control, encrypted data storage, multi-tenant isolation, and complete audit logging."
+      }
+    },
+    "testimonials": {
+      "rowTitle": "Testimonials",
+      "rowSubtitle": "Trusted by Pastors. Empowering Parishes Worldwide..",
+      "cardsTitle": "Modern Testimonials",
+      "cardsSubtitle": "We love volunteer leaders who use satisfied pastors.",
+      "namoBarnes": {
+        "displayName": "Namo Barnes",
+        "role": "Pastor / Admin",
+        "quote": "This work now feels calm. Our members are organized and our pastors are supported."
+      },
+      "marcusHale": {
+        "displayName": "Marcus Hale",
+        "role": "Parish Admin",
+        "quote": "The tools we use each Sunday finally live in one place for the whole team."
+      },
+      "jaraphWilson": {
+        "displayName": "Jaraph Wilson",
+        "role": "Pastor",
+        "quote": "Families are easier to find, and giving follow-up no longer lives in a spreadsheet."
+      },
+      "elenaBrooks": {
+        "displayName": "Elena Brooks",
+        "role": "Ministry Lead",
+        "quote": "Volunteer teams know where to show up. That alone changed our week."
+      },
+      "priyaMenon": {
+        "displayName": "Priya Menon",
+        "role": "Parish Treasurer",
+        "quote": "Receipts and outstanding dues are clear now. I can answer a family in the same visit."
+      },
+      "thomasOkonkwo": {
+        "displayName": "Thomas Okonkwo",
+        "role": "Sacramental Records Secretary",
+        "quote": "Baptism and marriage registers are easier to find, and certificates take minutes, not an afternoon."
+      },
+      "claireDsouza": {
+        "displayName": "Claire D’Souza",
+        "role": "Family Ministry Coordinator",
+        "quote": "I can see the household, not just a name. Pastoral visits are planned with far less searching."
+      },
+      "jasonRamos": {
+        "displayName": "Jason Ramos",
+        "role": "Pastor / Admin",
+        "quote": "EkklesiaNexus keeps our parish records, giving, and follow-up in a workflow our volunteers can actually use."
+      },
+      "jessenDillon": {
+        "displayName": "Jessen Dillon",
+        "role": "Pastor / Admin",
+        "quote": "We moved from scattered notes to one family view. Sunday follow-up is finally simple."
+      },
+      "desteniRobins": {
+        "displayName": "Desteni Robins",
+        "role": "Pastor / Admin",
+        "quote": "Leaders can see who is serving, who gave, and who needs a pastoral visit — without extra tools."
+      }
+    },
+    "pricing": {
+      "title": "Pricing Overview",
+      "marketLabel": "Pricing region",
+      "billingLabel": "Billing period",
+      "billingMonthly": "Monthly",
+      "billingAnnually": "Annually",
+      "billingAnnuallyWithSavings": "Annually ({months} months free)",
+      "billedMonthly": "Billed monthly",
+      "billedAnnually": "Billed annually",
+      "monthsFreeHighlight": "two months free",
+      "markets": {
+        "IN": "India",
+        "US": "United States",
+        "BR": "Brazil"
+      },
+      "taxDisclaimer": "Prices exclude applicable taxes. Any applicable taxes will be determined separately based on the customer's billing details and applicable regulations.",
+      "badgeMostPopular": "Most Popular",
+      "limitsPeople": "People",
+      "limitsStaff": "Staff Users",
+      "limitsStorage": "Storage",
+      "includesStarter": "Everything in Starter, plus:",
+      "includesStandard": "Everything in Standard, plus:",
+      "plans": {
+        "seed": {
+          "tagline": "Everything a small parish needs to keep family and sacrament records."
+        },
+        "growth": {
+          "tagline": "Contributions, ministries and leadership for growing parishes."
+        },
+        "summit": {
+          "tagline": "Advanced finance, analytics and automation for large parishes."
+        }
+      },
+      "features": {
+        "churchProfile": "Church Profile",
+        "rolesPermissions": "Roles & Permissions",
+        "notifications": "Notifications",
+        "contributions": "Contributions",
+        "familyRecords": "Family Records",
+        "memberRecords": "Member Records",
+        "sacramentRecords": "Sacrament Records",
+        "basicReports": "Basic Reports",
+        "advancedRoles": "Advanced Roles & Permissions",
+        "auditLog": "Audit Log",
+        "export": "Export",
+        "contributionPlans": "Contribution Plans",
+        "financialDashboard": "Financial Dashboard",
+        "churchLeadership": "Church Leadership",
+        "ministriesAssociations": "Ministries & Associations",
+        "advancedDashboards": "Advanced Dashboards",
+        "multipleWorkflows": "Multiple Workflows",
+        "advancedCommunication": "Advanced Communication",
+        "advancedFinancialReporting": "Advanced Financial Reporting",
+        "advancedMinistryManagement": "Advanced Ministry Management",
+        "massIntentions": "Mass Intentions",
+        "advancedAnalytics": "Advanced Analytics"
+      }
+    },
+    "cta": {
+      "title": "Enterprise Edition — Your Vision. Our Expertise.",
+      "subtitle": "Discover bespoke workflows, advanced analytics, and tailored integrations crafted around your unique needs. Partner with our team to create a scalable solution that grows with your organization and strengthens your mission.",
+      "button": "Get Started"
+    },
+    "contact": {
+      "title": "Contact",
+      "subtitle": "Connect with Our Team — Get in touch to explore a solution tailored to your needs.."
+    },
+    "devices": {
+      "community": {
+        "wardTitle": "Our Lady of Lourdes Ward",
+        "view": "View",
+        "subtitle": "St. Mary Parish · Sector 4 · Sunday 7:30 AM",
+        "glanceTitle": "Community at a glance",
+        "glanceStats": " · 52 families · 187 members · 87% active",
+        "lifeStage": "Life stage",
+        "membershipStatus": "Membership status",
+        "leaders": "Leaders"
+      },
+      "kpi": {
+        "families": "Families",
+        "members": "Members",
+        "active": "Active",
+        "leadership": "Leadership"
+      },
+      "mass": {
+        "title": "Mass Intentions",
+        "thisWeek": "This week",
+        "nextMass": "Next Mass 7:00 AM",
+        "collectIntention": " · Collect a new intention for someone special",
+        "hostMasses": "Host Masses",
+        "lastFourMonths": "Last four months",
+        "weekday": "Weekday",
+        "sunday": "Sunday",
+        "evening": "Evening",
+        "open": "Open",
+        "registered": "Registered",
+        "said": "Said",
+        "closed": "Closed",
+        "tabs": {
+          "dashboard": "Dashboard",
+          "register": "Register",
+          "types": "Types",
+          "settings": "Settings",
+          "reports": "Reports",
+          "audit": "Audit"
+        }
+      },
+      "giving": {
+        "title": "Give",
+        "thisMonth": "This month",
+        "tithe": "Tithe",
+        "offering": "Offering",
+        "project": "Project",
+        "gift": "Gift",
+        "continue": "Continue"
+      },
+      "family": {
+        "householdName": "George Family",
+        "view": "View",
+        "all": "All",
+        "pastoralCare": "Pastoral care",
+        "notes": "Notes",
+        "sacraments": "Sacraments",
+        "actions": "Actions",
+        "familyHead": "Family Head"
+      },
+      "roles": {
+        "familyHead": "Family Head",
+        "headOfHousehold": "Head of Household",
+        "spouse": "Spouse",
+        "son": "Son",
+        "daughter": "Daughter"
+      },
+      "meta": {
+        "anthony": "St. Mary Parish · BCC 12",
+        "maria": "Choir · Catechist",
+        "daniel": "Altar server",
+        "elena": "Youth ministry"
+      },
+      "people": {
+        "francisShort": "Francis",
+        "leaderFrancisMathew": "Francis Mathew",
+        "leaderAnnaThomas": "Anna Thomas",
+        "leaderJosephGeorge": "Joseph George",
+        "anthonyGeorge": "Anthony George",
+        "mariaGeorge": "Maria George",
+        "danielGeorge": "Daniel George",
+        "elenaGeorge": "Elena George",
+        "sofiaGeorge": "Sofia George"
+      }
+    }
+  },
+  "forms": {
+    "contact": {
+      "labels": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "organisation": "Organisation",
+        "message": "Message",
+        "securityCheck": "Security check",
+        "websiteHoneypot": "Website"
+      },
+      "captchaHelp": "Enter the characters shown. Letters are case-insensitive.",
+      "captcha": {
+        "imageAlt": "Distorted characters for the security check",
+        "placeholder": "Enter characters"
+      },
+      "successDefault": "Thank you for contacting EkklesiaNexus. Your enquiry has been received successfully, and our team will be in touch.",
+      "submitFailed": "We couldn't send your message right now. Please try again.",
+      "submitFailedShort": "We couldn't send your message right now. Please try again shortly.",
+      "validation": {
+        "nameRequired": "Please enter your name.",
+        "emailRequired": "Please enter your email address.",
+        "emailInvalid": "Enter a valid email address.",
+        "phoneRequired": "Please enter your phone number.",
+        "phoneCountryCode": "Include your country code, starting with + (e.g. +91).",
+        "phoneInvalid": "Enter a valid phone number with country code.",
+        "messageRequired": "Please enter your message.",
+        "captchaRequired": "Please enter the security check characters.",
+        "captchaIncomplete": "Please complete the security check.",
+        "honeypot": "Unable to submit.",
+        "checkForm": "Please check the form.",
+        "checkField": "Please check this field."
+      }
+    },
+    "demo": {
+      "successDefault": "Thank you. Your demo request has been received.",
+      "validation": {
+        "nameRequired": "Please enter your name.",
+        "churchParishRequired": "Please enter your church or parish.",
+        "countryRequired": "Please select your country.",
+        "emailRequired": "Please enter your email.",
+        "emailInvalid": "Please enter a valid email address.",
+        "roleRequired": "Please enter your role.",
+        "messageRequired": "Please enter a message.",
+        "captchaIncomplete": "Please complete the security check.",
+        "honeypot": "Unable to submit.",
+        "checkForm": "Please check the form.",
+        "checkField": "Please check this field."
+      }
+    },
+    "bff": {
+      "invalidRequest": "Invalid request.",
+      "requestTooLarge": "Request is too large.",
+      "captchaLoadFailed": "Unable to load the security check.",
+      "contactUnavailable": "The contact form is temporarily unavailable.",
+      "captchaIncorrect": "The security check was incorrect or has expired. Please try again.",
+      "rateLimited": "Please wait a moment and try again.",
+      "requestFailed": "We couldn't complete your request right now. Please try again shortly.",
+      "demoSuccess": "Your demo request has been received."
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacy",
+      "warning": "Placeholder pending legal review. Do not rely on this page for compliance decisions.",
+      "body": "This page will describe how EkklesiaNexus handles information submitted through the marketing website and related contact requests. For product privacy practices within the parish application, refer to your parish agreement and official policies when published.",
+      "returnHome": "Return to homepage"
+    },
+    "terms": {
+      "title": "Terms",
+      "warning": "Placeholder pending legal review. Do not rely on this page for contractual terms.",
+      "body": "Official terms of service for EkklesiaNexus customers will be published here. The marketing website is provided for product information and demo requests only.",
+      "returnHome": "Return to homepage"
+    }
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "This marketing site is a single homepage experience. Return to EkklesiaNexus.",
+    "somethingWrong": "Something went wrong",
+    "tryAgainMoment": "Please try again in a moment.",
+    "previewUnavailable": "This preview is unavailable or has expired."
+  },
+  "seo": {
+    "homeTitle": "EkklesiaNexus — Next-Generation Church Management System",
+    "homeDescription": "EkklesiaNexus is a complete 360° Church Management System helping churches manage families, members, sacraments, stewardship, ministries, leadership, projects, reports, and more in one connected experience.",
+    "privacyTitle": "Privacy — EkklesiaNexus",
+    "privacyDescription": "Privacy information for the EkklesiaNexus marketing website.",
+    "termsTitle": "Terms — EkklesiaNexus",
+    "termsDescription": "Terms of use for the EkklesiaNexus marketing website.",
+    "notFoundTitle": "Page not found — EkklesiaNexus",
+    "manifestDescription": "EkklesiaNexus is a complete 360° Church Management System helping churches manage families, members, sacraments, stewardship, ministries, leadership, projects, reports, and more in one connected experience.",
+    "structuredDataAvailableLanguageEn": "English",
+    "structuredDataAvailableLanguagePt": "Portuguese"
+  }
+}

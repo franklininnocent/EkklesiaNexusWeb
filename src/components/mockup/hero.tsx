@@ -1,8 +1,11 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { MockupContainer } from "@/components/mockup/container";
 import { HeroDevices } from "@/components/mockup/devices";
 import { MockupLogo } from "@/components/mockup/logo";
-import { mockupHero } from "@/data/mockup-page";
+import { useI18n } from "@/lib/i18n/i18n-provider";
+import { sectionAnchorHref } from "@/lib/i18n/locale";
 
 function Sparkle({ className }: { className?: string }) {
   return (
@@ -23,6 +26,9 @@ function Sparkle({ className }: { className?: string }) {
 }
 
 export function MockupHero() {
+  const { locale, t } = useI18n();
+  const subtitle = t("home.hero.subtitle");
+
   return (
     <section id="home" className="relative overflow-hidden pb-4 pt-[calc(var(--header-offset)+2.25rem)] sm:pb-8 sm:pt-[calc(var(--header-offset)+3.25rem)]">
       <div className="pointer-events-none absolute left-8 top-32 hidden h-[4.5rem] w-[4.5rem] rotate-[18deg] rounded-2xl bg-emerald-300/70 sm:block" />
@@ -33,15 +39,18 @@ export function MockupHero() {
           <div className="relative min-w-0">
             <Sparkle className="absolute -left-3 top-1 hidden sm:block" />
             <h1 className="sr-only">
-              EkklesiaNexus. {mockupHero.subtitle}
+              {t("home.hero.titleLead")}. {subtitle}
             </h1>
             <MockupLogo size="hero" priority />
-            <p className="mt-4 max-w-[26rem] text-[15px] leading-relaxed text-slate-600 sm:text-base text-pretty">
-              {mockupHero.subtitle}
+            <p className="mt-4 max-w-[26rem] text-pretty text-[15px] leading-relaxed text-slate-600 sm:text-base">
+              {subtitle}
             </p>
             <div className="mt-7">
-              <Button href="/#demo" className="min-h-11 rounded-xl px-6 py-2.5 text-sm shadow-lg shadow-blue-600/25">
-                {mockupHero.primaryCta}
+              <Button
+                href={sectionAnchorHref(locale, "demo")}
+                className="min-h-11 whitespace-normal rounded-xl px-6 py-2.5 text-sm shadow-lg shadow-blue-600/25"
+              >
+                {t("home.hero.primaryCta")}
               </Button>
             </div>
           </div>

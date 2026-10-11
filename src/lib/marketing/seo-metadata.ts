@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { officialBrand } from "@/config/brand";
 import { siteConfig } from "@/config/site";
+import type { AppLocale } from "@/lib/i18n/locale";
+import { localizedAlternates, structuredDataLanguageFields } from "@/lib/marketing/localized-metadata";
 import type { MarketingContent, MarketingSeoConfig, PublicPageSeo } from "@/types/marketing";
 import { createDefaultMarketingSeo } from "@/lib/marketing/seo-defaults";
+import { ogLocaleTag } from "@/lib/i18n/locale";
 
 function siteBaseUrl(): string {
   return siteConfig.url.replace(/\/$/, "");
@@ -25,11 +28,19 @@ export function getHomePageSeo(content: MarketingContent): PublicPageSeo {
 export function buildPageMetadata(
   page: PublicPageSeo,
   seo: MarketingSeoConfig,
-  options?: { pathOverride?: string },
+  options?: { pathOverride?: string; locale?: AppLocale },
 ): Metadata {
   const base = siteBaseUrl();
   const path = options?.pathOverride ?? page.path;
+  const locale = options?.locale ?? "en-US";
   const canonical = path === "/" ? `${base}/` : `${base}${path}`;
+  const alternates =
+    page.id === "home"
+      ? {
+          ...localizedAlternates("home"),
+          canonical,
+        }
+      : { canonical };
   const ogImage = page.ogImage ?? seo.defaultOgImage;
   const ogTitle = page.ogTitle ?? page.seoTitle;
   const ogDescription = page.ogDescription ?? page.seoDescription;
@@ -38,13 +49,7 @@ export function buildPageMetadata(
   const metadata: Metadata = {
     title: page.seoTitle,
     description: page.seoDescription,
-    alternates: {
-      canonical,
-      languages: {
-        en: canonical,
-        "x-default": canonical,
-      },
-    },
+    alternates,
     robots: {
       index: page.robotsIndex,
       follow: page.robotsFollow,
@@ -55,7 +60,7 @@ export function buildPageMetadata(
       title: ogTitle,
       description: ogDescription,
       siteName: seo.organizationName,
-      locale: seo.ogLocale,
+      locale: locale === "pt-BR" ? ogLocaleTag("pt-BR") : seo.ogLocale,
       images: [
         {
           url: absoluteOg,
@@ -114,10 +119,14 @@ function publisherEmail(content: MarketingContent): string {
   return fromContent || officialBrand.contactEmail;
 }
 
-export function buildStructuredDataGraph(content: MarketingContent): Record<string, unknown> {
+export function buildStructuredDataGraph(
+  content: MarketingContent,
+  locale: AppLocale = "en-US",
+): Record<string, unknown> {
   const seo = resolveMarketingSeo(content);
   const base = siteBaseUrl();
   const home = getHomePageSeo(content);
+  const language = structuredDataLanguageFields(locale);
   const logo = `${base}/logos/ekklesiasoft-mark.png`;
   const email = publisherEmail(content);
   const organizationId = `${base}/#organization`;
@@ -139,7 +148,7 @@ export function buildStructuredDataGraph(content: MarketingContent): Record<stri
           contactType: "customer support",
           email,
           url: `${base}/#contact`,
-          availableLanguage: ["English"],
+          availableLanguage: language.availableLanguage,
         },
       },
       {
@@ -147,7 +156,7 @@ export function buildStructuredDataGraph(content: MarketingContent): Record<stri
         "@id": `${base}/#website`,
         name: organizationName,
         url: base,
-        inLanguage: seo.defaultLocale || "en",
+        inLanguage: language.inLanguage,
         publisher: { "@id": organizationId },
       },
       {

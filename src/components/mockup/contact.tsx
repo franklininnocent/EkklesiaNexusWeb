@@ -1,13 +1,16 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
-import { AlertCircle, RefreshCw } from "lucide-react";
-import { FormEvent, useCallback, useEffect, useId, useState, type ReactNode } from "react";
+import { AlertCircle } from "lucide-react";
+import { FormEvent, useCallback, useId, useMemo, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { TextArea, TextInput } from "@/components/ui/input";
 import { MockupContainer, SectionHeading } from "@/components/mockup/container";
-import { mockupContact } from "@/data/mockup-page";
+import { ContactCaptchaField } from "@/components/contact/contact-captcha-field";
+import { useContactCaptcha } from "@/hooks/use-contact-captcha";
+import { X_EN_LOCALE_HEADER } from "@/lib/i18n/constants";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 import {
   type ContactFormErrors,
   type ContactFormField,
@@ -86,6 +89,7 @@ const VALIDATED_CONTACT_FIELDS: ContactFormField[] = [
 ];
 
 export function MockupContact() {
+  const { locale, t } = useI18n();
   const formInstanceId = useId();
   const [values, setValues] = useState<ContactFormValues>(initialValues);
   const [errors, setErrors] = useState<ContactFormErrors>({});
@@ -94,13 +98,16 @@ export function MockupContact() {
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState(
-    "Thank you for contacting EkklesiaNexus. Your enquiry has been received successfully, and our team will be in touch.",
+  const [successMessage, setSuccessMessage] = useState(() => t("forms.contact.successDefault"));
+  const captcha = useContactCaptcha(() => {
+    setValues((prev) => ({ ...prev, captcha_response: "" }));
+  });
+  const { captchaId, loadCaptcha } = captcha;
+
+  const displayErrors = useMemo(
+    () => (contactFormHasErrors(errors) ? validateContactForm(values, locale) : errors),
+    [errors, values, locale],
   );
-  const [captchaId, setCaptchaId] = useState<string | null>(null);
-  const [captchaImage, setCaptchaImage] = useState<string | null>(null);
-  const [captchaLoading, setCaptchaLoading] = useState(true);
-  const [captchaError, setCaptchaError] = useState<string | null>(null);
 
   const fieldIds = {
     name: `${formInstanceId}-name`,
@@ -119,72 +126,13 @@ export function MockupContact() {
     captcha_response: `${formInstanceId}-captcha-error`,
   };
 
-  const loadCaptcha = useCallback(async () => {
-    setCaptchaLoading(true);
-    setCaptchaError(null);
-    try {
-      const res = await fetch("/api/contact-captcha", { cache: "no-store" });
-      const json = (await res.json()) as {
-        success?: boolean;
-        message?: string;
-        data?: { challenge_id: string; image: string };
-      };
-      if (!res.ok || !json.success || !json.data) {
-        setCaptchaId(null);
-        setCaptchaImage(null);
-        setCaptchaError(json.message ?? "Unable to load the security check.");
-        return;
-      }
-      setCaptchaId(json.data.challenge_id);
-      setCaptchaImage(json.data.image);
-      setValues((prev) => ({ ...prev, captcha_response: "" }));
-    } catch {
-      setCaptchaError("Unable to load the security check.");
-    } finally {
-      setCaptchaLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadInitialCaptcha() {
-      try {
-        const res = await fetch("/api/contact-captcha", { cache: "no-store" });
-        const json = (await res.json()) as {
-          success?: boolean;
-          message?: string;
-          data?: { challenge_id: string; image: string };
-        };
-        if (cancelled) return;
-        if (!res.ok || !json.success || !json.data) {
-          setCaptchaId(null);
-          setCaptchaImage(null);
-          setCaptchaError(json.message ?? "Unable to load the security check.");
-          return;
-        }
-        setCaptchaId(json.data.challenge_id);
-        setCaptchaImage(json.data.image);
-      } catch {
-        if (!cancelled) setCaptchaError("Unable to load the security check.");
-      } finally {
-        if (!cancelled) setCaptchaLoading(false);
-      }
-    }
-
-    void loadInitialCaptcha();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   const shouldShowError = useCallback(
     (field: ContactFormField) => {
-      const message = errors[field];
+      const message = displayErrors[field];
       if (!message) return false;
       return Boolean(touched[field] || submitAttempted);
     },
-    [errors, touched, submitAttempted],
+    [displayErrors, touched, submitAttempted],
   );
 
   const updateField = (field: keyof ContactFormValues, value: string) => {
@@ -193,7 +141,7 @@ export function MockupContact() {
       if (field === "organisation") return next;
       const contactField = field as ContactFormField;
       if (touched[contactField] || submitAttempted) {
-        const fieldError = validateContactField(contactField, next);
+        const fieldError = validateContactField(contactField, next, locale);
         setErrors((prevErrors) => {
           const nextErrors = { ...prevErrors };
           if (fieldError) nextErrors[contactField] = fieldError;
@@ -209,7 +157,7 @@ export function MockupContact() {
     setTouched((prev) => ({ ...prev, [field]: true }));
     setValues((prev) => {
       const next = { ...prev, [field]: fieldValue };
-      const fieldError = validateContactField(field, next);
+      const fieldError = validateContactField(field, next, locale);
       setErrors((prevErrors) => {
         const nextErrors = { ...prevErrors };
         if (fieldError) nextErrors[field] = fieldError;
@@ -225,10 +173,13 @@ export function MockupContact() {
     if (submitting) return;
     setSubmitAttempted(true);
     setFormError(null);
-    const nextErrors = validateContactForm(values);
-    setErrors(nextErrors);
+    const nextErrors = validateContactForm(values, locale);
+    if (!captchaId) {
+      nextErrors.captcha_response = t("forms.contact.validation.captchaIncomplete");
+    }
     setTouched({ name: true, email: true, phone: true, message: true, captcha_response: true });
-    if (contactFormHasErrors(nextErrors) || !captchaId) {
+    if (contactFormHasErrors(nextErrors)) {
+      setErrors(nextErrors);
       const firstInvalid = VALIDATED_CONTACT_FIELDS.find((f) => nextErrors[f]);
       if (firstInvalid) {
         const id = firstInvalid === "captcha_response" ? fieldIds.captcha : fieldIds[firstInvalid];
@@ -243,7 +194,7 @@ export function MockupContact() {
     try {
       const res = await fetch("/api/contact-enquiries", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", [X_EN_LOCALE_HEADER]: locale },
         body: JSON.stringify({
           name: values.name,
           email: values.email,
@@ -261,10 +212,7 @@ export function MockupContact() {
         errors?: Record<string, string>;
       };
       if (res.ok && json.success) {
-        setSuccessMessage(
-          json.message ??
-            "Thank you for contacting EkklesiaNexus. Your enquiry has been received successfully, and our team will be in touch.",
-        );
+        setSuccessMessage(json.message ?? t("forms.contact.successDefault"));
         setSent(true);
         return;
       }
@@ -277,10 +225,10 @@ export function MockupContact() {
         });
         setErrors((prev) => ({ ...prev, ...mapped }));
       }
-      setFormError(json.message ?? "We couldn't send your message right now. Please try again.");
+      setFormError(json.message ?? t("forms.contact.submitFailed"));
       void loadCaptcha();
     } catch {
-      setFormError("We couldn't send your message right now. Please try again shortly.");
+      setFormError(t("forms.contact.submitFailedShort"));
     } finally {
       setSubmitting(false);
     }
@@ -289,7 +237,7 @@ export function MockupContact() {
   return (
     <section id="contact" className="py-16 sm:py-20">
       <MockupContainer>
-        <SectionHeading title={mockupContact.title} subtitle={mockupContact.subtitle} />
+        <SectionHeading title={t("home.contact.title")} subtitle={t("home.contact.subtitle")} />
         <div className="mx-auto max-w-2xl">
           <Card className="rounded-[1.6rem] p-6 sm:p-8">
             {sent ? (
@@ -303,16 +251,16 @@ export function MockupContact() {
                 onSubmit={onSubmit}
                 className="space-y-0"
                 noValidate
-                aria-label="Contact form"
+                aria-label={t("a11y.contactForm")}
               >
                 <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
-                  <label htmlFor={`${formInstanceId}-website`}>Website</label>
+                  <label htmlFor={`${formInstanceId}-website`}>{t("forms.contact.labels.websiteHoneypot")}</label>
                   <input id={`${formInstanceId}-website`} name="website" type="text" tabIndex={-1} autoComplete="off" />
                 </div>
                 <ContactFieldRow
-                  label="Name"
+                  label={t("forms.contact.labels.name")}
                   labelFor={fieldIds.name}
-                  error={shouldShowError("name") ? errors.name : undefined}
+                  error={shouldShowError("name") ? displayErrors.name : undefined}
                 >
                   <TextInput
                     id={fieldIds.name}
@@ -326,16 +274,16 @@ export function MockupContact() {
                     aria-describedby={shouldShowError("name") ? errorIds.name : undefined}
                   />
                   <AnimatePresence initial={false}>
-                    {shouldShowError("name") && errors.name ? (
-                      <FieldError key="name-error" id={errorIds.name} message={errors.name} />
+                    {shouldShowError("name") && displayErrors.name ? (
+                      <FieldError key="name-error" id={errorIds.name} message={displayErrors.name} />
                     ) : null}
                   </AnimatePresence>
                 </ContactFieldRow>
 
                 <ContactFieldRow
-                  label="Email"
+                  label={t("forms.contact.labels.email")}
                   labelFor={fieldIds.email}
-                  error={shouldShowError("email") ? errors.email : undefined}
+                  error={shouldShowError("email") ? displayErrors.email : undefined}
                 >
                   <TextInput
                     id={fieldIds.email}
@@ -350,16 +298,16 @@ export function MockupContact() {
                     aria-describedby={shouldShowError("email") ? errorIds.email : undefined}
                   />
                   <AnimatePresence initial={false}>
-                    {shouldShowError("email") && errors.email ? (
-                      <FieldError key="email-error" id={errorIds.email} message={errors.email} />
+                    {shouldShowError("email") && displayErrors.email ? (
+                      <FieldError key="email-error" id={errorIds.email} message={displayErrors.email} />
                     ) : null}
                   </AnimatePresence>
                 </ContactFieldRow>
 
                 <ContactFieldRow
-                  label="Phone"
+                  label={t("forms.contact.labels.phone")}
                   labelFor={fieldIds.phone}
-                  error={shouldShowError("phone") ? errors.phone : undefined}
+                  error={shouldShowError("phone") ? displayErrors.phone : undefined}
                 >
                   <TextInput
                     id={fieldIds.phone}
@@ -375,13 +323,13 @@ export function MockupContact() {
                     aria-describedby={shouldShowError("phone") ? errorIds.phone : undefined}
                   />
                   <AnimatePresence initial={false}>
-                    {shouldShowError("phone") && errors.phone ? (
-                      <FieldError key="phone-error" id={errorIds.phone} message={errors.phone} />
+                    {shouldShowError("phone") && displayErrors.phone ? (
+                      <FieldError key="phone-error" id={errorIds.phone} message={displayErrors.phone} />
                     ) : null}
                   </AnimatePresence>
                 </ContactFieldRow>
 
-                <ContactFieldRow label="Organisation" labelFor={fieldIds.organisation}>
+                <ContactFieldRow label={t("forms.contact.labels.organisation")} labelFor={fieldIds.organisation}>
                   <TextInput
                     id={fieldIds.organisation}
                     name="organisation"
@@ -392,9 +340,9 @@ export function MockupContact() {
                 </ContactFieldRow>
 
                 <ContactFieldRow
-                  label="Message"
+                  label={t("forms.contact.labels.message")}
                   labelFor={fieldIds.message}
-                  error={shouldShowError("message") ? errors.message : undefined}
+                  error={shouldShowError("message") ? displayErrors.message : undefined}
                   alignTop
                 >
                   <TextArea
@@ -407,74 +355,37 @@ export function MockupContact() {
                     aria-describedby={shouldShowError("message") ? errorIds.message : undefined}
                   />
                   <AnimatePresence initial={false}>
-                    {shouldShowError("message") && errors.message ? (
-                      <FieldError key="message-error" id={errorIds.message} message={errors.message} />
+                    {shouldShowError("message") && displayErrors.message ? (
+                      <FieldError key="message-error" id={errorIds.message} message={displayErrors.message} />
                     ) : null}
                   </AnimatePresence>
                 </ContactFieldRow>
 
                 <ContactFieldRow
-                  label="Security check"
+                  label={t("forms.contact.labels.securityCheck")}
                   labelFor={fieldIds.captcha}
-                  error={shouldShowError("captcha_response") ? errors.captcha_response : undefined}
+                  error={shouldShowError("captcha_response") ? displayErrors.captcha_response : undefined}
                   alignTop
                 >
-                  <div className="min-h-[104px]">
-                    <div className="flex min-w-0 flex-wrap items-start gap-3">
-                      <div className="flex h-16 w-full max-w-[220px] items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                        {captchaLoading ? (
-                          <span className="text-xs text-slate-500">Loading check…</span>
-                        ) : captchaImage ? (
-                          // Dynamic data-URI challenge; Next/Image is not used for ephemeral captcha bytes.
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={captchaImage}
-                            alt=""
-                            width={220}
-                            height={64}
-                            className="h-16 w-full max-w-[220px] object-contain"
-                          />
-                        ) : (
-                          <span className="px-2 text-center text-xs text-rose-700">
-                            {captchaError ?? "Unavailable"}
-                          </span>
-                        )}
-                      </div>
-                      <button
-                        type="button"
-                        className="inline-flex h-11 min-h-11 items-center gap-1.5 rounded-lg border border-slate-200 px-3 text-sm text-slate-700 hover:bg-slate-50"
-                        onClick={() => void loadCaptcha()}
-                        aria-label="Refresh security check"
-                      >
-                        <RefreshCw className="h-4 w-4" aria-hidden="true" />
-                        Refresh
-                      </button>
-                    </div>
-                    <TextInput
-                      id={fieldIds.captcha}
-                      name="captcha_response"
-                      autoComplete="off"
-                      spellCheck={false}
-                      className="mt-2"
-                      aria-describedby={`${formInstanceId}-captcha-help ${shouldShowError("captcha_response") ? errorIds.captcha_response : ""}`.trim()}
-                      aria-invalid={shouldShowError("captcha_response")}
-                      value={values.captcha_response}
-                      onChange={(e) => updateField("captcha_response", e.target.value)}
-                      onBlur={(e) => blurField("captcha_response", e.target.value)}
-                    />
-                    <p id={`${formInstanceId}-captcha-help`} className="mt-1 text-[12px] text-slate-500">
-                      Enter the characters shown. Letters are case-insensitive.
-                    </p>
-                    <AnimatePresence initial={false}>
-                      {shouldShowError("captcha_response") && errors.captcha_response ? (
-                        <FieldError
-                          key="captcha-error"
-                          id={errorIds.captcha_response}
-                          message={errors.captcha_response}
-                        />
-                      ) : null}
-                    </AnimatePresence>
-                  </div>
+                  <ContactCaptchaField
+                    captcha={captcha}
+                    inputId={fieldIds.captcha}
+                    helpId={`${formInstanceId}-captcha-help`}
+                    describedBy={shouldShowError("captcha_response") ? errorIds.captcha_response : undefined}
+                    value={values.captcha_response}
+                    invalid={shouldShowError("captcha_response")}
+                    onValueChange={(v) => updateField("captcha_response", v)}
+                    onBlur={() => blurField("captcha_response", values.captcha_response)}
+                  />
+                  <AnimatePresence initial={false}>
+                    {shouldShowError("captcha_response") && displayErrors.captcha_response ? (
+                      <FieldError
+                        key="captcha-error"
+                        id={errorIds.captcha_response}
+                        message={displayErrors.captcha_response}
+                      />
+                    ) : null}
+                  </AnimatePresence>
                 </ContactFieldRow>
 
                 {formError ? (
@@ -484,7 +395,7 @@ export function MockupContact() {
                 ) : null}
 
                 <Button type="submit" className="mt-4 w-full rounded-xl py-3" disabled={submitting}>
-                  {submitting ? "Sending…" : "Send Message"}
+                  {submitting ? t("common.actions.sending") : t("common.actions.sendMessage")}
                 </Button>
               </form>
             )}

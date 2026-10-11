@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-const routes = ["/", "/privacy", "/terms", "/preview/plans"] as const;
+const routes = ["/", "/pt-br", "/privacy", "/terms", "/pt-br/privacy", "/pt-br/terms", "/preview/plans"] as const;
 
 const viewports: { name: string; width: number; height: number }[] = [
   { name: "small-mobile", width: 320, height: 568 },
@@ -53,7 +53,7 @@ async function waitForHeaderHydration(page: Page) {
 async function openMobileNav(page: Page) {
   await waitForHeaderHydration(page);
   await dismissDevOverlay(page);
-  const button = page.locator("header").getByRole("button", { name: /open menu/i });
+  const button = page.locator("header").getByRole("button", { name: /open menu|abrir menu/i });
   await expect(button).toBeVisible();
   await button.click({ force: true });
   const nav = page.locator("#mobile-nav");
@@ -94,10 +94,10 @@ test.describe("marketing site responsive geometry", () => {
         await expect(header).toBeVisible();
 
         if (vp.width < 1024) {
-          await expect(page.getByRole("button", { name: /open menu/i })).toBeVisible();
-          await expect(page.getByRole("navigation", { name: "Primary" })).toBeHidden();
+          await expect(page.getByRole("button", { name: /open menu|abrir menu/i })).toBeVisible();
+          await expect(page.getByRole("navigation", { name: /Primary|Principal/i })).toBeHidden();
         } else {
-          await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
+          await expect(page.getByRole("navigation", { name: /Primary|Principal/i })).toBeVisible();
         }
       });
     }
@@ -119,6 +119,8 @@ test("home mobile menu, pricing, and contact remain usable at 375", async ({ pag
   await showPrice.click();
   await expect(page.getByRole("button", { name: "Hide Price" }).first()).toBeVisible();
   await expect(page.getByText("/ month").first()).toBeVisible();
+  await expect(page.getByText("two months free").first()).toBeVisible();
+  await expect(page.getByText("Prices exclude applicable taxes").first()).toBeVisible();
 
   await page.locator("#contact").scrollIntoViewIfNeeded();
   await expect(page.getByRole("textbox", { name: "Name" })).toBeVisible();

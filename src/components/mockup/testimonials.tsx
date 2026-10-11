@@ -7,7 +7,8 @@ import { AnimatedReveal } from "@/components/ui/animated-reveal";
 import { Card } from "@/components/ui/card";
 import { PersonAvatar } from "@/components/mockup/avatars";
 import { MockupContainer, SectionHeading } from "@/components/mockup/container";
-import { mockupTestimonialsCards, mockupTestimonialsRow } from "@/data/mockup-page";
+import { TESTIMONIAL_CARD_ITEMS, TESTIMONIAL_ROW_ITEMS } from "@/data/mockup-structure";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 import { usePerView } from "@/hooks/use-per-view";
 
 function TestimonialAvatar({
@@ -37,20 +38,15 @@ function TestimonialAvatar({
 }
 
 function perViewForWidth(width: number): number {
-  if (width < 768) {
-    return 1;
-  }
-  if (width < 1024) {
-    return 2;
-  }
-  if (width < 1280) {
-    return 3;
-  }
+  if (width < 768) return 1;
+  if (width < 1024) return 2;
+  if (width < 1280) return 3;
   return 4;
 }
 
 export function MockupTestimonialsRow() {
-  const items = mockupTestimonialsRow.items;
+  const { t } = useI18n();
+  const items = TESTIMONIAL_ROW_ITEMS;
   const [index, setIndex] = useState(0);
   const perView = usePerView(perViewForWidth);
   const [paused, setPaused] = useState(false);
@@ -63,28 +59,26 @@ export function MockupTestimonialsRow() {
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce || paused || max === 0) {
-      return;
-    }
+    if (reduce || paused || max === 0) return;
     const timer = window.setInterval(() => {
       setIndex((value) => (value >= max ? 0 : value + 1));
     }, 5200);
     return () => window.clearInterval(timer);
   }, [max, paused]);
 
+  const prevLabel = t("a11y.prevSlides");
+  const nextLabel = t("a11y.nextSlides");
+
   return (
     <section id="testimonials" className="relative overflow-hidden py-14 sm:py-16">
       <MockupContainer>
-        <SectionHeading
-          title={mockupTestimonialsRow.title}
-          subtitle={mockupTestimonialsRow.subtitle}
-        />
+        <SectionHeading title={t("home.testimonials.rowTitle")} subtitle={t("home.testimonials.rowSubtitle")} />
 
         <div className="mb-4 flex items-center justify-center gap-2 sm:hidden">
           <button
             type="button"
             onClick={prev}
-            aria-label="Previous testimonials"
+            aria-label={prevLabel}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-lg shadow-slate-300/60"
           >
             <ChevronLeft className="h-5 w-5 text-slate-600" />
@@ -92,22 +86,18 @@ export function MockupTestimonialsRow() {
           <button
             type="button"
             onClick={next}
-            aria-label="Next testimonials"
+            aria-label={nextLabel}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-lg shadow-slate-300/60"
           >
             <ChevronRight className="h-5 w-5 text-slate-600" />
           </button>
         </div>
 
-        <div
-          className="relative"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-        >
+        <div className="relative" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
           <button
             type="button"
             onClick={prev}
-            aria-label="Previous testimonials"
+            aria-label={prevLabel}
             className="absolute -left-2 top-[38%] z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg shadow-slate-300/60 sm:flex sm:-left-5"
           >
             <ChevronLeft className="h-5 w-5 text-slate-600" />
@@ -115,7 +105,7 @@ export function MockupTestimonialsRow() {
           <button
             type="button"
             onClick={next}
-            aria-label="Next testimonials"
+            aria-label={nextLabel}
             className="absolute -right-2 top-[38%] z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-lg shadow-slate-300/60 sm:flex sm:-right-5"
           >
             <ChevronRight className="h-5 w-5 text-slate-600" />
@@ -126,25 +116,25 @@ export function MockupTestimonialsRow() {
               className="flex transition-transform duration-500 ease-out motion-reduce:transition-none"
               style={{ transform: `translateX(-${slideIndex * (100 / perView)}%)` }}
             >
-              {items.map((item) => (
+              {items.map((item) => {
+                const displayName = t(`home.testimonials.${item.key}.displayName`);
+                return (
                 <article
-                  key={item.name}
+                  key={item.key}
                   className="min-w-0 shrink-0 px-2 text-center sm:px-3"
                   style={{ width: `${100 / perView}%` }}
                 >
                   <div className="flex justify-center">
-                    <TestimonialAvatar
-                      name={item.name}
-                      tone={item.tone}
-                      size={86}
-                      imageSrc={item.imageSrc}
-                    />
+                    <TestimonialAvatar name={displayName} tone={item.tone} size={86} imageSrc={item.imageSrc} />
                   </div>
-                  <p className="mt-4 px-1 text-[13px] leading-relaxed text-slate-500">“{item.quote}”</p>
-                  <p className="mt-3 text-sm font-bold text-slate-900">{item.name}</p>
-                  <p className="text-[11px] text-slate-400">{item.role}</p>
+                  <p className="mt-4 px-1 text-[13px] leading-relaxed text-slate-500">
+                    “{t(`home.testimonials.${item.key}.quote`)}”
+                  </p>
+                  <p className="mt-3 text-sm font-bold text-slate-900">{displayName}</p>
+                  <p className="text-[11px] text-slate-400">{t(`home.testimonials.${item.key}.role`)}</p>
                 </article>
-              ))}
+              );
+              })}
             </div>
           </div>
         </div>
@@ -154,28 +144,32 @@ export function MockupTestimonialsRow() {
 }
 
 export function MockupTestimonialsCards() {
+  const { t } = useI18n();
+
   return (
     <section className="py-6 sm:py-10">
       <MockupContainer>
-        <SectionHeading
-          title={mockupTestimonialsCards.title}
-          subtitle={mockupTestimonialsCards.subtitle}
-        />
+        <SectionHeading title={t("home.testimonials.cardsTitle")} subtitle={t("home.testimonials.cardsSubtitle")} />
         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-          {mockupTestimonialsCards.items.map((item, i) => (
-            <AnimatedReveal key={item.name} delay={i * 0.06} className="h-full">
+          {TESTIMONIAL_CARD_ITEMS.map((item, i) => {
+            const displayName = t(`home.testimonials.${item.key}.displayName`);
+            return (
+            <AnimatedReveal key={item.key} delay={i * 0.06} className="h-full">
               <Card lift className="flex h-full items-start gap-3 rounded-[1.35rem] p-5">
                 <div className="shrink-0">
-                  <PersonAvatar name={item.name} tone={item.tone} size={48} />
+                  <PersonAvatar name={displayName} tone={item.tone} size={48} />
                 </div>
                 <div>
-                  <p className="text-[13px] leading-relaxed text-slate-500">“{item.quote}”</p>
-                  <p className="mt-2.5 text-sm font-bold text-slate-900">{item.name}</p>
-                  <p className="text-[11px] text-slate-400">{item.role}</p>
+                  <p className="text-[13px] leading-relaxed text-slate-500">
+                    “{t(`home.testimonials.${item.key}.quote`)}”
+                  </p>
+                  <p className="mt-2.5 text-sm font-bold text-slate-900">{displayName}</p>
+                  <p className="text-[11px] text-slate-400">{t(`home.testimonials.${item.key}.role`)}</p>
                 </div>
               </Card>
             </AnimatedReveal>
-          ))}
+          );
+          })}
         </div>
       </MockupContainer>
     </section>
