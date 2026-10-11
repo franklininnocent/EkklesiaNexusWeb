@@ -1,0 +1,20 @@
+# Example systemd unit for EkklesiaSoftWeb (adjust paths and user).
+# Install: sudo cp ekklesiasoft-web.service.example /etc/systemd/system/ekklesiasoft-web.service
+#          sudo systemctl daemon-reload && sudo systemctl enable --now ekklesiasoft-web
+
+[Unit]
+Description=EkklesiaNexus marketing website (Next.js)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/html/EkklesiaSoft/EkklesiaSoftWeb
+Environment=NODE_ENV=production
+EnvironmentFile=-/var/www/html/EkklesiaSoft/EkklesiaSoftWeb/.env.local
+ExecStart=/usr/bin/npm run start -- --port 3000
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
