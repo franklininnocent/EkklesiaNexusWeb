@@ -3,6 +3,7 @@
     "actions": {
       "getStarted": "Começar agora",
       "getStartedHeader": "Começar",
+      "openApplication": "Abrir aplicativo",
       "requestDemo": "Agendar uma demonstração",
       "sendMessage": "Enviar mensagem",
       "sending": "Enviando…",
