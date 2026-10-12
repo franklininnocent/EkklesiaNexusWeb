@@ -5,6 +5,7 @@ import { MockupContainer } from "@/components/mockup/container";
 import { HeroDevices } from "@/components/mockup/devices";
 import { MockupLogo } from "@/components/mockup/logo";
 import { useI18n } from "@/lib/i18n/i18n-provider";
+import { applicationEntryHref } from "@/lib/application-entry";
 import { sectionAnchorHref } from "@/lib/i18n/locale";
 
 function Sparkle({ className }: { className?: string }) {
@@ -45,12 +46,19 @@ export function MockupHero() {
             <p className="mt-4 max-w-[26rem] text-pretty text-[15px] leading-relaxed text-slate-600 sm:text-base">
               {subtitle}
             </p>
-            <div className="mt-7">
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <Button
                 href={sectionAnchorHref(locale, "demo")}
-                className="min-h-11 whitespace-normal rounded-xl px-6 py-2.5 text-sm shadow-lg shadow-blue-600/25"
+                className="min-h-11 w-full whitespace-normal rounded-xl px-6 py-2.5 text-sm shadow-lg shadow-blue-600/25 sm:w-auto"
               >
                 {t("home.hero.primaryCta")}
+              </Button>
+              <Button
+                href={applicationEntryHref()}
+                variant="outline"
+                className="min-h-11 w-full whitespace-normal rounded-xl border-2 px-6 py-2.5 text-sm sm:w-auto"
+              >
+                {t("common.actions.openApplication")}
               </Button>
             </div>
           </div>
