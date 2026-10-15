@@ -24,7 +24,7 @@
 ## 2. Source layout
 
 ```
-EkklesiaSoftWeb/
+EkklesiaNexusWeb/
 ├── public/                 # Static assets (logos, favicon, OG, product images)
 ├── scripts/                # Build-time validators (e.g. marketing content scan)
 ├── src/
@@ -89,7 +89,7 @@ Never commit `.env.local` or API secrets.
 
 ## 6. Verification (exit criteria)
 
-Run from `EkklesiaSoftWeb/`:
+Run from `EkklesiaNexusWeb/`:
 
 ```bash
 cp env.example .env.local   # or cp .env.example .env.local

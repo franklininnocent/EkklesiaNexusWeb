@@ -34,6 +34,9 @@
     "contact": "Contato"
   },
   "footer": {
+    "features": "Recursos",
+    "about": "Sobre",
+    "contact": "Contato",
     "terms": "Termos",
     "privacy": "Privacidade",
     "blog": "Blog",
@@ -419,7 +422,7 @@
   },
   "errors": {
     "notFoundTitle": "Página não encontrada",
-    "notFoundBody": "Este site institucional concentra a experiência na página inicial. Volte ao EkklesiaNexus.",
+    "notFoundBody": "Não encontramos essa página. Volte à página inicial do EkklesiaNexus ou explore recursos e contato.",
     "somethingWrong": "Não foi possível concluir a ação",
     "tryAgainMoment": "Tente novamente em instantes.",
     "previewUnavailable": "Esta visualização não está disponível ou expirou."

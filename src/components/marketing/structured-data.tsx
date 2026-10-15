@@ -1,5 +1,6 @@
 import type { AppLocale } from "@/lib/i18n/locale";
 import type { MarketingContent } from "@/types/marketing";
+import { safeJsonLdStringify } from "@/lib/marketing/json-ld-safe";
 import { buildStructuredDataGraph } from "@/lib/marketing/seo-metadata";
 
 export function StructuredData({ content, locale }: { content: MarketingContent; locale: AppLocale }) {
@@ -7,7 +8,7 @@ export function StructuredData({ content, locale }: { content: MarketingContent;
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(graph) }}
+      dangerouslySetInnerHTML={{ __html: safeJsonLdStringify(graph) }}
     />
   );
 }

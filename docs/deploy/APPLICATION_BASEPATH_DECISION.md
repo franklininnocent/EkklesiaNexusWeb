@@ -5,9 +5,9 @@
 
 ## Current evidence (repository)
 
-- Angular [`EkklesiaSoftUi/src/index.html`](../../../EkklesiaSoftUi/src/index.html): `<base href="/">`.
+- Angular [`EkklesiaNexusUi/src/index.html`](../../../EkklesiaNexusUi/src/index.html): `<base href="/">`.
 - No `baseHref` / `deployUrl` in `angular.json`.
-- Marketing Next.js app (`EkklesiaSoftWeb`) serves `/` with no `basePath`.
+- Marketing Next.js app (`EkklesiaNexusWeb`) serves `/` with no `basePath`.
 - No in-repo nginx vhost for `ekklesianexus.com` (only an example proxy for Next on port 3000).
 
 ## Recommended approach (Option B)

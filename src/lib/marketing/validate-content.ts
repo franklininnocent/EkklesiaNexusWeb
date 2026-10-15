@@ -1,5 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
+import { heroContent } from "@/content/hero";
+import { siteContent } from "@/content/site";
 import { getMarketingContent } from "@/lib/marketing/get-content";
 import { scanProhibitedSeoText } from "@/lib/marketing/seo-prohibited";
 import {
@@ -33,6 +35,29 @@ export function validateMarketingContentFiles(): string[] {
 
   const content = getMarketingContent();
   errors.push(...validateMarketingContentStructure(content));
+
+  const rejectedHeroBoilerplate =
+    "Simplify parish administration with EkklesiaNexus, an integrated church management platform";
+  const enMessagesPath = path.join(process.cwd(), "src/messages/en-US.json");
+  const enMessages = JSON.parse(fs.readFileSync(enMessagesPath, "utf8")) as {
+    home?: { hero?: { subtitle?: string } };
+    seo?: { homeDescription?: string; manifestDescription?: string };
+  };
+  const heroSubtitle = enMessages.home?.hero?.subtitle ?? "";
+  if (heroSubtitle !== heroContent.description) {
+    errors.push(
+      `en-US home.hero.subtitle must match src/content/hero.ts description (${heroContent.description})`,
+    );
+  }
+  if (
+    heroSubtitle.includes(rejectedHeroBoilerplate) ||
+    siteContent.seoDescription.includes(rejectedHeroBoilerplate) ||
+    (enMessages.seo?.homeDescription ?? "").includes(rejectedHeroBoilerplate)
+  ) {
+    errors.push(
+      "Rejected SEO boilerplate copy detected; use hero.ts and site.ts as the source of truth for homepage copy",
+    );
+  }
 
   return errors;
 }

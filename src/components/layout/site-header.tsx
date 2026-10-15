@@ -60,7 +60,7 @@ export function SiteHeader({ navigation }: SiteHeaderProps) {
           onClick={(e) => handleAnchorNav(e, "/#home", () => setOpen(false))}
         >
           <Image
-            src="/logos/ekklesiasoft-horizontal.png"
+            src="/logos/ekklesianexus-horizontal.png"
             alt="EkklesiaNexus"
             width={180}
             height={40}

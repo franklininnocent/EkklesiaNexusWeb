@@ -4,9 +4,9 @@
 
 | Asset | Path |
 |-------|------|
-| Brand logo library (all variants) | `/var/www/html/EkklesiaSoftDocuments/logo&branding/EkklesiaNexusBrandLogoLibrary.png` |
+| Brand logo library (all variants) | `/var/www/html/EkklesiaNexusDocuments/logo&branding/EkklesiaNexusBrandLogoLibrary.png` |
 | Horizontal / wordmark crops | `1.png`, `4.png` in same folder |
-| Product UI runtime badge | `EkklesiaSoftUi/public/brand/ekklesia-circular-badge.png` |
+| Product UI runtime badge | `EkklesiaNexusUi/public/brand/ekklesia-circular-badge.png` |
 
 ## Official identity
 
@@ -15,12 +15,12 @@
 - **Gold accent:** ~`#E0A830`  
 - **Product UI CTA blue (screenshots/chrome):** `#2563eb` — Church Financial OS tokens (`docs/design-system/colors.md`)
 
-## Marketing site usage (`EkklesiaSoftWeb/public/`)
+## Marketing site usage (`EkklesiaNexusWeb/public/`)
 
 | File | Use |
 |------|-----|
-| `logos/ekklesiasoft-horizontal.png` | Header (from `1.png`) |
-| `logos/ekklesiasoft-mark.png` | Footer, Apple touch icon |
+| `logos/ekklesianexus-horizontal.png` | Header (from `1.png`) |
+| `logos/ekklesianexus-mark.png` | Footer, Apple touch icon |
 | `favicon/favicon.ico` | From product UI favicon |
 | `images/og/og-preview.png` | Open Graph (designed navy + logo + slogan; regen: `npm run generate:og`) |
 | `images/og/og-preview.webp` | Optional WebP companion |

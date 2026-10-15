@@ -15,7 +15,7 @@ Angular → **Settings → Marketing website** → **Hero section** tab.
 
 ## Contract source
 
-`EkklesiaSoftUi/.../constants/marketing-copy-contract.ts` — must match `EkklesiaSoftWeb/src/content/contract.ts`.
+`EkklesiaNexusUi/.../constants/marketing-copy-contract.ts` — must match `EkklesiaNexusWeb/src/content/contract.ts`.
 
 ## Next editors (not built)
 

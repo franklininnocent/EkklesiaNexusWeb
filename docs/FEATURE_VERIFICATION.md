@@ -17,7 +17,7 @@ Legend:
 
 | Feature | Exists | Tenant | Marketing | Screenshot | Sanitized | Evidence |
 |---------|--------|--------|-----------|------------|-----------|----------|
-| Dashboard | Yes | Yes | Yes | dashboard.png | Review | `EkklesiaSoftUi` `/dashboard`; `Family` dashboard panels |
+| Dashboard | Yes | Yes | Yes | dashboard.png | Review | `EkklesiaNexusUi` `/dashboard`; `Family` dashboard panels |
 | Families | Yes | Yes | Yes | families.png | Review | API `Modules/Family`; UI `/families` |
 | Members | Yes | Yes | Yes | (families) | Review | UI `/members/list`, celebrations |
 | Sacraments | Yes | Yes | Yes | sacraments.png | Review | API `Modules/Sacraments`; UI `/sacraments` |
@@ -82,3 +82,9 @@ Legend:
 | Marketing / product | Review screenshots and copy against this matrix before launch |
 
 **Attendance:** must remain absent from all public marketing content and validators.
+
+---
+
+## SEO landing pages (Oct 2026)
+
+Crawlable marketing URLs (`/features`, `/features/*`, `/solutions/catholic-parishes`, `/about`, `/contact`) describe **verified modules** from this matrix. They do **not** replace homepage feature cards (`#features`), demonstration pricing (`#pricing`), or testimonials. Feature detail slugs use code defaults; optional CMS overrides exist for the features hub, about, contact, and Catholic solution page ids only.

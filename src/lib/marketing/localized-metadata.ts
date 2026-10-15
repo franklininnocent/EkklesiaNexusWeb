@@ -4,6 +4,8 @@ import { getMessages } from "@/lib/i18n/messages";
 import { htmlLangAttribute, publicPagePath, type AppLocale, type PublicPageId } from "@/lib/i18n/locale";
 import { createTranslator } from "@/lib/i18n/translate";
 import type { MarketingContent, PublicPageSeo } from "@/types/marketing";
+import { allStaticPageDefaults } from "@/lib/marketing/marketing-static-pages";
+import { isProductionMarketingHost } from "@/lib/marketing/site-host";
 import { buildPageMetadata, getHomePageSeo, resolveMarketingSeo } from "@/lib/marketing/seo-metadata";
 
 function siteBaseUrl(): string {
@@ -68,11 +70,22 @@ export function indexableLocalizedSitemapEntries(
   const lastModified = seo.publishedAt ? new Date(seo.publishedAt) : undefined;
 
   for (const page of Object.values(seo.pages)) {
-    if (!page.robotsIndex) continue;
+    if (!page?.robotsIndex) continue;
     const enUrl = page.path === "/" ? `${base}/` : `${base}${page.path}`;
     entries.push({ url: enUrl, lastModified });
     if (page.id === "home") {
       entries.push({ url: `${base}/pt-br`, lastModified });
+    }
+  }
+
+  if (isProductionMarketingHost()) {
+    const seen = new Set(entries.map((entry) => entry.url));
+    for (const page of allStaticPageDefaults()) {
+      if (!page.robotsIndex) continue;
+      const url = `${base}${page.path}`;
+      if (seen.has(url)) continue;
+      entries.push({ url, lastModified });
+      seen.add(url);
     }
   }
 
