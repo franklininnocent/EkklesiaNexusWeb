@@ -109,7 +109,7 @@ export function buildRootLayoutMetadata(content: MarketingContent): Metadata {
         { url: "/favicon/circular-badge-blue-gold.png", sizes: "32x32", type: "image/png" },
         { url: "/favicon/favicon.ico" },
       ],
-      apple: [{ url: "/logos/ekklesiasoft-mark.png" }],
+      apple: [{ url: "/logos/ekklesia-circular-badge.png" }],
     },
   };
 }
@@ -127,7 +127,7 @@ export function buildStructuredDataGraph(
   const base = siteBaseUrl();
   const home = getHomePageSeo(content);
   const language = structuredDataLanguageFields(locale);
-  const logo = `${base}/logos/ekklesiasoft-mark.png`;
+  const logo = `${base}/logos/ekklesia-circular-badge.png`;
   const email = publisherEmail(content);
   const organizationId = `${base}/#organization`;
   const organizationName = seo.organizationName || officialBrand.productName;
@@ -178,7 +178,7 @@ export function indexableSitemapEntries(content: MarketingContent): { url: strin
   const entries: { url: string; lastModified?: Date }[] = [];
 
   for (const page of Object.values(seo.pages)) {
-    if (!page.robotsIndex) {
+    if (!page?.robotsIndex) {
       continue;
     }
     const url = page.path === "/" ? `${base}/` : `${base}${page.path}`;

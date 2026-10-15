@@ -2,7 +2,7 @@
 
 This document turns the V1 contract into ordered phases. Each phase has **goals**, **deliverables**, **verification**, and **dependencies**. Phases must be completed in order unless noted.
 
-**Architecture (all phases):** Browser → Next.js (`EkklesiaSoftWeb`) → Laravel (`EkklesiaSoftApi`) → PostgreSQL. No CMS in V1. No browser → Laravel CORS. No direct DB from Next.js.
+**Architecture (all phases):** Browser → Next.js (`EkklesiaNexusWeb`) → Laravel (`EkklesiaNexusApi`) → PostgreSQL. No CMS in V1. No browser → Laravel CORS. No direct DB from Next.js.
 
 ---
 
@@ -12,7 +12,7 @@ This document turns the V1 contract into ordered phases. Each phase has **goals*
 
 | Task | Deliverable |
 |------|-------------|
-| Inspect `EkklesiaSoftApi`, `EkklesiaSoftUi`, empty `EkklesiaSoftWeb` | Short findings (API patterns, no marketing CMS) |
+| Inspect `EkklesiaNexusApi`, `EkklesiaNexusUi`, empty `EkklesiaNexusWeb` | Short findings (API patterns, no marketing CMS) |
 | Map parish-facing features vs Super Admin vs non-existent | Approved feature list |
 | Confirm **Attendance** and mockup-only features are excluded | Prohibited-claims list |
 | Inventory screenshots under `EkklesiaNexusDocuments/` | Sanitization shortlist |

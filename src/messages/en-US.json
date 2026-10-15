@@ -34,6 +34,9 @@
     "contact": "Contact"
   },
   "footer": {
+    "features": "Features",
+    "about": "About",
+    "contact": "Contact",
     "terms": "Terms",
     "privacy": "Privacy",
     "blog": "Blog",
@@ -58,7 +61,7 @@
   },
   "home": {
     "hero": {
-      "titleLead": "EkklesiaNexus",
+      "titleLead": "The Next Generation of Church Management System",
       "subtitle": "The Next Generation of Church Management System.",
       "primaryCta": "Request a Demo"
     },
@@ -419,7 +422,7 @@
   },
   "errors": {
     "notFoundTitle": "Page not found",
-    "notFoundBody": "This marketing site is a single homepage experience. Return to EkklesiaNexus.",
+    "notFoundBody": "We could not find that page. Return to the EkklesiaNexus homepage or browse features and contact.",
     "somethingWrong": "Something went wrong",
     "tryAgainMoment": "Please try again in a moment.",
     "previewUnavailable": "This preview is unavailable or has expired."

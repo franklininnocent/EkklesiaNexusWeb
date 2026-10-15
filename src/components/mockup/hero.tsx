@@ -6,6 +6,7 @@ import { HeroDevices } from "@/components/mockup/devices";
 import { MockupLogo } from "@/components/mockup/logo";
 import { useI18n } from "@/lib/i18n/i18n-provider";
 import { applicationEntryHref } from "@/lib/application-entry";
+import { trackEvent } from "@/lib/analytics";
 import { sectionAnchorHref } from "@/lib/i18n/locale";
 
 function Sparkle({ className }: { className?: string }) {
@@ -57,6 +58,7 @@ export function MockupHero() {
                 href={applicationEntryHref()}
                 variant="outline"
                 className="min-h-11 w-full whitespace-normal rounded-xl border-2 px-6 py-2.5 text-sm sm:w-auto"
+                onClick={() => trackEvent("login_click")}
               >
                 {t("common.actions.openApplication")}
               </Button>

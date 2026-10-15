@@ -44,8 +44,8 @@ Tailwind theme maps: `brand-navy`, `brand-gold`, `brand-blue`, `surface-page`, `
 
 | Asset | Path |
 |-------|------|
-| Horizontal wordmark | `public/logos/ekklesiasoft-horizontal.png` (+ `.webp`) |
-| Mark / touch icon | `public/logos/ekklesiasoft-mark.png` (+ `.webp`) |
+| Horizontal wordmark | `public/logos/ekklesianexus-horizontal.png` (+ `.webp`) |
+| Mark / touch icon | `public/logos/ekklesianexus-mark.png` (+ `.webp`) |
 | Favicon | `public/favicon/favicon.ico` |
 
 **Header / footer:** horizontal logo in header; mark in footer — no mockup swirl.

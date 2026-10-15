@@ -2,6 +2,8 @@
 
 Do **not** state or imply the following on the public marketing website, metadata, or structured data. The content validator (`npm run validate:content`) scans for several of these in `src/content/`.
 
+**Scanner gap (Oct 2026):** Homepage i18n keys (`home.testimonials.*`, `home.features.*`, `home.pricing.*`) and mockup components are **frozen** for SEO work. Validators must not fail the build on those strings until product approves a content rewrite. Laravel `MarketingSeoValidator` still scans CMS SEO fields.
+
 ## Non-existent or retired product capabilities
 
 | Claim | Evidence |

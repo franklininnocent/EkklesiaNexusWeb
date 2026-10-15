@@ -41,7 +41,7 @@ if [ -z "${SMOKE_BASE_URL:-}" ]; then
     echo "Port $PORT already in use; reusing existing server at $BASE"
   else
     echo "Starting next start on port $PORT..."
-    npx next start -p "$PORT" >/tmp/ekklesiasoft-web-smoke.log 2>&1 &
+    npx next start -p "$PORT" >/tmp/ekklesianexus-web-smoke.log 2>&1 &
     SERVER_PID=$!
     STARTED_SERVER=1
     wait_for_server
@@ -93,6 +93,11 @@ check_header() {
 
 echo "== Smoke: static routes ($BASE) =="
 check_status "/" "200"
+check_status "/features" "200"
+check_status "/features/family-management" "200"
+check_status "/solutions/catholic-parishes" "200"
+check_status "/about" "200"
+check_status "/contact" "200"
 check_status "/privacy" "200"
 check_status "/terms" "200"
 check_status "/robots.txt" "200"

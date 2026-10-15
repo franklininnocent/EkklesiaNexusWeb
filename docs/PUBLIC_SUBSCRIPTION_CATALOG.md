@@ -17,7 +17,8 @@ Preview (draft only, token-scoped): `GET /api/public/marketing-plan-catalog/prev
 
 ## Next.js
 
-- Server fetch: `fetchPublishedSubscriptionPlans()` using `LARAVEL_API_URL`.
+- **Public homepage `#pricing`** uses regional demonstration data (`regional-pricing.ts`), not this API. That keeps marketing copy independent of the published catalog until product explicitly approves a catalog-backed `/pricing` URL.
+- Server fetch: `fetchPublishedSubscriptionPlans()` using `LARAVEL_API_URL` (used for `/preview/plans` and internal flows).
 - ISR: `revalidate: 60` on the homepage pricing section.
 - Optional on-demand refresh: `POST /api/revalidate-plans` with header `X-Revalidate-Secret` (must match `MARKETING_REVALIDATE_SECRET` on both apps).
 - Live preview: `/preview/plans?token=…` (noindex). Local dev: `npm run dev` serves **port 3010** (matches Angular `websiteUrl`).

@@ -13,8 +13,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, message: "Unauthorized." }, { status: 401 });
   }
 
-  revalidatePath("/");
-  revalidatePath("/preview/plans");
+  const paths = [
+    "/",
+    "/pt-br",
+    "/features",
+    "/about",
+    "/contact",
+    "/solutions/catholic-parishes",
+    "/features/family-management",
+    "/features/member-management",
+    "/features/sacramental-registers",
+    "/features/mass-intentions",
+    "/features/ministries-and-groups",
+    "/features/stewardship-and-finance",
+    "/features/church-analytics",
+    "/preview/plans",
+    "/sitemap.xml",
+    "/robots.txt",
+  ];
 
-  return NextResponse.json({ success: true, revalidated: true });
+  for (const path of paths) {
+    revalidatePath(path);
+  }
+
+  return NextResponse.json({ success: true, revalidated: true, paths });
 }

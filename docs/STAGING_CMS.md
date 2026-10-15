@@ -5,10 +5,10 @@ Use this when the public site should read copy from Laravel instead of `src/cont
 ## 1. Publish content
 
 ```bash
-cd EkklesiaSoftWeb
+cd EkklesiaNexusWeb
 npm run prepublish:cms
-cd ../EkklesiaSoftApi
-php artisan marketing:import-content ../EkklesiaSoftWeb/marketing-content.export.json
+cd ../EkklesiaNexusApi
+php artisan marketing:import-content ../EkklesiaNexusWeb/marketing-content.export.json
 # or Super Admin → Settings → Marketing website → Publish
 ```
 

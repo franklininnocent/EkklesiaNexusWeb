@@ -1,7 +1,7 @@
 # Marketing screenshot inventory
 
-**Source directory:** `/var/www/html/EkklesiaSoftDocuments/*.png`  
-**Published copies (V1):** `EkklesiaSoftWeb/public/images/product/`
+**Source directory:** `/var/www/html/EkklesiaNexusDocuments/*.png`  
+**Published copies (V1):** `EkklesiaNexusWeb/public/images/product/`
 
 ## Approved for marketing (aggregate / low PII risk)
 

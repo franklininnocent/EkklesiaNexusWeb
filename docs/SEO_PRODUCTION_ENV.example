@@ -1,0 +1,19 @@
+# Marketing site production (store in host secrets manager; do not commit real values)
+
+NEXT_PUBLIC_SITE_URL=https://ekklesianexus.com
+MARKETING_CONTENT_SOURCE=api
+
+# Internal Laravel URL reachable from the Next.js host (required).
+# Colocated deploy: http://127.0.0.1:8000
+# Use https://api.ekklesianexus.com only when Next cannot reach loopback on the same VM.
+LARAVEL_API_URL=http://127.0.0.1:8000
+
+# Required in production for shared visitor IP rate limits (must match API MARKETING_BFF_SECRET).
+MARKETING_BFF_SECRET=
+MARKETING_REVALIDATE_SECRET=
+
+# Required behind nginx/reverse proxy that sets X-Real-IP / X-Forwarded-For.
+MARKETING_TRUST_PROXY=true
+
+# Enable only after consent copy is approved
+NEXT_PUBLIC_ANALYTICS_ENABLED=false

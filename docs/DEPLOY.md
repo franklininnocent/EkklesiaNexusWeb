@@ -1,4 +1,6 @@
-# Deploying EkklesiaSoftWeb
+# Deploying EkklesiaNexusWeb
+
+The versioned UAT and Production procedure is in [DEPLOYMENT.md](DEPLOYMENT.md). This file keeps the integration notes for forms, preview tokens, and marketing migrations.
 
 ## Stack
 
@@ -30,8 +32,8 @@ Use a process manager (systemd, PM2) to keep `next start` running.
 
 Examples:
 
-- [deploy/ekklesiasoft-web.service.example](deploy/ekklesiasoft-web.service.example)
-- [deploy/nginx-ekklesiasoft-web.conf.example](deploy/nginx-ekklesiasoft-web.conf.example)
+- [deploy/ekklesianexus-web.service.example](deploy/ekklesianexus-web.service.example)
+- [deploy/nginx-ekklesianexus-web.conf.example](deploy/nginx-ekklesianexus-web.conf.example)
 
 ## Laravel (required for demo form)
 

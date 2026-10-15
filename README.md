@@ -17,7 +17,7 @@ npm run dev
 If `cp` still fails, create `.env.local` from the absolute path:
 
 ```bash
-cp /var/www/html/EkklesiaNexus/EkklesiaSoftWeb/env.example /var/www/html/EkklesiaNexus/EkklesiaSoftWeb/.env.local
+cp /var/www/html/EkklesiaNexus/EkklesiaNexusWeb/env.example /var/www/html/EkklesiaNexus/EkklesiaNexusWeb/.env.local
 ```
 
 - `LARAVEL_API_URL` — server-only; used by `/api/demo-requests` BFF to reach Laravel.
@@ -42,7 +42,7 @@ cp /var/www/html/EkklesiaNexus/EkklesiaSoftWeb/env.example /var/www/html/Ekklesi
 Demo requests: `POST /api/public/demo-requests` (Marketing module). Run migrations on the API database:
 
 ```bash
-cd ../EkklesiaSoftApi
+cd ../EkklesiaNexusApi
 php artisan migrate --path=Modules/Marketing/database/migrations
 ```
 

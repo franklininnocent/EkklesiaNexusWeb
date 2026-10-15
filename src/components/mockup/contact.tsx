@@ -11,6 +11,7 @@ import { ContactCaptchaField } from "@/components/contact/contact-captcha-field"
 import { useContactCaptcha } from "@/hooks/use-contact-captcha";
 import { X_EN_LOCALE_HEADER } from "@/lib/i18n/constants";
 import { useI18n } from "@/lib/i18n/i18n-provider";
+import { trackEvent } from "@/lib/analytics";
 import {
   type ContactFormErrors,
   type ContactFormField,
@@ -191,6 +192,7 @@ export function MockupContact() {
     }
 
     setSubmitting(true);
+    const websiteHoneypot = String(new FormData(e.currentTarget).get("website") ?? "");
     try {
       const res = await fetch("/api/contact-enquiries", {
         method: "POST",
@@ -203,7 +205,7 @@ export function MockupContact() {
           message: values.message,
           captcha_challenge_id: captchaId,
           captcha_response: values.captcha_response,
-          website: "",
+          website: websiteHoneypot,
         }),
       });
       const json = (await res.json()) as {
@@ -214,6 +216,7 @@ export function MockupContact() {
       if (res.ok && json.success) {
         setSuccessMessage(json.message ?? t("forms.contact.successDefault"));
         setSent(true);
+        trackEvent("contact_form_submit");
         return;
       }
       if (json.errors) {
