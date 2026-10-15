@@ -1,0 +1,105 @@
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { officialBrand } from "@/config/brand";
+import { PREVIEW_COOKIE, previewCookieOptions } from "@/lib/preview/preview-cookie";
+
+/**
+ * Canonical host for the public website: https://ekklesianexus.com.
+ * www and plain HTTP on that host redirect permanently. Other hosts
+ * (local development, the parish app, and the API) are left unchanged.
+ */
+function visitorCountryFromEdge(request: NextRequest): string | null {
+  const keys = ["cf-ipcountry", "x-vercel-ip-country", "cloudfront-viewer-country", "x-country-code"];
+  for (const key of keys) {
+    const raw = request.headers.get(key)?.trim();
+    if (raw && raw.length === 2) {
+      const code = raw.toUpperCase();
+      if (/^[A-Z]{2}$/.test(code) && code !== "XX" && code !== "T1") {
+        return code;
+      }
+    }
+  }
+  return null;
+}
+
+export async function proxy(request: NextRequest) {
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-en-pathname", request.nextUrl.pathname);
+  const country = visitorCountryFromEdge(request);
+  if (country) {
+    requestHeaders.set("x-en-country", country);
+  }
+
+  if (request.nextUrl.pathname.startsWith("/preview/plans")) {
+    const token = request.nextUrl.searchParams.get("token")?.trim();
+    if (token) {
+      return exchangePreviewToken(request, token);
+    }
+  }
+
+  const hostHeader = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "";
+  const host = hostHeader.split(",")[0]?.trim().split(":")[0]?.toLowerCase() ?? "";
+  const forwardedProto = request.headers.get("x-forwarded-proto")?.split(",")[0]?.trim().toLowerCase();
+  const apexHost = officialBrand.rootDomain;
+  const isWww = host === `www.${apexHost}`;
+  const isApexHttp = host === apexHost && forwardedProto === "http";
+
+  if (!isWww && !isApexHttp) {
+    const response = NextResponse.next({ request: { headers: requestHeaders } });
+    if (request.nextUrl.pathname.startsWith("/preview")) {
+      response.headers.set("Referrer-Policy", "no-referrer");
+      response.headers.set("Cache-Control", "no-store");
+    }
+    return response;
+  }
+
+  const url = request.nextUrl.clone();
+  url.protocol = "https:";
+  url.hostname = apexHost;
+  url.port = "";
+
+  return NextResponse.redirect(url, 301);
+}
+
+async function exchangePreviewToken(request: NextRequest, token: string): Promise<NextResponse> {
+  const clean = request.nextUrl.clone();
+  clean.searchParams.delete("token");
+  clean.pathname = "/preview/plans";
+
+  const fail = NextResponse.redirect(clean, 303);
+  fail.headers.set("Referrer-Policy", "no-referrer");
+  fail.headers.set("Cache-Control", "no-store");
+
+  const base = process.env.LARAVEL_API_URL?.trim().replace(/\/$/, "") ?? "";
+  if (!base || token.length > 128) {
+    return fail;
+  }
+
+  try {
+    const response = await fetch(
+      `${base}/api/public/marketing-plan-catalog/preview?token=${encodeURIComponent(token)}`,
+      {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        cache: "no-store",
+      },
+    );
+    const body = (await response.json()) as { success?: boolean; session?: string; expires_in?: number };
+    if (!response.ok || !body.success || typeof body.session !== "string" || body.session === "") {
+      return fail;
+    }
+
+    const secure = process.env.NODE_ENV === "production";
+    const out = NextResponse.redirect(clean, 303);
+    out.cookies.set(
+      PREVIEW_COOKIE,
+      body.session,
+      previewCookieOptions(typeof body.expires_in === "number" ? body.expires_in : 120, secure),
+    );
+    out.headers.set("Referrer-Policy", "no-referrer");
+    out.headers.set("Cache-Control", "no-store");
+    return out;
+  } catch {
+    return fail;
+  }
+}
