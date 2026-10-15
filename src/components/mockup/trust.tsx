@@ -1,5 +1,7 @@
+"use client";
+
 import { MockupContainer } from "@/components/mockup/container";
-import { mockupTrust } from "@/data/mockup-page";
+import { useTranslations } from "@/lib/i18n/i18n-provider";
 
 const icons = [
   function Church(props: { className?: string }) {
@@ -53,12 +55,12 @@ const icons = [
 ];
 
 export function MockupTrust() {
+  const t = useTranslations();
+
   return (
     <section className="py-10 sm:py-14">
       <MockupContainer>
-        <p className="text-center text-sm font-semibold text-slate-700">
-          {mockupTrust.title}
-        </p>
+        <p className="text-center text-sm font-semibold text-slate-700">{t("home.trust.title")}</p>
         <div className="mt-7 flex flex-wrap items-center justify-center gap-10 text-slate-400 sm:gap-16">
           {icons.map((Icon, i) => (
             <Icon key={i} className="h-11 w-11" />

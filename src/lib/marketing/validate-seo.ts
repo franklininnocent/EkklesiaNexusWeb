@@ -102,8 +102,10 @@ export function validateMarketingSeo(): string[] {
     if (!indexHtml.includes('content="noindex, nofollow, noarchive"')) {
       errors.push("Parish application index.html must include noindex robots directives");
     }
-    if (!indexHtml.includes("Sign in — EkklesiaNexus Parish Application")) {
-      errors.push("Parish application index.html must use a distinct sign-in title");
+    if (!indexHtml.includes("<title>EkklesiaNexus</title>")) {
+      errors.push(
+        "Parish application index.html must use a neutral default title; login title is set at runtime"
+      );
     }
   }
 

@@ -10,8 +10,19 @@ import { MockupSlider } from "@/components/mockup/slider";
 import { MockupTech } from "@/components/mockup/tech";
 import { MockupTestimonialsRow } from "@/components/mockup/testimonials";
 import { MockupTrust } from "@/components/mockup/trust";
+import { headers } from "next/headers";
+import { getRequestLocale } from "@/lib/i18n/server";
+import {
+  resolvePricingMarketFromContext,
+  visitorCountryForPricing,
+} from "@/lib/pricing/resolve-pricing-market";
 
 export async function MockupPage() {
+  const headerList = await headers();
+  const locale = await getRequestLocale();
+  const country = visitorCountryForPricing(headerList);
+  const market = resolvePricingMarketFromContext(country, locale);
+
   return (
     <>
       <HashScrollOnLoad />
@@ -23,7 +34,7 @@ export async function MockupPage() {
         <MockupSlider />
         <MockupTech />
         <MockupTestimonialsRow />
-        <MockupPricing />
+        <MockupPricing key={`${market}-${locale}`} market={market} />
         <MockupCta />
         <MockupContact />
       </main>

@@ -38,6 +38,19 @@ export function Button({
 }: ButtonProps) {
   const cls = `${base} ${variants[variant]} ${className}`;
   if (href) {
+    const isExternal = /^https?:\/\//i.test(href);
+    if (isExternal) {
+      return (
+        <a
+          href={href}
+          className={cls}
+          rel="noopener noreferrer"
+          onClick={onClick}
+        >
+          {children}
+        </a>
+      );
+    }
     return (
       <Link
         href={href}

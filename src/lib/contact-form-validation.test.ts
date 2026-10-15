@@ -41,6 +41,9 @@ assert.equal(allErrors.phone, "Please enter your phone number.");
 assert.equal(allErrors.message, "Please enter your message.");
 assert.equal(allErrors.captcha_response, "Please enter the security check characters.");
 
+const ptCaptcha = validateContactField("captcha_response", empty, "pt-BR");
+assert.equal(ptCaptcha, "Digite os caracteres da verificação de segurança.");
+
 const valid = validateContactForm({
   name: "Jane Doe",
   email: "jane@parish.org",

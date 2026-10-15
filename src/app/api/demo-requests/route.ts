@@ -3,6 +3,14 @@ import { NextResponse } from "next/server";
 import { visitorIpFromRequest } from "@/lib/api/client-ip";
 import { submitDemoRequestToLaravel } from "@/lib/api/laravel";
 import { consumeSharedRateLimit, rateLimitDeniedResponse } from "@/lib/api/rate-limit";
+import {
+  localizeBffMessage,
+  localizeDemoFieldError,
+  resolveBffLocale,
+} from "@/lib/i18n/bff-messages";
+import { X_EN_LOCALE_HEADER } from "@/lib/i18n/constants";
+import { getMessages } from "@/lib/i18n/messages";
+import { createTranslator } from "@/lib/i18n/translate";
 
 const MAX_BODY_BYTES = 16_384;
 
@@ -20,30 +28,33 @@ type DemoBody = {
   company_website?: string;
 };
 
-function fieldErrors(body: DemoBody): Record<string, string> {
+function fieldErrors(body: DemoBody, locale: ReturnType<typeof resolveBffLocale>): Record<string, string> {
+  const t = createTranslator(getMessages(locale));
   const errors: Record<string, string> = {};
-  if (!body.name?.trim()) errors.name = "Please enter your name.";
-  if (!body.church_parish?.trim()) errors.church_parish = "Please enter your church or parish.";
-  if (!body.country?.trim()) errors.country = "Please select your country.";
-  if (!body.email?.trim()) errors.email = "Please enter your email.";
+  if (!body.name?.trim()) errors.name = t("forms.demo.validation.nameRequired");
+  if (!body.church_parish?.trim()) errors.church_parish = t("forms.demo.validation.churchParishRequired");
+  if (!body.country?.trim()) errors.country = t("forms.demo.validation.countryRequired");
+  if (!body.email?.trim()) errors.email = t("forms.demo.validation.emailRequired");
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email.trim())) {
-    errors.email = "Please enter a valid email address.";
+    errors.email = t("forms.demo.validation.emailInvalid");
   }
-  if (!body.role?.trim()) errors.role = "Please enter your role.";
-  if (!body.message?.trim()) errors.message = "Please enter a message.";
+  if (!body.role?.trim()) errors.role = t("forms.demo.validation.roleRequired");
+  if (!body.message?.trim()) errors.message = t("forms.demo.validation.messageRequired");
   if (!body.captcha_challenge_id?.trim() || !body.captcha_response?.trim()) {
-    errors.captcha_response = "Please complete the security check.";
+    errors.captcha_response = t("forms.demo.validation.captchaIncomplete");
   }
-  if (body.company_website?.trim()) errors.company_website = "Unable to submit.";
+  if (body.company_website?.trim()) errors.company_website = t("forms.demo.validation.honeypot");
   return errors;
 }
 
 export async function POST(request: Request) {
+  const locale = resolveBffLocale(request.headers.get(X_EN_LOCALE_HEADER));
+  const t = createTranslator(getMessages(locale));
   const visitorIp = visitorIpFromRequest(request);
   const contentType = request.headers.get("content-type") ?? "";
   if (!contentType.includes("application/json")) {
     return NextResponse.json(
-      { success: false, message: "Invalid request.", errors: {} },
+      { success: false, message: t("forms.bff.invalidRequest"), errors: {} },
       { status: 415 },
     );
   }
@@ -51,7 +62,7 @@ export async function POST(request: Request) {
   const raw = await request.text();
   if (raw.length > MAX_BODY_BYTES) {
     return NextResponse.json(
-      { success: false, message: "Request is too large.", errors: {} },
+      { success: false, message: t("forms.bff.requestTooLarge"), errors: {} },
       { status: 413 },
     );
   }
@@ -61,15 +72,15 @@ export async function POST(request: Request) {
     body = JSON.parse(raw) as DemoBody;
   } catch {
     return NextResponse.json(
-      { success: false, message: "Invalid request.", errors: {} },
+      { success: false, message: t("forms.bff.invalidRequest"), errors: {} },
       { status: 400 },
     );
   }
 
-  const clientErrors = fieldErrors(body);
+  const clientErrors = fieldErrors(body, locale);
   if (Object.keys(clientErrors).length > 0) {
     return NextResponse.json(
-      { success: false, message: "Please check the form.", errors: clientErrors },
+      { success: false, message: t("forms.demo.validation.checkForm"), errors: clientErrors },
       { status: 422 },
     );
   }
@@ -77,7 +88,13 @@ export async function POST(request: Request) {
   const limited = await consumeSharedRateLimit("marketing_bff_forms", visitorIp, 5, 60_000);
   if (!limited.allowed) {
     const denied = rateLimitDeniedResponse(limited);
-    return NextResponse.json(denied.body, { status: denied.status, headers: denied.headers });
+    return NextResponse.json(
+      {
+        ...denied.body,
+        message: localizeBffMessage(locale, denied.body.message, "forms.bff.rateLimited"),
+      },
+      { status: denied.status, headers: denied.headers },
+    );
   }
 
   const correlationId = randomUUID();
@@ -103,17 +120,25 @@ export async function POST(request: Request) {
   if (result.ok) {
     return NextResponse.json({
       success: true,
-      message: "Thank you. Your demo request has been received.",
+      message: t("forms.demo.successDefault"),
     });
   }
 
   if (result.status === 422 && result.body?.errors) {
     const mapped: Record<string, string> = {};
     for (const [key, messages] of Object.entries(result.body.errors)) {
-      mapped[key] = messages[0] ?? "Please check this field.";
+      mapped[key] = localizeDemoFieldError(
+        locale,
+        key,
+        Array.isArray(messages) ? messages[0] : (messages as string),
+      );
     }
     return NextResponse.json(
-      { success: false, message: "Please check the form.", errors: mapped },
+      {
+        success: false,
+        message: localizeBffMessage(locale, result.body.message, "forms.demo.validation.checkForm"),
+        errors: mapped,
+      },
       { status: 422 },
     );
   }
@@ -122,7 +147,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        message: "Please wait a moment and try again.",
+        message: t("forms.bff.rateLimited"),
         errors: {},
       },
       { status: 429 },
@@ -132,7 +157,7 @@ export async function POST(request: Request) {
   return NextResponse.json(
     {
       success: false,
-      message: "We couldn't complete your request right now. Please try again shortly.",
+      message: t("forms.bff.requestFailed"),
       errors: {},
     },
     { status: 502 },

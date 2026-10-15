@@ -1,3 +1,7 @@
+import type { AppLocale } from "@/lib/i18n/locale";
+import { getMessages } from "@/lib/i18n/messages";
+import { createTranslator } from "@/lib/i18n/translate";
+
 export type ContactFormField = "name" | "email" | "phone" | "message" | "captcha_response";
 
 export type ContactFormValues = {
@@ -13,16 +17,19 @@ export type ContactFormErrors = Partial<Record<ContactFormField, string>>;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/** E.164-style: leading +, then 8–15 digits (country code + subscriber number). */
-function validatePhoneWithCountryCode(phone: string): string | undefined {
+function messagesFor(locale: AppLocale) {
+  return createTranslator(getMessages(locale));
+}
+
+function validatePhoneWithCountryCode(phone: string, t: ReturnType<typeof createTranslator>): string | undefined {
   const trimmed = phone.trim();
-  if (!trimmed) return "Please enter your phone number.";
+  if (!trimmed) return t("forms.contact.validation.phoneRequired");
   if (!trimmed.startsWith("+")) {
-    return "Include your country code, starting with + (e.g. +91).";
+    return t("forms.contact.validation.phoneCountryCode");
   }
   const digits = trimmed.replace(/\D/g, "");
   if (digits.length < 8 || digits.length > 15) {
-    return "Enter a valid phone number with country code.";
+    return t("forms.contact.validation.phoneInvalid");
   }
   return undefined;
 }
@@ -30,26 +37,28 @@ function validatePhoneWithCountryCode(phone: string): string | undefined {
 export function validateContactField(
   field: ContactFormField,
   values: ContactFormValues,
+  locale: AppLocale = "en-US",
 ): string | undefined {
+  const t = messagesFor(locale);
   switch (field) {
     case "name": {
-      if (!values.name.trim()) return "Please enter your name.";
+      if (!values.name.trim()) return t("forms.contact.validation.nameRequired");
       return undefined;
     }
     case "email": {
       const trimmed = values.email.trim();
-      if (!trimmed) return "Please enter your email address.";
-      if (!EMAIL_PATTERN.test(trimmed)) return "Enter a valid email address.";
+      if (!trimmed) return t("forms.contact.validation.emailRequired");
+      if (!EMAIL_PATTERN.test(trimmed)) return t("forms.contact.validation.emailInvalid");
       return undefined;
     }
     case "phone":
-      return validatePhoneWithCountryCode(values.phone);
+      return validatePhoneWithCountryCode(values.phone, t);
     case "message": {
-      if (!values.message.trim()) return "Please enter your message.";
+      if (!values.message.trim()) return t("forms.contact.validation.messageRequired");
       return undefined;
     }
     case "captcha_response": {
-      if (!values.captcha_response.trim()) return "Please enter the security check characters.";
+      if (!values.captcha_response.trim()) return t("forms.contact.validation.captchaRequired");
       return undefined;
     }
     default:
@@ -57,11 +66,11 @@ export function validateContactField(
   }
 }
 
-export function validateContactForm(values: ContactFormValues): ContactFormErrors {
+export function validateContactForm(values: ContactFormValues, locale: AppLocale = "en-US"): ContactFormErrors {
   const fields: ContactFormField[] = ["name", "email", "phone", "message", "captcha_response"];
   const errors: ContactFormErrors = {};
   for (const field of fields) {
-    const message = validateContactField(field, values);
+    const message = validateContactField(field, values, locale);
     if (message) errors[field] = message;
   }
   return errors;

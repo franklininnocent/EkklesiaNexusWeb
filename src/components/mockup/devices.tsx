@@ -1,4 +1,12 @@
+"use client";
+
 import { PersonAvatar } from "@/components/mockup/avatars";
+import {
+  DEVICE_COMMUNITY_LEADER_KEYS,
+  DEVICE_FAMILY_CARDS,
+  DEVICE_FAMILY_NAV,
+} from "@/data/mockup-structure";
+import { useTranslations } from "@/lib/i18n/i18n-provider";
 
 function ChartLine({ gid }: { gid: string }) {
   return (
@@ -79,6 +87,14 @@ export function DesktopDashboard({ gid = "chart-a" }: { gid?: string }) {
 }
 
 export function CommunityDashboardScreen() {
+  const t = useTranslations();
+  const kpis = [
+    { id: "families", value: "52" },
+    { id: "members", value: "187" },
+    { id: "active", value: "162" },
+    { id: "leadership", value: t("home.devices.people.francisShort") },
+  ] as const;
+
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-inner">
       <div className="flex shrink-0 items-center gap-1 border-b border-slate-100 bg-[#f8fafc] px-2 py-1">
@@ -93,15 +109,13 @@ export function CommunityDashboardScreen() {
           <div className="min-w-0">
             <div className="flex items-center gap-1">
               <p className="truncate text-[8px] font-extrabold leading-none text-slate-800">
-                Our Lady of Lourdes Ward
+                {t("home.devices.community.wardTitle")}
               </p>
               <span className="rounded-full bg-[#14b8a6] px-1.5 py-[1px] text-[5px] font-semibold leading-none text-white">
-                View
+                {t("home.devices.community.view")}
               </span>
             </div>
-            <p className="mt-0.5 truncate text-[5.5px] text-slate-500">
-              St. Mary Parish · Sector 4 · Sunday 7:30 AM
-            </p>
+            <p className="mt-0.5 truncate text-[5.5px] text-slate-500">{t("home.devices.community.subtitle")}</p>
           </div>
           <div className="flex shrink-0 gap-1">
             <span className="h-3 w-8 rounded bg-white shadow-sm" />
@@ -110,27 +124,24 @@ export function CommunityDashboardScreen() {
         </div>
 
         <div className="grid grid-cols-4 gap-1">
-          {[
-            { label: "Families", value: "52" },
-            { label: "Members", value: "187" },
-            { label: "Active", value: "162" },
-            { label: "Leadership", value: "Francis" },
-          ].map((kpi) => (
-            <div key={kpi.label} className="rounded-md bg-white px-1 py-1 shadow-sm">
-              <p className="text-[5px] font-medium uppercase tracking-wide text-slate-400">{kpi.label}</p>
+          {kpis.map((kpi) => (
+            <div key={kpi.id} className="rounded-md bg-white px-1 py-1 shadow-sm">
+              <p className="text-[5px] font-medium uppercase tracking-wide text-slate-400">
+                {t(`home.devices.kpi.${kpi.id}`)}
+              </p>
               <p className="text-[8px] font-extrabold leading-tight text-slate-800">{kpi.value}</p>
             </div>
           ))}
         </div>
 
         <p className="mt-1 truncate rounded bg-white px-1 py-0.5 text-[5.5px] text-slate-500">
-          <span className="font-semibold text-slate-700">Community at a glance</span>
-          {" · 52 families · 187 members · 87% active"}
+          <span className="font-semibold text-slate-700">{t("home.devices.community.glanceTitle")}</span>
+          {t("home.devices.community.glanceStats")}
         </p>
 
         <div className="mt-1 grid min-h-0 grid-cols-[0.9fr_1.1fr_1fr] gap-1">
           <div className="rounded-md bg-white p-1 shadow-sm">
-            <p className="text-[5.5px] font-bold text-slate-600">Life stage</p>
+            <p className="text-[5.5px] font-bold text-slate-600">{t("home.devices.community.lifeStage")}</p>
             <div className="mt-1 flex items-center justify-center">
               <div
                 className="h-11 w-11 rounded-full"
@@ -142,7 +153,7 @@ export function CommunityDashboardScreen() {
             </div>
           </div>
           <div className="rounded-md bg-white p-1 shadow-sm">
-            <p className="text-[5.5px] font-bold text-slate-600">Membership status</p>
+            <p className="text-[5.5px] font-bold text-slate-600">{t("home.devices.community.membershipStatus")}</p>
             <div className="mt-1.5 flex h-10 items-end gap-0.5 px-0.5">
               {[18, 28, 22, 32, 24, 16].map((h, i) => (
                 <div
@@ -154,12 +165,14 @@ export function CommunityDashboardScreen() {
             </div>
           </div>
           <div className="rounded-md bg-white p-1 shadow-sm">
-            <p className="text-[5.5px] font-bold text-slate-600">Leaders</p>
+            <p className="text-[5.5px] font-bold text-slate-600">{t("home.devices.community.leaders")}</p>
             <ul className="mt-1 space-y-0.5">
-              {["Francis Mathew", "Anna Thomas", "Joseph George"].map((name) => (
-                <li key={name} className="flex items-center gap-1">
+              {DEVICE_COMMUNITY_LEADER_KEYS.map((leaderKey) => (
+                <li key={leaderKey} className="flex items-center gap-1">
                   <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
-                  <span className="truncate text-[5.5px] font-medium text-slate-600">{name}</span>
+                  <span className="truncate text-[5.5px] font-medium text-slate-600">
+                    {t(`home.devices.people.${leaderKey}`)}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -170,13 +183,23 @@ export function CommunityDashboardScreen() {
   );
 }
 
+const MASS_TAB_KEYS = ["dashboard", "register", "types", "settings", "reports", "audit"] as const;
+
 export function MassIntentionsScreen() {
+  const t = useTranslations();
   const masses = [
-    { time: "6:30 AM", label: "Weekday" },
-    { time: "7:00 AM", label: "Sunday", featured: true },
-    { time: "9:00 AM", label: "Sunday" },
-    { time: "6:00 PM", label: "Evening" },
+    { time: "6:30 AM", labelKey: "weekday" as const },
+    { time: "7:00 AM", labelKey: "sunday" as const, featured: true },
+    { time: "9:00 AM", labelKey: "sunday" as const },
+    { time: "6:00 PM", labelKey: "evening" as const },
   ];
+  const massKpis = [
+    { id: "open", value: "3" },
+    { id: "registered", value: "1" },
+    { id: "thisWeek", value: "4" },
+    { id: "said", value: "3" },
+  ] as const;
+  const legendKeys = ["registered", "closed", "said"] as const;
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-inner">
@@ -184,38 +207,35 @@ export function MassIntentionsScreen() {
         className="flex shrink-0 items-center gap-1.5 border-b border-slate-100 bg-[#f8fafc] px-2 py-1 text-[5.5px] font-medium text-slate-400"
         aria-hidden="true"
       >
-        {["Dashboard", "Register", "Types", "Settings", "Reports", "Audit"].map((tab, i) => (
+        {MASS_TAB_KEYS.map((tab, i) => (
           <span
             key={tab}
             className={i === 0 ? "rounded-full bg-teal-500 px-1.5 py-[1px] font-semibold text-white" : ""}
           >
-            {tab}
+            {t(`home.devices.mass.tabs.${tab}`)}
           </span>
         ))}
       </nav>
 
       <div className="min-h-0 flex-1 overflow-hidden bg-[#f4f7fb] p-1.5">
         <div className="mb-1 flex items-center justify-between">
-          <p className="text-[8px] font-extrabold leading-none text-slate-800">Mass Intentions</p>
+          <p className="text-[8px] font-extrabold leading-none text-slate-800">{t("home.devices.mass.title")}</p>
           <span className="rounded bg-white px-1 py-[1px] text-[5px] font-medium text-slate-500 shadow-sm">
-            This week
+            {t("home.devices.mass.thisWeek")}
           </span>
         </div>
 
         <p className="mb-1 truncate rounded-md bg-sky-50 px-1 py-0.5 text-[5.5px] text-sky-800">
-          <span className="font-bold">Next Mass 7:00 AM</span>
-          {" · Collect a new intention for someone special"}
+          <span className="font-bold">{t("home.devices.mass.nextMass")}</span>
+          {t("home.devices.mass.collectIntention")}
         </p>
 
         <div className="grid grid-cols-4 gap-1">
-          {[
-            { label: "Open", value: "3" },
-            { label: "Registered", value: "1" },
-            { label: "This week", value: "4" },
-            { label: "Said", value: "3" },
-          ].map((kpi) => (
-            <div key={kpi.label} className="rounded-md bg-white px-1 py-1 shadow-sm">
-              <p className="text-[5px] font-medium uppercase tracking-wide text-slate-400">{kpi.label}</p>
+          {massKpis.map((kpi) => (
+            <div key={kpi.id} className="rounded-md bg-white px-1 py-1 shadow-sm">
+              <p className="text-[5px] font-medium uppercase tracking-wide text-slate-400">
+                {t(`home.devices.mass.${kpi.id}`)}
+              </p>
               <p className="text-[8px] font-extrabold leading-tight text-slate-800">{kpi.value}</p>
             </div>
           ))}
@@ -223,7 +243,7 @@ export function MassIntentionsScreen() {
 
         <div className="mt-1 grid min-h-0 grid-cols-[1.2fr_0.9fr] gap-1">
           <div className="rounded-md bg-white p-1 shadow-sm">
-            <p className="text-[5.5px] font-bold text-slate-600">Host Masses</p>
+            <p className="text-[5.5px] font-bold text-slate-600">{t("home.devices.mass.hostMasses")}</p>
             <div className="mt-1 grid grid-cols-2 gap-0.5">
               {masses.map((mass) => (
                 <div
@@ -231,13 +251,13 @@ export function MassIntentionsScreen() {
                   className={`rounded px-1 py-0.5 ${mass.featured ? "bg-sky-100" : "bg-slate-50"}`}
                 >
                   <p className="text-[6.5px] font-extrabold leading-tight text-slate-800">{mass.time}</p>
-                  <p className="text-[5px] text-slate-500">{mass.label}</p>
+                  <p className="text-[5px] text-slate-500">{t(`home.devices.mass.${mass.labelKey}`)}</p>
                 </div>
               ))}
             </div>
           </div>
           <div className="rounded-md bg-white p-1 shadow-sm">
-            <p className="text-[5.5px] font-bold text-slate-600">Last four months</p>
+            <p className="text-[5.5px] font-bold text-slate-600">{t("home.devices.mass.lastFourMonths")}</p>
             <div className="mt-1 flex items-center gap-1">
               <div
                 className="h-10 w-10 shrink-0 rounded-full"
@@ -246,10 +266,10 @@ export function MassIntentionsScreen() {
                 }}
               />
               <ul className="min-w-0 space-y-0.5">
-                {["Registered", "Closed", "Said"].map((label) => (
-                  <li key={label} className="flex items-center gap-1">
+                {legendKeys.map((key) => (
+                  <li key={key} className="flex items-center gap-1">
                     <span className="h-1 w-1 rounded-full bg-sky-400" />
-                    <span className="truncate text-[5px] text-slate-500">{label}</span>
+                    <span className="truncate text-[5px] text-slate-500">{t(`home.devices.mass.${key}`)}</span>
                   </li>
                 ))}
               </ul>
@@ -261,27 +281,31 @@ export function MassIntentionsScreen() {
   );
 }
 
+const GIVING_KEYS = ["tithe", "offering", "project", "gift"] as const;
+
 export function PhoneGiving() {
+  const t = useTranslations();
+
   return (
     <div className="mx-auto h-full w-full rounded-[1.2rem] bg-white p-2.5">
       <div className="mx-auto mb-2 h-1 w-8 rounded-full bg-slate-200" />
-      <div className="text-center text-[9px] font-semibold text-slate-600">Give</div>
+      <div className="text-center text-[9px] font-semibold text-slate-600">{t("home.devices.giving.title")}</div>
       <div className="mt-2 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-400 p-2.5 text-white">
-        <div className="text-[8px] opacity-80">This month</div>
+        <div className="text-[8px] opacity-80">{t("home.devices.giving.thisMonth")}</div>
         <div className="mt-0.5 text-base font-bold">1,250</div>
       </div>
       <div className="mt-2 grid grid-cols-2 gap-1.5">
-        {["Tithe", "Offering", "Project", "Gift"].map((label) => (
+        {GIVING_KEYS.map((key) => (
           <div
-            key={label}
+            key={key}
             className="rounded-lg bg-slate-50 px-1.5 py-1.5 text-center text-[8px] font-medium text-slate-600"
           >
-            {label}
+            {t(`home.devices.giving.${key}`)}
           </div>
         ))}
       </div>
       <div className="mt-2 h-7 rounded-full bg-brand-blue text-center text-[9px] font-semibold leading-7 text-white">
-        Continue
+        {t("home.devices.giving.continue")}
       </div>
     </div>
   );
@@ -294,21 +318,6 @@ export function TabletScreen() {
     </div>
   );
 }
-
-const familyNav = [
-  { name: "Anthony George", role: "Family Head", tone: 1, active: true },
-  { name: "Maria George", role: "Spouse", tone: 3, active: false },
-  { name: "Daniel George", role: "Son", tone: 0, active: false },
-  { name: "Elena George", role: "Daughter", tone: 5, active: false },
-  { name: "Sofia George", role: "Daughter", tone: 2, active: false },
-];
-
-const familyCards = [
-  { name: "Anthony George", role: "Head of Household", meta: "St. Mary Parish · BCC 12", tone: 1 },
-  { name: "Maria George", role: "Spouse", meta: "Choir · Catechist", tone: 3 },
-  { name: "Daniel George", role: "Son", meta: "Altar server", tone: 0 },
-  { name: "Elena George", role: "Daughter", meta: "Youth ministry", tone: 5 },
-];
 
 function MiniMemberCard({
   name,
@@ -340,22 +349,24 @@ function MiniMemberCard({
 }
 
 export function CalendarScreen() {
+  const t = useTranslations();
+
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-[#f3f6ef] shadow-inner">
       <div className="flex shrink-0 items-center gap-1.5 border-b border-[#e4eadc] bg-[#fbfbf7] px-2 py-1">
-        <p className="text-[8px] font-extrabold leading-none text-slate-800">George Family</p>
+        <p className="text-[8px] font-extrabold leading-none text-slate-800">{t("home.devices.family.householdName")}</p>
         <span className="rounded-full bg-[#14b8a6] px-1.5 py-[1px] text-[5.5px] font-semibold leading-none text-white">
-          View
+          {t("home.devices.family.view")}
         </span>
         <nav className="ml-1 hidden items-center gap-1.5 text-[6px] text-slate-400 sm:flex" aria-hidden="true">
-          <span className="font-semibold text-slate-700">All</span>
-          <span>Pastoral care</span>
-          <span>Notes</span>
-          <span>Sacraments</span>
+          <span className="font-semibold text-slate-700">{t("home.devices.family.all")}</span>
+          <span>{t("home.devices.family.pastoralCare")}</span>
+          <span>{t("home.devices.family.notes")}</span>
+          <span>{t("home.devices.family.sacraments")}</span>
         </nav>
         <div className="ml-auto flex items-center gap-1">
           <span className="rounded bg-white px-1 py-[1px] text-[5.5px] font-medium text-slate-500 shadow-sm">
-            Actions
+            {t("home.devices.family.actions")}
           </span>
           <span className="h-2.5 w-2.5 rounded bg-white shadow-sm" />
           <span className="h-2.5 w-2.5 rounded bg-white shadow-sm" />
@@ -365,34 +376,53 @@ export function CalendarScreen() {
       <div className="grid min-h-0 flex-1 grid-cols-[0.78fr_1.22fr_1.05fr] gap-1 p-1">
         <aside className="flex min-h-0 flex-col overflow-hidden rounded-lg bg-white/90 p-1">
           <div className="mb-1 h-3 rounded bg-[#eef3e8]" />
-          <p className="px-0.5 text-[5.5px] font-bold uppercase tracking-wide text-slate-400">Family Head</p>
+          <p className="px-0.5 text-[5.5px] font-bold uppercase tracking-wide text-slate-400">
+            {t("home.devices.family.familyHead")}
+          </p>
           <ul className="mt-0.5 space-y-0.5">
-            {familyNav.map((member) => (
+            {DEVICE_FAMILY_NAV.map((member) => {
+              const displayName = t(`home.devices.people.${member.personKey}`);
+              return (
               <li
-                key={member.name}
+                key={member.personKey}
                 className={`flex items-center gap-1 rounded-md px-0.5 py-0.5 ${
                   member.active ? "bg-[#d7edc6]" : ""
                 }`}
               >
-                <PersonAvatar name={member.name} tone={member.tone} size={12} />
+                <PersonAvatar name={displayName} tone={member.tone} size={12} />
                 <div className="min-w-0">
-                  <p className="truncate text-[6px] font-semibold leading-tight text-slate-700">{member.name}</p>
-                  <p className="truncate text-[5px] leading-tight text-slate-400">{member.role}</p>
+                  <p className="truncate text-[6px] font-semibold leading-tight text-slate-700">{displayName}</p>
+                  <p className="truncate text-[5px] leading-tight text-slate-400">
+                    {t(`home.devices.roles.${member.roleKey}`)}
+                  </p>
                 </div>
               </li>
-            ))}
+            );
+            })}
           </ul>
         </aside>
 
         <div className="grid min-h-0 grid-rows-2 gap-1">
-          {familyCards.slice(0, 2).map((card) => (
-            <MiniMemberCard key={card.name} {...card} />
+          {DEVICE_FAMILY_CARDS.slice(0, 2).map((card) => (
+            <MiniMemberCard
+              key={card.personKey}
+              name={t(`home.devices.people.${card.personKey}`)}
+              tone={card.tone}
+              role={t(`home.devices.roles.${card.roleKey}`)}
+              meta={t(`home.devices.meta.${card.metaKey}`)}
+            />
           ))}
         </div>
 
         <div className="grid min-h-0 grid-rows-2 gap-1">
-          {familyCards.slice(2).map((card) => (
-            <MiniMemberCard key={card.name} {...card} />
+          {DEVICE_FAMILY_CARDS.slice(2).map((card) => (
+            <MiniMemberCard
+              key={card.personKey}
+              name={t(`home.devices.people.${card.personKey}`)}
+              tone={card.tone}
+              role={t(`home.devices.roles.${card.roleKey}`)}
+              meta={t(`home.devices.meta.${card.metaKey}`)}
+            />
           ))}
         </div>
       </div>

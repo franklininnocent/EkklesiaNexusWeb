@@ -1,7 +1,10 @@
+"use client";
+
 import { AnimatedReveal } from "@/components/ui/animated-reveal";
 import { Card } from "@/components/ui/card";
 import { MockupContainer, SectionHeading } from "@/components/mockup/container";
-import { mockupTech } from "@/data/mockup-page";
+import { TECH_ITEMS } from "@/data/mockup-structure";
+import { useTranslations } from "@/lib/i18n/i18n-provider";
 
 function NextMark() {
   return (
@@ -75,12 +78,14 @@ function PlayMark() {
 const marks = [NextMark, PerfMark, PlayMark];
 
 export function MockupTech() {
+  const t = useTranslations();
+
   return (
     <section className="py-14 sm:py-16">
       <MockupContainer>
-        <SectionHeading title={mockupTech.title} subtitle={mockupTech.subtitle} />
+        <SectionHeading title={t("home.tech.title")} subtitle={t("home.tech.subtitle")} />
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {mockupTech.items.map((item, i) => {
+          {TECH_ITEMS.map((item, i) => {
             const Mark = marks[i] ?? PlayMark;
             return (
               <AnimatedReveal key={item.id} delay={i * 0.06} className="h-full">
@@ -88,8 +93,8 @@ export function MockupTech() {
                   <div className="mb-4 flex justify-center">
                     <Mark />
                   </div>
-                  <h3 className="text-[1.05rem] font-bold text-slate-900">{item.title}</h3>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500">{item.body}</p>
+                  <h3 className="text-[1.05rem] font-bold text-slate-900">{t(`home.tech.${item.id}.title`)}</h3>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-slate-500">{t(`home.tech.${item.id}.body`)}</p>
                 </Card>
               </AnimatedReveal>
             );

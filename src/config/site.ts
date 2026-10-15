@@ -39,8 +39,10 @@ export const siteConfig = {
   contactPhone: process.env.MARKETING_CONTACT_PHONE?.trim() || undefined,
   contactAddress: process.env.MARKETING_CONTACT_ADDRESS?.trim() || undefined,
   analyticsEnabled: process.env.NEXT_PUBLIC_ANALYTICS_ENABLED === "true",
-  /** Parish application sign-in entry. Shown when set; production falls back to the official app host. */
+  /** Parish application origin. Dev defaults to local Angular; production falls back to the official app host. */
   applicationUrl:
     configuredUrl(process.env.NEXT_PUBLIC_APPLICATION_URL) ??
-    (process.env.NODE_ENV === "production" ? officialBrand.applicationUrl : undefined),
+    (process.env.NODE_ENV === "production"
+      ? officialBrand.applicationUrl
+      : "http://localhost:4200"),
 };

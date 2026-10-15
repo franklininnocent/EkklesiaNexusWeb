@@ -3,17 +3,28 @@
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { mockupNav } from "@/data/mockup-page";
+import { NAV_SECTION_IDS } from "@/data/mockup-structure";
 import { Button } from "@/components/ui/button";
 import { MockupContainer } from "@/components/mockup/container";
+import { LanguageSwitcher } from "@/components/mockup/language-switcher";
 import { MockupLogo } from "@/components/mockup/logo";
+import { useI18n } from "@/lib/i18n/i18n-provider";
+import { sectionAnchorHref } from "@/lib/i18n/locale";
 import { useActiveSection } from "@/hooks/use-active-section";
 import { handleAnchorNav, sectionIdFromHref } from "@/lib/section-navigation";
 
 export function MockupHeader() {
+  const { locale, t } = useI18n();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const activeSection = useActiveSection();
+  const homeHref = sectionAnchorHref(locale, "home");
+
+  const navItems = NAV_SECTION_IDS.map((id) => ({
+    id,
+    label: t(`navigation.${id}`),
+    href: sectionAnchorHref(locale, id),
+  }));
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -57,30 +68,30 @@ export function MockupHeader() {
           : "bg-white/70 backdrop-blur-md"
       }`}
     >
-      <MockupContainer className="grid h-[var(--header-height)] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-4">
+      <MockupContainer className="grid min-h-[var(--header-height)] grid-cols-[minmax(0,1fr)_auto] items-center gap-1.5 sm:gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] lg:gap-2 xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] xl:gap-3">
         <Link
-          href="/#home"
+          href={homeHref}
           className="inline-flex min-w-0 items-center justify-self-start"
-          aria-label="EkklesiaNexus home"
-          onClick={(e) => handleAnchorNav(e, "/#home", () => setOpen(false))}
+          aria-label={t("a11y.homeLogo")}
+          onClick={(e) => handleAnchorNav(e, homeHref, () => setOpen(false))}
         >
           <MockupLogo size="nav" priority />
         </Link>
 
         <nav
-          className="hidden items-center justify-center gap-5 lg:flex xl:gap-8"
-          aria-label="Primary"
+          className="hidden min-w-0 items-center justify-center gap-2 lg:flex xl:gap-5"
+          aria-label={t("a11y.primaryNav")}
         >
-          {mockupNav.map((item) => {
+          {navItems.map((item) => {
             const id = sectionIdFromHref(item.href);
             const isActive = id === activeSection;
             return (
               <Link
-                key={`${item.label}-${item.href}`}
+                key={item.id}
                 href={item.href}
                 aria-current={isActive ? "true" : undefined}
                 onClick={(e) => handleAnchorNav(e, item.href)}
-                className={`whitespace-nowrap text-[13px] font-medium transition-colors ${
+                className={`whitespace-nowrap text-[11px] font-medium transition-colors xl:text-[13px] ${
                   isActive ? "text-slate-900" : "text-slate-500 hover:text-slate-800"
                 }`}
               >
@@ -90,22 +101,26 @@ export function MockupHeader() {
           })}
         </nav>
 
-        <div className="hidden justify-self-end lg:block">
-          <Button href="/#demo" variant="pill" className="px-5 py-1.5 text-[13px] font-semibold">
-            Get Started
+        <div className="flex min-w-0 shrink-0 items-center justify-end gap-1.5 sm:gap-2 justify-self-end lg:col-start-3">
+          <LanguageSwitcher />
+          <Button
+            href={sectionAnchorHref(locale, "demo")}
+            variant="pill"
+            className="hidden shrink-0 whitespace-nowrap px-3 py-1.5 text-[11px] font-semibold leading-tight lg:inline-flex xl:px-4 xl:text-[13px]"
+          >
+            {t("common.actions.getStartedHeader")}
           </Button>
+          <button
+            type="button"
+            className="relative z-[60] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-700 lg:hidden"
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            aria-label={open ? t("a11y.closeMenu") : t("a11y.openMenu")}
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
-
-        <button
-          type="button"
-          className="relative z-[60] inline-flex h-11 w-11 items-center justify-center justify-self-end rounded-xl text-slate-700 lg:hidden"
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          aria-label={open ? "Close menu" : "Open menu"}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
       </MockupContainer>
 
       {open ? (
@@ -114,9 +129,9 @@ export function MockupHeader() {
           className="max-h-[min(70dvh,calc(100dvh-var(--header-offset)))] overflow-y-auto border-t border-slate-100 bg-white/95 lg:hidden"
         >
           <MockupContainer className="flex flex-col gap-1 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-            {mockupNav.map((item) => (
+            {navItems.map((item) => (
               <Link
-                key={`m-${item.label}`}
+                key={`m-${item.id}`}
                 href={item.href}
                 className="rounded-xl px-2 py-3 text-base font-medium text-slate-800"
                 onClick={(e) => handleAnchorNav(e, item.href, () => setOpen(false))}
@@ -124,8 +139,13 @@ export function MockupHeader() {
                 {item.label}
               </Link>
             ))}
-            <Button href="/#demo" variant="pill" className="mt-2 min-h-11" onClick={() => setOpen(false)}>
-              Get Started
+            <Button
+              href={sectionAnchorHref(locale, "demo")}
+              variant="pill"
+              className="mt-2 min-h-11 whitespace-normal"
+              onClick={() => setOpen(false)}
+            >
+              {t("common.actions.getStarted")}
             </Button>
           </MockupContainer>
         </div>

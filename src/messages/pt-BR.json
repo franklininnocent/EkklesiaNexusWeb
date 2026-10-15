@@ -1,0 +1,439 @@
+{
+  "common": {
+    "actions": {
+      "getStarted": "Começar agora",
+      "getStartedHeader": "Começar",
+      "openApplication": "Abrir aplicativo",
+      "requestDemo": "Agendar uma demonstração",
+      "sendMessage": "Enviar mensagem",
+      "sending": "Enviando…",
+      "tryAgain": "Tentar novamente",
+      "refresh": "Atualizar",
+      "showPrice": "Ver preço",
+      "hidePrice": "Ocultar preço",
+      "goToHomepage": "Ir para a página inicial",
+      "returnHome": "Voltar à página inicial"
+    },
+    "states": {
+      "loadingCheck": "Carregando verificação…",
+      "unavailable": "Indisponível"
+    },
+    "pricing": {
+      "perMonth": "/ mês",
+      "perYear": "/ ano",
+      "orAnnual": "ou {annual}",
+      "includes": "Inclui",
+      "pricingRegionLabel": "Preços do plano {planName}"
+    }
+  },
+  "navigation": {
+    "features": "Recursos",
+    "solutions": "Soluções",
+    "pricing": "Preços",
+    "demo": "Demonstração",
+    "contact": "Contato"
+  },
+  "footer": {
+    "terms": "Termos",
+    "privacy": "Privacidade",
+    "blog": "Blog",
+    "copyright": "Todos os direitos reservados © EkklesiaNexus {year}",
+    "socialFacebook": "Facebook",
+    "socialTwitter": "Twitter",
+    "socialInstagram": "Instagram",
+    "socialLinkedIn": "LinkedIn"
+  },
+  "a11y": {
+    "skipToContent": "Ir para o conteúdo",
+    "primaryNav": "Principal",
+    "footerNav": "Rodapé",
+    "homeLogo": "Página inicial EkklesiaNexus",
+    "openMenu": "Abrir menu",
+    "closeMenu": "Fechar menu",
+    "languageSwitcher": "Idioma",
+    "refreshCaptcha": "Atualizar verificação de segurança",
+    "contactForm": "Formulário de contato",
+    "prevSlides": "Slides anteriores",
+    "nextSlides": "Próximos slides"
+  },
+  "home": {
+    "hero": {
+      "titleLead": "EkklesiaNexus",
+      "subtitle": "A nova geração de sistema de gestão paroquial.",
+      "primaryCta": "Agendar uma demonstração"
+    },
+    "trust": {
+      "title": "A confiança de ministérios que pensam no futuro"
+    },
+    "features": {
+      "title": "Recursos",
+      "subtitle": "O EkklesiaNexus unifica pessoas, dízimos e fluxos de ministério — escolhido por comunidades que pensam no futuro.",
+      "members": {
+        "title": "Famílias e fiéis",
+        "body": "Mantenha famílias, fiéis e funções em um cadastro único e integrado."
+      },
+      "giving": {
+        "title": "Dízimo, ofertas e finanças",
+        "body": "Registre doações, promessas e administração financeira com o foco na família."
+      },
+      "events": {
+        "title": "Análises inteligentes",
+        "body": "Transforma dados operacionais da paróquia em indicadores de saúde pastoral e métricas visuais de administração financeira."
+      },
+      "comms": {
+        "title": "Livros sacramentais",
+        "body": "Preserve com precisão a história sacramental da paróquia e disponibilize registros importantes quando forem necessários."
+      },
+      "groups": {
+        "title": "Ministérios e grupos",
+        "body": "Organize grupos de vida, ministérios e pequenos grupos em um só lugar."
+      },
+      "volunteers": {
+        "title": "Fluxos pensados para a Igreja",
+        "body": "Desenvolvido para estruturas paroquiais reais, normas sacramentais católicas, setores de CEB e intenções de missa."
+      }
+    },
+    "slider": {
+      "title": "Uma paróquia conectada. Uma missão mais clara.",
+      "subtitle": "Cada dimensão da vida paroquial reunida em uma plataforma inteligente.",
+      "dashboard": {
+        "title": "Painel dinâmico",
+        "body": "Toda a paróquia, de forma integrada, em uma visão inteligente."
+      },
+      "mobile": {
+        "title": "Painel da comunidade",
+        "body": "Acompanhe o crescimento, o perfil e a situação dos membros da sua Comunidade Eclesial de Base (CEB)."
+      },
+      "familyFinancial": {
+        "title": "Visão financeira detalhada",
+        "body": "Monitore a saúde financeira da paróquia, pendências e tendências com precisão.",
+        "imageAlt": "Visão geral da administração financeira paroquial com saúde das coletas e tendência semanal"
+      },
+      "calendar": {
+        "title": "Perfil e detalhes da família",
+        "body": "Uma visão unificada de cada família da paróquia, vínculos e conexões sacramentais.\nFortaleça os laços na comunidade."
+      },
+      "insights": {
+        "title": "Missas e intenções",
+        "body": "Onde cada celebração é sagrada e cada intenção é acolhida. Registre intenções de missa com reverência, precisão e cuidado pastoral."
+      }
+    },
+    "tech": {
+      "title": "Desempenho e segurança",
+      "subtitle": "Feito para excelência: desempenho rápido, segurança de nível empresarial e proteção de dados em que você pode confiar.",
+      "next": {
+        "title": "SaaS em nuvem escalável",
+        "body": "Sem servidores locais. Atualizações contínuas automáticas e alta disponibilidade em nuvem multirregional."
+      },
+      "perf": {
+        "title": "Moderno e intuitivo",
+        "body": "Interface responsiva para desktop e celular, pensada para padres, equipe e voluntários adotarem com rapidez."
+      },
+      "ui": {
+        "title": "Segurança empresarial",
+        "body": "Controle de acesso por perfil, dados criptografados, isolamento entre paróquias e registro completo de auditoria."
+      }
+    },
+    "testimonials": {
+      "rowTitle": "Depoimentos",
+      "rowSubtitle": "A confiança de pastores. Paróquias fortalecidas no mundo inteiro.",
+      "cardsTitle": "Depoimentos",
+      "cardsSubtitle": "Histórias de quem lidera com mais tranquilidade no dia a dia paroquial.",
+      "namoBarnes": {
+        "displayName": "Namo Barnes",
+        "role": "Pastor / Administração",
+        "quote": "O trabalho ficou mais tranquilo. Os fiéis estão organizados e nossos pastores contam com apoio."
+      },
+      "marcusHale": {
+        "displayName": "Marcus Hale",
+        "role": "Administração paroquial",
+        "quote": "As ferramentas que usamos aos domingos finalmente estão em um só lugar para toda a equipe."
+      },
+      "jaraphWilson": {
+        "displayName": "Jaraph Wilson",
+        "role": "Pastor",
+        "quote": "Encontrar famílias ficou mais fácil, e o acompanhamento de doações não depende mais de planilhas."
+      },
+      "elenaBrooks": {
+        "displayName": "Elena Brooks",
+        "role": "Coordenação de ministério",
+        "quote": "As equipes de voluntários sabem onde estar. Só isso já mudou nossa semana."
+      },
+      "priyaMenon": {
+        "displayName": "Priya Menon",
+        "role": "Tesoureira paroquial",
+        "quote": "Recibos e pendências estão claros. Consigo responder à família na mesma visita."
+      },
+      "thomasOkonkwo": {
+        "displayName": "Thomas Okonkwo",
+        "role": "Secretário de registros sacramentais",
+        "quote": "Livros de batismo e casamento são mais fáceis de localizar, e certidões levam minutos, não a tarde inteira."
+      },
+      "claireDsouza": {
+        "displayName": "Claire D’Souza",
+        "role": "Coordenação de pastoral familiar",
+        "quote": "Vejo a família, não só um nome. As visitas pastorais são planejadas com muito menos busca."
+      },
+      "jasonRamos": {
+        "displayName": "Jason Ramos",
+        "role": "Pastor / Admin",
+        "quote": "O EkklesiaNexus mantém registros, doações e acompanhamento em um fluxo que nossos voluntários conseguem usar de verdade."
+      },
+      "jessenDillon": {
+        "displayName": "Jessen Dillon",
+        "role": "Pastor / Admin",
+        "quote": "Saímos de anotações espalhadas para uma visão única da família. O acompanhamento de domingo ficou simples."
+      },
+      "desteniRobins": {
+        "displayName": "Desteni Robins",
+        "role": "Pastor / Admin",
+        "quote": "Líderes veem quem serve, quem contribuiu e quem precisa de visita pastoral — sem ferramentas extras."
+      }
+    },
+    "pricing": {
+      "title": "Visão geral de preços",
+      "marketLabel": "Região de preços",
+      "billingLabel": "Período de cobrança",
+      "billingMonthly": "Mensal",
+      "billingAnnually": "Anual",
+      "billingAnnuallyWithSavings": "Anual ({months} meses grátis)",
+      "billedMonthly": "Cobrado mensalmente",
+      "billedAnnually": "Cobrado anualmente",
+      "monthsFreeHighlight": "dois meses grátis",
+      "markets": {
+        "IN": "Índia",
+        "US": "Estados Unidos",
+        "BR": "Brasil"
+      },
+      "taxDisclaimer": "Os preços não incluem os impostos aplicáveis. Eventuais impostos serão determinados separadamente com base nos dados de faturamento do cliente e na legislação aplicável.",
+      "badgeMostPopular": "Mais popular",
+      "limitsPeople": "Pessoas",
+      "limitsStaff": "Usuários da equipe",
+      "limitsStorage": "Armazenamento",
+      "includesStarter": "Tudo do Starter, mais:",
+      "includesStandard": "Tudo do Standard, mais:",
+      "plans": {
+        "seed": {
+          "tagline": "Tudo o que uma paróquia pequena precisa para famílias e registros sacramentais."
+        },
+        "growth": {
+          "tagline": "Contribuições, ministérios e liderança para paróquias em crescimento."
+        },
+        "summit": {
+          "tagline": "Finanças avançadas, análises e automação para paróquias maiores."
+        }
+      },
+      "features": {
+        "churchProfile": "Perfil da paróquia",
+        "rolesPermissions": "Perfis e permissões",
+        "notifications": "Notificações",
+        "contributions": "Contribuições",
+        "familyRecords": "Registros de famílias",
+        "memberRecords": "Registros de fiéis",
+        "sacramentRecords": "Registros sacramentais",
+        "basicReports": "Relatórios básicos",
+        "advancedRoles": "Perfis e permissões avançados",
+        "auditLog": "Registro de auditoria",
+        "export": "Exportação",
+        "contributionPlans": "Planos de contribuição",
+        "financialDashboard": "Painel financeiro",
+        "churchLeadership": "Liderança paroquial",
+        "ministriesAssociations": "Ministérios e associações",
+        "advancedDashboards": "Painéis avançados",
+        "multipleWorkflows": "Múltiplos fluxos de trabalho",
+        "advancedCommunication": "Comunicação avançada",
+        "advancedFinancialReporting": "Relatórios financeiros avançados",
+        "advancedMinistryManagement": "Gestão avançada de ministérios",
+        "massIntentions": "Intenções de missa",
+        "advancedAnalytics": "Análises avançadas"
+      }
+    },
+    "cta": {
+      "title": "Edição Enterprise — Sua visão. Nossa expertise.",
+      "subtitle": "Conheça fluxos sob medida, análises avançadas e integrações pensadas para suas necessidades. Trabalhe com nossa equipe em uma solução escalável que cresce com sua organização e fortalece sua missão.",
+      "button": "Começar agora"
+    },
+    "contact": {
+      "title": "Contato",
+      "subtitle": "Fale com nossa equipe — entre em contato para conhecer uma solução feita para você."
+    },
+    "devices": {
+      "community": {
+        "wardTitle": "Setor Nossa Senhora de Lourdes",
+        "view": "Ver",
+        "subtitle": "Paróquia Santa Maria · Setor 4 · Domingo 7:30",
+        "glanceTitle": "Visão da comunidade",
+        "glanceStats": " · 52 famílias · 187 fiéis · 87% ativos",
+        "lifeStage": "Etapa de vida",
+        "membershipStatus": "Situação dos membros",
+        "leaders": "Líderes"
+      },
+      "kpi": {
+        "families": "Famílias",
+        "members": "Fiéis",
+        "active": "Ativos",
+        "leadership": "Liderança"
+      },
+      "mass": {
+        "title": "Missas e intenções",
+        "thisWeek": "Esta semana",
+        "nextMass": "Próxima missa 7:00",
+        "collectIntention": " · Registre uma nova intenção para alguém especial",
+        "hostMasses": "Missas celebradas",
+        "lastFourMonths": "Últimos quatro meses",
+        "weekday": "Dia útil",
+        "sunday": "Domingo",
+        "evening": "Vespertino",
+        "open": "Em aberto",
+        "registered": "Registradas",
+        "said": "Celebradas",
+        "closed": "Encerradas",
+        "tabs": {
+          "dashboard": "Painel",
+          "register": "Registro",
+          "types": "Tipos",
+          "settings": "Configurações",
+          "reports": "Relatórios",
+          "audit": "Auditoria"
+        }
+      },
+      "giving": {
+        "title": "Contribuir",
+        "thisMonth": "Este mês",
+        "tithe": "Dízimo",
+        "offering": "Oferta",
+        "project": "Projeto",
+        "gift": "Doação",
+        "continue": "Continuar"
+      },
+      "family": {
+        "householdName": "Família George",
+        "view": "Ver",
+        "all": "Todos",
+        "pastoralCare": "Cuidado pastoral",
+        "notes": "Notas",
+        "sacraments": "Sacramentos",
+        "actions": "Ações",
+        "familyHead": "Chefe da família"
+      },
+      "roles": {
+        "familyHead": "Chefe da família",
+        "headOfHousehold": "Responsável da família",
+        "spouse": "Cônjuge",
+        "son": "Filho",
+        "daughter": "Filha"
+      },
+      "meta": {
+        "anthony": "Paróquia Santa Maria · CEB 12",
+        "maria": "Coral · Catequista",
+        "daniel": "Coroinha",
+        "elena": "Pastoral juvenil"
+      },
+      "people": {
+        "francisShort": "Francisco",
+        "leaderFrancisMathew": "Francisco Matos",
+        "leaderAnnaThomas": "Ana Santos",
+        "leaderJosephGeorge": "José Jorge",
+        "anthonyGeorge": "Antônio Jorge",
+        "mariaGeorge": "Maria Jorge",
+        "danielGeorge": "Daniel Jorge",
+        "elenaGeorge": "Helena Jorge",
+        "sofiaGeorge": "Sofia Jorge"
+      }
+    }
+  },
+  "forms": {
+    "contact": {
+      "labels": {
+        "name": "Nome",
+        "email": "E-mail",
+        "phone": "Telefone",
+        "organisation": "Organização",
+        "message": "Mensagem",
+        "securityCheck": "Verificação de segurança",
+        "websiteHoneypot": "Website"
+      },
+      "captchaHelp": "Digite os caracteres exibidos. Letras maiúsculas e minúsculas não importam.",
+      "captcha": {
+        "imageAlt": "Caracteres distorcidos da verificação de segurança",
+        "placeholder": "Digite os caracteres"
+      },
+      "successDefault": "Obrigado por entrar em contato com o EkklesiaNexus. Recebemos sua mensagem e nossa equipe responderá em breve.",
+      "submitFailed": "Não foi possível enviar sua mensagem agora. Tente novamente.",
+      "submitFailedShort": "Não foi possível enviar sua mensagem agora. Tente novamente em instantes.",
+      "validation": {
+        "nameRequired": "Informe seu nome.",
+        "emailRequired": "Informe seu e-mail.",
+        "emailInvalid": "Informe um e-mail válido.",
+        "phoneRequired": "Informe seu telefone.",
+        "phoneCountryCode": "Inclua o código do país, começando com + (ex.: +55).",
+        "phoneInvalid": "Informe um telefone válido com código do país.",
+        "messageRequired": "Escreva sua mensagem.",
+        "captchaRequired": "Digite os caracteres da verificação de segurança.",
+        "captchaIncomplete": "Complete a verificação de segurança.",
+        "honeypot": "Não foi possível enviar.",
+        "checkForm": "Revise o formulário.",
+        "checkField": "Revise este campo."
+      }
+    },
+    "demo": {
+      "successDefault": "Obrigado. Recebemos seu pedido de demonstração.",
+      "validation": {
+        "nameRequired": "Informe seu nome.",
+        "churchParishRequired": "Informe sua igreja ou paróquia.",
+        "countryRequired": "Selecione seu país.",
+        "emailRequired": "Informe seu e-mail.",
+        "emailInvalid": "Informe um e-mail válido.",
+        "roleRequired": "Informe seu cargo ou função.",
+        "messageRequired": "Escreva sua mensagem.",
+        "captchaIncomplete": "Complete a verificação de segurança.",
+        "honeypot": "Não foi possível enviar.",
+        "checkForm": "Revise o formulário.",
+        "checkField": "Revise este campo."
+      }
+    },
+    "bff": {
+      "invalidRequest": "Solicitação inválida.",
+      "requestTooLarge": "A solicitação é grande demais.",
+      "captchaLoadFailed": "Não foi possível carregar a verificação de segurança.",
+      "contactUnavailable": "O formulário de contato está temporariamente indisponível.",
+      "captchaIncorrect": "A verificação de segurança está incorreta ou expirou. Tente novamente.",
+      "rateLimited": "Aguarde um momento e tente novamente.",
+      "requestFailed": "Não foi possível concluir sua solicitação agora. Tente novamente em instantes.",
+      "demoSuccess": "Recebemos seu pedido de demonstração."
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacidade",
+      "warning": "Texto provisório aguardando revisão jurídica. Não use esta página para decisões de conformidade.",
+      "body": "Esta página descreverá como o EkklesiaNexus trata informações enviadas pelo site institucional e por solicitações de contato. Para práticas de privacidade no aplicativo paroquial, consulte o acordo da sua paróquia e as políticas oficiais quando publicadas.",
+      "returnHome": "Return to homepage"
+    },
+    "terms": {
+      "title": "Termos",
+      "warning": "Texto provisório aguardando revisão jurídica. Não use esta página para decisões contratuais.",
+      "body": "Os termos oficiais de serviço para clientes EkklesiaNexus serão publicados aqui. O site institucional serve para informações do produto e pedidos de demonstração.",
+      "returnHome": "Voltar à página inicial"
+    }
+  },
+  "errors": {
+    "notFoundTitle": "Página não encontrada",
+    "notFoundBody": "Este site institucional concentra a experiência na página inicial. Volte ao EkklesiaNexus.",
+    "somethingWrong": "Não foi possível concluir a ação",
+    "tryAgainMoment": "Tente novamente em instantes.",
+    "previewUnavailable": "Esta visualização não está disponível ou expirou."
+  },
+  "seo": {
+    "homeTitle": "EkklesiaNexus — Sistema de gestão paroquial de nova geração",
+    "homeDescription": "O EkklesiaNexus é um sistema completo de gestão paroquial em 360° para famílias, fiéis, sacramentos, dízimos, ministérios, liderança, projetos, relatórios e muito mais em uma experiência integrada.",
+    "privacyTitle": "Privacidade — EkklesiaNexus",
+    "privacyDescription": "Informações de privacidade do site institucional EkklesiaNexus.",
+    "termsTitle": "Termos — EkklesiaNexus",
+    "termsDescription": "Termos de uso do site institucional EkklesiaNexus.",
+    "notFoundTitle": "Página não encontrada — EkklesiaNexus",
+    "manifestDescription": "O EkklesiaNexus é um sistema completo de gestão paroquial em 360° para famílias, fiéis, sacramentos, dízimos, ministérios, liderança, projetos, relatórios e muito mais em uma experiência integrada.",
+    "structuredDataAvailableLanguageEn": "English",
+    "structuredDataAvailableLanguagePt": "Português"
+  }
+}

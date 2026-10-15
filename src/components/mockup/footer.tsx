@@ -1,9 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import type { SVGProps } from "react";
-import { marketingCopyrightNotice } from "@/config/brand";
 import { MockupContainer } from "@/components/mockup/container";
 import { MockupLogo } from "@/components/mockup/logo";
-import { mockupFooter } from "@/data/mockup-page";
+import { FOOTER_LINKS } from "@/data/mockup-structure";
+import { useI18n } from "@/lib/i18n/i18n-provider";
+import { localizedFooterHref, publicPagePath } from "@/lib/i18n/locale";
 
 function IconFacebook(props: SVGProps<SVGSVGElement>) {
   return (
@@ -39,31 +42,41 @@ function IconLinkedIn(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-const social = [
-  { label: "Facebook", href: "#facebook", Icon: IconFacebook },
-  { label: "Twitter", href: "#twitter", Icon: IconX },
-  { label: "Instagram", href: "#instagram", Icon: IconInstagram },
-  { label: "LinkedIn", href: "#linkedin", Icon: IconLinkedIn },
-];
+const socialKeys = [
+  { key: "socialFacebook", href: "#facebook", Icon: IconFacebook },
+  { key: "socialTwitter", href: "#twitter", Icon: IconX },
+  { key: "socialInstagram", href: "#instagram", Icon: IconInstagram },
+  { key: "socialLinkedIn", href: "#linkedin", Icon: IconLinkedIn },
+] as const;
 
 export function MockupFooter() {
+  const { locale, t } = useI18n();
+  const year = new Date().getFullYear();
+
   return (
     <footer className="border-t border-slate-100 bg-white/70 py-8">
       <MockupContainer className="flex flex-col items-center justify-between gap-6 md:flex-row md:flex-wrap">
         <MockupLogo size="footer" />
-        <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-500" aria-label="Footer">
-          {mockupFooter.links.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-slate-800">
-              {link.label}
-            </Link>
-          ))}
+        <nav
+          className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-500"
+          aria-label={t("a11y.footerNav")}
+        >
+          {FOOTER_LINKS.map((link) => {
+            const href =
+              "path" in link ? localizedFooterHref(locale, link.path) : `${publicPagePath(locale, "home")}${link.hash}`;
+            return (
+              <Link key={link.key} href={href} className="hover:text-slate-800">
+                {t(`footer.${link.key}`)}
+              </Link>
+            );
+          })}
         </nav>
         <div className="flex items-center gap-3">
-          {social.map(({ label, href, Icon }) => (
+          {socialKeys.map(({ key, href, Icon }) => (
             <a
-              key={label}
+              key={key}
               href={href}
-              aria-label={label}
+              aria-label={t(`footer.${key}`)}
               className="flex h-11 w-11 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 hover:text-slate-800 sm:h-8 sm:w-8"
             >
               <Icon className="h-4 w-4" />
@@ -72,7 +85,7 @@ export function MockupFooter() {
         </div>
       </MockupContainer>
       <MockupContainer className="mt-6">
-        <p className="text-center text-xs text-slate-500">{marketingCopyrightNotice()}</p>
+        <p className="text-center text-xs text-slate-500">{t("footer.copyright", { year })}</p>
       </MockupContainer>
     </footer>
   );
