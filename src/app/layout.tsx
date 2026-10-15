@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { Plus_Jakarta_Sans } from "next/font/google";
-import { Ga4Loader } from "@/components/marketing/ga4-loader";
+import { MarketingAnalytics } from "@/components/marketing/marketing-analytics";
 import { StructuredData } from "@/components/marketing/structured-data";
 import { I18nProvider } from "@/lib/i18n/i18n-provider";
 import { htmlLangAttribute } from "@/lib/i18n/locale";
@@ -36,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
         { url: "/favicon/circular-badge-blue-gold.png", sizes: "32x32", type: "image/png" },
         { url: "/favicon/favicon.ico" },
       ],
-      apple: [{ url: "/logos/ekklesiasoft-mark.png" }],
+      apple: [{ url: "/logos/ekklesia-circular-badge.png" }],
     },
   };
 }
@@ -63,7 +63,7 @@ export default async function RootLayout({
             {messages.a11y.skipToContent}
           </a>
           {isPreview ? null : <StructuredData content={content} locale={locale} />}
-          {isPreview ? null : <Ga4Loader content={content} />}
+          {isPreview ? null : <MarketingAnalytics content={content} />}
           {children}
         </I18nProvider>
       </body>

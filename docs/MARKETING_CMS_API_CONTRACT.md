@@ -23,7 +23,7 @@ Same convention as other public APIs:
 ```
 
 `data` must match the TypeScript type `MarketingContent` in  
-`EkklesiaSoftWeb/src/types/marketing.ts` (versioned when CMS ships).
+`EkklesiaNexusWeb/src/types/marketing.ts` (versioned when CMS ships).
 
 Optional `seo` object (schema version 1): global canonical origin (allowlisted), per-page metadata for `/`, `/privacy`, `/terms`, verification tokens, optional GA4 id. Privacy/terms remain noindex until legal approval. On publish, `site.seoTitle` / `site.seoDescription` sync from `seo.pages.home`.
 
@@ -62,9 +62,9 @@ Body for draft/publish: `{ "payload": { ...MarketingContent }, "notes": "optiona
 ## CLI import (ops)
 
 ```bash
-cd EkklesiaSoftWeb && npm run export:content
-cd ../EkklesiaSoftApi
-php artisan marketing:import-content ../EkklesiaSoftWeb/marketing-content.export.json
+cd EkklesiaNexusWeb && npm run export:content
+cd ../EkklesiaNexusApi
+php artisan marketing:import-content ../EkklesiaNexusWeb/marketing-content.export.json
 ```
 
 ## Database

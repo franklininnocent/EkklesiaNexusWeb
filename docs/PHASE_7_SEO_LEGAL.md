@@ -25,11 +25,14 @@ Automated guard: `validateMarketingSeo()` in `npm run validate:content`.
 
 | Route | File | Indexable |
 |-------|------|-----------|
-| `/` | `sitemap.ts` | Yes (`priority: 1`) |
-| `/privacy` | — | **No** — omitted from sitemap until legal review |
-| `/terms` | — | **No** — omitted from sitemap |
+| `/`, `/pt-br` | `sitemap.ts` / `localized-metadata.ts` | Yes (home) |
+| `/features`, `/features/[slug]`, `/about`, `/contact`, `/solutions/catholic-parishes` | Static app routes + code SEO defaults | Yes (English-only; optional CMS overrides) |
+| `/privacy`, `/terms`, `/pt-br/privacy`, `/pt-br/terms` | `legal-metadata.ts` | **No** — omitted from sitemap until legal review |
+| `/preview/plans` | Preview | **No** — `robots` disallow `/preview/` |
 
-`robots.ts`: allow `/`, point to `sitemap.xml`.
+`robots.ts`: on `https://ekklesianexus.com`, allow `/`, disallow `/api/` and `/preview/`; on other `NEXT_PUBLIC_SITE_URL` values, disallow `/`. Points to `sitemap.xml`.
+
+See also `docs/ENTERPRISE_SEO_IMPLEMENTATION_REPORT.md` and `docs/SEO_INTENT_AND_COMPETITOR_NOTES.md`.
 
 ---
 
@@ -75,7 +78,7 @@ Phase 7 complete for V1. Replace legal placeholders after counsel review; then o
 | Public read | `GET /api/public/marketing-content` | None (published revision only) |
 | Publish / draft | `POST /api/admin/marketing/content/*` | Super Admin only (Ekklesia Admin **cannot** publish) |
 
-**Payload:** single JSON in `marketing_content_revisions.payload` with optional `seo` object (page allowlist: `home`, `privacy`, `terms`). Privacy/terms **noindex** enforced in API until legal workflow exists.
+**Payload:** single JSON in `marketing_content_revisions.payload` with optional `seo` object. Required pages: `home`, `privacy`, `terms`. Optional overrides: `features`, `about`, `contact`, `solutionsCatholicParishes`. Privacy/terms **noindex** enforced in API until legal workflow exists.
 
 **Rendering:** Next.js `generateMetadata`, `sitemap.ts`, `robots.ts`, and JSON-LD read published CMS with file-provider fallbacks. Canonical URLs use `NEXT_PUBLIC_SITE_URL`; CMS `canonicalOrigin` is validation-only.
 

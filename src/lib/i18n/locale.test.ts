@@ -17,5 +17,8 @@ assert.equal(publicPagePath("pt-BR", "privacy"), "/pt-br/privacy");
 assert.equal(switchLocalePath("/privacy", "pt-BR"), "/pt-br/privacy");
 assert.equal(switchLocalePath("/pt-br/terms", "en-US"), "/terms");
 assert.equal(switchLocalePath("/#features", "pt-BR"), "/pt-br#features");
+assert.equal(switchLocalePath("/features", "pt-BR"), "/features");
+assert.equal(switchLocalePath("/about", "pt-BR"), "/about");
+assert.equal(switchLocalePath("/contact", "pt-BR"), "/contact");
 
 console.log("locale.test.ts: OK");

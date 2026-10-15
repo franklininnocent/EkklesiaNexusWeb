@@ -1,4 +1,4 @@
-# Production launch checklist (EkklesiaSoftWeb)
+# Production launch checklist (EkklesiaNexusWeb)
 
 Use with [DEPLOY.md](DEPLOY.md) immediately before and after go-live.
 

@@ -1,3 +1,5 @@
+import { isEnglishOnlyMarketingPath } from "@/lib/marketing/marketing-static-pages";
+
 export const SUPPORTED_LOCALES = ["en-US", "pt-BR"] as const;
 export type AppLocale = (typeof SUPPORTED_LOCALES)[number];
 
@@ -72,6 +74,11 @@ export function publicPageIdFromPath(pathname: string): PublicPageId | null {
 }
 
 export function switchLocalePath(pathname: string, targetLocale: AppLocale): string {
+  const normalized = pathname.split("?")[0]?.split("#")[0] ?? "/";
+  if (isEnglishOnlyMarketingPath(normalized)) {
+    return pathname;
+  }
+
   const page = publicPageIdFromPath(pathname);
   const hash = pathname.includes("#") ? `#${pathname.split("#")[1]}` : "";
   const safeHash =

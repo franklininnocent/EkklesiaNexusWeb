@@ -8,7 +8,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-LOGO_PATH = ROOT / "public/logos/ekklesiasoft-horizontal.png"
+LOGO_PATH = ROOT / "public/logos/ekklesianexus-horizontal.png"
 OUT_PNG = ROOT / "public/images/og/og-preview.png"
 OUT_WEBP = ROOT / "public/images/og/og-preview.webp"
 

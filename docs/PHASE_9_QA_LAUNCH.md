@@ -8,7 +8,7 @@
 ## 1. Automated gate (CI / pre-release)
 
 ```bash
-cd EkklesiaSoftWeb
+cd EkklesiaNexusWeb
 npm run qa              # content, SEO, typecheck, lint, build, security, PHPUnit
 npm run smoke           # HTTP smoke on production server (starts next if needed)
 ```

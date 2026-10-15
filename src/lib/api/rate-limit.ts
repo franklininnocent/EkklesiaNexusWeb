@@ -75,6 +75,9 @@ export async function consumeSharedRateLimit(
   }
 
   if (clientIp === "unknown") {
+    if (production) {
+      return failClosed(limit);
+    }
     return { allowed: true, remaining: limit, limit, retryAfterSeconds: Math.ceil(windowMs / 1000) };
   }
 

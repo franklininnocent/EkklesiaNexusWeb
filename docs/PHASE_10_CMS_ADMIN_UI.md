@@ -17,7 +17,7 @@ API enforces the same on `POST /api/admin/marketing/content/publish`.
 
 ## 2. Workflow
 
-1. In `EkklesiaSoftWeb`: `npm run export:content` → `marketing-content.export.json`
+1. In `EkklesiaNexusWeb`: `npm run export:content` → `marketing-content.export.json`
 2. Super Admin opens **Settings → Marketing website**
 3. Run `npm run validate:export` on the JSON before publish
 4. Upload or paste JSON, optional notes → **Publish to public API**
@@ -26,7 +26,7 @@ API enforces the same on `POST /api/admin/marketing/content/publish`.
 
 ---
 
-## 3. Code map (`EkklesiaSoftUi`)
+## 3. Code map (`EkklesiaNexusUi`)
 
 | Piece | Path |
 |-------|------|

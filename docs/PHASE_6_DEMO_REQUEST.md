@@ -36,7 +36,7 @@ Browser  →  POST /api/demo-requests (Next.js BFF)
 
 | Piece | Location |
 |-------|----------|
-| Module | `EkklesiaSoftApi/Modules/Marketing` |
+| Module | `EkklesiaNexusApi/Modules/Marketing` |
 | Route | `POST /api/public/demo-requests` |
 | Validation | `StoreDemoRequestRequest` |
 | Model | `MarketingDemoRequest` (no `tenant_id`) |
@@ -58,7 +58,7 @@ Browser  →  POST /api/demo-requests (Next.js BFF)
 ## 5. Database
 
 ```bash
-cd EkklesiaSoftApi
+cd EkklesiaNexusApi
 php artisan migrate --path=Modules/Marketing/database/migrations
 ```
 
@@ -69,7 +69,7 @@ php artisan migrate --path=Modules/Marketing/database/migrations
 ## 6. Automated tests
 
 ```bash
-cd EkklesiaSoftApi
+cd EkklesiaNexusApi
 php artisan test --filter=PublicDemoRequest
 ```
 
