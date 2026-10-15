@@ -1,0 +1,89 @@
+# Example nginx vhosts for the intended EkklesiaNexus hostnames.
+# TLS paths are placeholders — issue certificates after DNS exists.
+# Do not enable these until the production document root and PHP-FPM socket are confirmed.
+
+# --- Marketing: https://ekklesianexus.com ---
+server {
+    listen 80;
+    server_name ekklesianexus.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name ekklesianexus.com;
+
+    # ssl_certificate     /etc/letsencrypt/live/ekklesianexus.com/fullchain.pem;
+    # ssl_certificate_key /etc/letsencrypt/live/ekklesianexus.com/privkey.pem;
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        # If using Cloudflare in front of nginx, pass country to Next.js for regional pricing:
+        # proxy_set_header CF-IPCountry $http_cf_ipcountry;
+    }
+}
+
+# --- Angular app: https://app.ekklesianexus.com ---
+server {
+    listen 80;
+    server_name app.ekklesianexus.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name app.ekklesianexus.com;
+
+    # ssl_certificate     /etc/letsencrypt/live/ekklesianexus.com/fullchain.pem;
+    # ssl_certificate_key /etc/letsencrypt/live/ekklesianexus.com/privkey.pem;
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Robots-Tag "noindex, nofollow, noarchive" always;
+
+    root /var/www/html/EkklesiaNexus/EkklesiaNexusUi/dist/ekklesia-soft-ui/browser;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+
+# --- API: https://api.ekklesianexus.com ---
+server {
+    listen 80;
+    server_name api.ekklesianexus.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name api.ekklesianexus.com;
+
+    # ssl_certificate     /etc/letsencrypt/live/ekklesianexus.com/fullchain.pem;
+    # ssl_certificate_key /etc/letsencrypt/live/ekklesianexus.com/privkey.pem;
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+    root /var/www/html/EkklesiaNexus/EkklesiaNexusApi/public;
+    index index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
