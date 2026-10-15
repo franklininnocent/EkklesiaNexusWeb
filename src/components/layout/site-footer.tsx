@@ -15,7 +15,7 @@ export function SiteFooter({ content }: SiteFooterProps) {
         <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
           <div className="max-w-md">
             <Image
-              src="/logos/ekklesiasoft-mark.png"
+              src="/logos/ekklesianexus-mark.png"
               alt="EkklesiaNexus"
               width={48}
               height={48}

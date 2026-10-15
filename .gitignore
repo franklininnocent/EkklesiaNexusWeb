@@ -23,6 +23,7 @@
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/tmp/lighthouse/
 
 # Environment (never commit secrets)
 .env

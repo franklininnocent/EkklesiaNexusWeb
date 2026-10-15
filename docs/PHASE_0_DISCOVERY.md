@@ -16,10 +16,10 @@
 
 | Application | Path | Role |
 |-------------|------|------|
-| Laravel API | `/var/www/html/EkklesiaNexus/EkklesiaSoftApi` | Authoritative backend; nwidart modules; PostgreSQL |
-| Angular product UI | `/var/www/html/EkklesiaNexus/EkklesiaSoftUi` | Parish & platform app (`localhost:4200`) |
-| Marketing site | `/var/www/html/EkklesiaNexus/EkklesiaSoftWeb` | Next.js 16 public marketing (V1) |
-| Documents / captures | `/var/www/html/EkklesiaSoftDocuments/` | Screenshots, mockups, branding library |
+| Laravel API | `/var/www/html/EkklesiaNexus/EkklesiaNexusApi` | Authoritative backend; nwidart modules; PostgreSQL |
+| Angular product UI | `/var/www/html/EkklesiaNexus/EkklesiaNexusUi` | Parish & platform app (`localhost:4200`) |
+| Marketing site | `/var/www/html/EkklesiaNexus/EkklesiaNexusWeb` | Next.js 16 public marketing (V1) |
+| Documents / captures | `/var/www/html/EkklesiaNexusDocuments/` | Screenshots, mockups, branding library |
 
 **Architecture rule (V1):** `Next.js → Laravel → PostgreSQL`. Next.js must not connect to PostgreSQL.
 
@@ -48,13 +48,13 @@ Public controllers use JSON shape: `{ "success": true|false, "message": "...", "
 
 ### CORS
 
-`EkklesiaSoftApi/config/cors.php` allows Angular origins (`FRONTEND_URL`, `localhost:4200`). V1 does **not** add marketing origins; the browser talks only to Next.js.
+`EkklesiaNexusApi/config/cors.php` allows Angular origins (`FRONTEND_URL`, `localhost:4200`). V1 does **not** add marketing origins; the browser talks only to Next.js.
 
 ---
 
 ## 3. Parish product navigation (source of truth)
 
-Authoritative parish sidebar: `EkklesiaSoftUi/src/app/layout/sidebar-nav/app-sidebar.config.ts`.
+Authoritative parish sidebar: `EkklesiaNexusUi/src/app/layout/sidebar-nav/app-sidebar.config.ts`.
 
 **Parish-facing (marketable to churches):**
 
@@ -110,7 +110,7 @@ Module map: `docs/ARCHITECTURE.md`.
 
 ## 6. Marketing CMS
 
-**Decision (V1):** No CMS. Content lives in `EkklesiaSoftWeb/src/content/` behind `getMarketingContent()`. Laravel Marketing module is **demo persistence only**.
+**Decision (V1):** No CMS. Content lives in `EkklesiaNexusWeb/src/content/` behind `getMarketingContent()`. Laravel Marketing module is **demo persistence only**.
 
 ---
 

@@ -47,11 +47,11 @@ See [PHASE_10_CMS_ADMIN_UI.md](PHASE_10_CMS_ADMIN_UI.md) — JSON upload/publish
 npm run qa
 
 # Laravel CMS API
-cd ../EkklesiaSoftApi
+cd ../EkklesiaNexusApi
 php artisan test --filter=MarketingContent
 
 # Angular Super Admin UI
-cd ../EkklesiaSoftUi && npx ng build --configuration=development
+cd ../EkklesiaNexusUi && npx ng build --configuration=development
 ```
 
 ---

@@ -148,8 +148,5 @@ export const PRICING_PLANS = [
   },
 ] as const;
 
-export const FOOTER_LINKS = [
-  { key: "terms", path: "/terms" as const },
-  { key: "privacy", path: "/privacy" as const },
-  { key: "blog", hash: "#blog" as const },
-] as const;
+/** Footer page links are hidden in the live mockup footer; routes remain available via direct URL. */
+export const FOOTER_LINKS = [] as const;

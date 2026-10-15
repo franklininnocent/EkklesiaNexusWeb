@@ -60,8 +60,29 @@ export function validateMarketingSeo(): string[] {
   if (!robots.includes("sitemap:")) {
     errors.push("robots.ts must reference sitemap.xml");
   }
-  if (!robots.includes('disallow: ["/api/"]')) {
+  if (!robots.includes("/api/")) {
     errors.push("robots.ts must disallow /api/ so form endpoints stay out of the index");
+  }
+  if (!robots.includes("/preview/")) {
+    errors.push("robots.ts must disallow /preview/ for internal catalog previews");
+  }
+  if (!robots.includes("isProductionMarketingHost")) {
+    errors.push("robots.ts must disallow all crawling on non-production marketing hosts");
+  }
+
+  const structuredData = fs.readFileSync(
+    path.join(ROOT, "src/components/marketing/structured-data.tsx"),
+    "utf8",
+  );
+  if (!structuredData.includes("safeJsonLdStringify")) {
+    errors.push("StructuredData must serialize JSON-LD through safeJsonLdStringify");
+  }
+
+  for (const route of ["src/app/features/page.tsx", "src/app/about/page.tsx", "src/app/contact/page.tsx"]) {
+    const full = path.join(ROOT, route);
+    if (!fs.existsSync(full)) {
+      errors.push(`Missing SEO landing route: ${route}`);
+    }
   }
 
   const brand = fs.readFileSync(path.join(ROOT, "src/config/brand.ts"), "utf8");

@@ -29,13 +29,9 @@ export function useContactCaptcha(onChallengeLoaded?: () => void): ContactCaptch
   const [captchaLoading, setCaptchaLoading] = useState(true);
   const [captchaError, setCaptchaError] = useState<string | null>(null);
 
-  const inflightRef = useRef(false);
   const fetchGenerationRef = useRef(0);
 
   const loadCaptchaForLocale = useCallback(async (activeLocale: AppLocale) => {
-    if (inflightRef.current) return;
-    inflightRef.current = true;
-
     const t = createTranslator(getMessages(activeLocale));
     const generation = ++fetchGenerationRef.current;
 
@@ -83,7 +79,6 @@ export function useContactCaptcha(onChallengeLoaded?: () => void): ContactCaptch
       if (generation === fetchGenerationRef.current) {
         setCaptchaLoading(false);
       }
-      inflightRef.current = false;
     }
   }, []);
 
@@ -92,6 +87,9 @@ export function useContactCaptcha(onChallengeLoaded?: () => void): ContactCaptch
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch on mount and locale change
     void loadCaptchaForLocale(locale);
+    return () => {
+      fetchGenerationRef.current += 1;
+    };
   }, [locale, loadCaptchaForLocale]);
 
   return { captchaId, captchaImage, captchaLoading, captchaError, loadCaptcha };

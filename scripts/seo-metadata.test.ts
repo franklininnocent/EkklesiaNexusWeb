@@ -4,12 +4,14 @@ async function run(): Promise<void> {
   process.env.NEXT_PUBLIC_SITE_URL = "https://ekklesianexus.com";
 
   const { getMarketingContent } = await import("../src/lib/marketing/get-content");
+  const { safeJsonLdStringify } = await import("../src/lib/marketing/json-ld-safe");
   const {
     buildPageMetadata,
     buildStructuredDataGraph,
     indexableSitemapEntries,
     resolveMarketingSeo,
   } = await import("../src/lib/marketing/seo-metadata");
+  const { indexableLocalizedSitemapEntries } = await import("../src/lib/marketing/localized-metadata");
 
   const content = getMarketingContent();
   const seo = resolveMarketingSeo(content);
@@ -43,6 +45,13 @@ async function run(): Promise<void> {
   const org = graph["@graph"][0];
   assert.equal(org.email, "contact@ekklesianexus.com");
   assert.equal(String(org.url), "https://ekklesianexus.com");
+
+  assert.ok(!safeJsonLdStringify({ x: "</script>" }).includes("</script>"));
+
+  const localizedUrls = indexableLocalizedSitemapEntries(content).map((e) => e.url);
+  assert.ok(localizedUrls.includes("https://ekklesianexus.com/"));
+  assert.ok(localizedUrls.includes("https://ekklesianexus.com/pt-br"));
+  assert.ok(localizedUrls.includes("https://ekklesianexus.com/features"));
 
   console.log("seo-metadata.test.ts passed.");
 }

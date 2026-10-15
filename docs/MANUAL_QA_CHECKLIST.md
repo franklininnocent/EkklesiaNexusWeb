@@ -51,6 +51,10 @@ npm run smoke   # after build, against next start
 - ☐ View source: canonical, OG image `/images/og/og-preview.png`
 - ☐ `/privacy` and `/terms` show `noindex`
 - ☐ `robots.txt` and `sitemap.xml` load
+- ☐ Automated: `npm run smoke:production-host` (robots allow + sitemap includes `/features` when `NEXT_PUBLIC_SITE_URL` is official)
+- ☐ Automated: `npm run test:e2e -- e2e/seo-public-pages.spec.ts e2e/seo-mobile-a11y.spec.ts --project=chrome`
+- ☐ Crawlable routes: `/features`, `/about`, `/contact`, `/solutions/catholic-parishes`, feature detail slugs (see `ENTERPRISE_SEO_IMPLEMENTATION_REPORT.md`)
+- ☐ Operator: Search Console sitemap + production CDN redirects (`docs/SEO_OPERATOR_RUNBOOK.md`)
 
 ## Security headers (production or `next start`)
 

@@ -4,8 +4,21 @@ export function isPublicAnchorHref(href: string): boolean {
   return href.startsWith("#");
 }
 
+const PUBLIC_ROUTES = new Set([
+  "/",
+  "/privacy",
+  "/terms",
+  "/features",
+  "/about",
+  "/contact",
+  "/solutions/catholic-parishes",
+]);
+
 export function isPublicRouteHref(href: string): boolean {
-  return href === "/" || href === "/privacy" || href === "/terms";
+  if (PUBLIC_ROUTES.has(href)) {
+    return true;
+  }
+  return href.startsWith("/features/") && !href.includes("..");
 }
 
 export function resolveNavHref(href: string): string {

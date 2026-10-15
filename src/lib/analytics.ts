@@ -4,6 +4,8 @@ export type AnalyticsEvent =
   | "cta_click"
   | "demo_form_open"
   | "demo_form_submit"
+  | "contact_form_submit"
+  | "login_click"
   | "section_view";
 
 export function trackEvent(event: AnalyticsEvent, detail?: Record<string, string>) {

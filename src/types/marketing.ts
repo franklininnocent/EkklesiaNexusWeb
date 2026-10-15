@@ -126,7 +126,7 @@ export type MarketingSeoConfig = {
     home: PublicPageSeo;
     privacy: PublicPageSeo;
     terms: PublicPageSeo;
-  };
+  } & Partial<Record<string, PublicPageSeo>>;
 };
 
 export type MarketingContent = {

@@ -17,12 +17,23 @@ async function main() {
 
   const previousSecret = process.env.MARKETING_BFF_SECRET;
   const previousApi = process.env.LARAVEL_API_URL;
+  const previousNodeEnv = process.env.NODE_ENV;
   Reflect.set(process.env, "NODE_ENV", "production");
   delete process.env.MARKETING_BFF_SECRET;
   delete process.env.LARAVEL_API_URL;
   const closed = await consumeSharedRateLimit("marketing_bff_forms", "203.0.113.10", 5, 60_000);
   assert.equal(closed.allowed, false);
-  Reflect.set(process.env, "NODE_ENV", "test");
+
+  process.env.MARKETING_BFF_SECRET = "test-secret";
+  process.env.LARAVEL_API_URL = "http://127.0.0.1:8000";
+  const unknownIpClosed = await consumeSharedRateLimit("marketing_bff_forms", "unknown", 5, 60_000);
+  assert.equal(unknownIpClosed.allowed, false);
+
+  if (previousNodeEnv === undefined) {
+    Reflect.deleteProperty(process.env, "NODE_ENV");
+  } else {
+    Reflect.set(process.env, "NODE_ENV", previousNodeEnv);
+  }
   if (previousSecret === undefined) delete process.env.MARKETING_BFF_SECRET;
   else process.env.MARKETING_BFF_SECRET = previousSecret;
   if (previousApi === undefined) delete process.env.LARAVEL_API_URL;
