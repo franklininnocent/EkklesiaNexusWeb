@@ -1,49 +1,59 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import {
-  resolvePricingMarketFromContext,
-  visitorCountryForPricing,
-  visitorCountryFromRequestHeaders,
-} from "./resolve-pricing-market";
+import { currencyForVisitorCountry } from "./marketing-currency";
+import { visitorCountryForPricing } from "./resolve-pricing-market";
 
-describe("resolvePricingMarketFromContext", () => {
-  it("uses INR only for India with English", () => {
-    assert.equal(resolvePricingMarketFromContext("IN", "en-US"), "IN");
-    assert.equal(resolvePricingMarketFromContext("IN", "pt-BR"), "BR");
+describe("currencyForVisitorCountry", () => {
+  it("maps India, Brazil, and default to USD", () => {
+    assert.equal(currencyForVisitorCountry("IN"), "INR");
+    assert.equal(currencyForVisitorCountry("in"), "INR");
+    assert.equal(currencyForVisitorCountry("BR"), "BRL");
+    assert.equal(currencyForVisitorCountry("br"), "BRL");
+    assert.equal(currencyForVisitorCountry("US"), "USD");
+    assert.equal(currencyForVisitorCountry("GB"), "USD");
+    assert.equal(currencyForVisitorCountry("PT"), "USD");
+    assert.equal(currencyForVisitorCountry(null), "USD");
+    assert.equal(currencyForVisitorCountry("XX"), "USD");
+    assert.equal(currencyForVisitorCountry("invalid"), "USD");
   });
 
-  it("uses BRL for Brazil or Portuguese", () => {
-    assert.equal(resolvePricingMarketFromContext("BR", "en-US"), "BR");
-    assert.equal(resolvePricingMarketFromContext("BR", "pt-BR"), "BR");
-    assert.equal(resolvePricingMarketFromContext("US", "pt-BR"), "BR");
-    assert.equal(resolvePricingMarketFromContext(null, "pt-BR"), "BR");
-  });
-
-  it("uses USD for other countries with English", () => {
-    assert.equal(resolvePricingMarketFromContext("US", "en-US"), "US");
-    assert.equal(resolvePricingMarketFromContext(null, "en-US"), "US");
-    assert.equal(resolvePricingMarketFromContext("DE", "en-US"), "US");
-    assert.equal(resolvePricingMarketFromContext("IN", "pt-BR"), "BR");
-  });
-});
-
-describe("visitorCountryFromRequestHeaders", () => {
-  it("reads cf-ipcountry and x-en-country", () => {
-    const h = new Headers({ "cf-ipcountry": "in" });
-    assert.equal(visitorCountryFromRequestHeaders(h), "IN");
-    const h2 = new Headers({ "x-en-country": "BR" });
-    assert.equal(visitorCountryFromRequestHeaders(h2), "BR");
+  it("does not use locale for currency", () => {
+    assert.equal(currencyForVisitorCountry("IN"), "INR");
+    assert.equal(currencyForVisitorCountry("US"), "USD");
   });
 });
 
 describe("visitorCountryForPricing", () => {
-  it("uses MARKETING_VISITOR_COUNTRY when headers are absent", () => {
-    const prev = process.env.MARKETING_VISITOR_COUNTRY;
+  it("requires geo token when secret is configured", () => {
+    const prevSecret = process.env.MARKETING_GEO_HEADER_SECRET;
+    process.env.MARKETING_GEO_HEADER_SECRET = "test-secret";
+    try {
+      const spoof = new Headers({
+        "x-en-geo-country": "IN",
+        "cf-ipcountry": "IN",
+      });
+      assert.equal(visitorCountryForPricing(spoof), null);
+
+      const trusted = new Headers({
+        "x-en-geo-country": "IN",
+        "x-en-geo-token": "test-secret",
+      });
+      assert.equal(visitorCountryForPricing(trusted), "IN");
+    } finally {
+      process.env.MARKETING_GEO_HEADER_SECRET = prevSecret;
+    }
+  });
+
+  it("uses MARKETING_VISITOR_COUNTRY when geo is not trusted", () => {
+    const prevCountry = process.env.MARKETING_VISITOR_COUNTRY;
+    const prevSecret = process.env.MARKETING_GEO_HEADER_SECRET;
+    process.env.MARKETING_GEO_HEADER_SECRET = "";
     process.env.MARKETING_VISITOR_COUNTRY = "IN";
     try {
       assert.equal(visitorCountryForPricing(new Headers()), "IN");
     } finally {
-      process.env.MARKETING_VISITOR_COUNTRY = prev;
+      process.env.MARKETING_VISITOR_COUNTRY = prevCountry;
+      process.env.MARKETING_GEO_HEADER_SECRET = prevSecret;
     }
   });
 });
