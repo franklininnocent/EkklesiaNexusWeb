@@ -48,7 +48,33 @@ const nextConfig: NextConfig = {
         : []),
     ];
 
+    const homepageCacheControl = { key: "Cache-Control", value: "private, no-store" };
+
     return [
+      {
+        source: "/",
+        headers: [
+          ...sharedHeaders,
+          { key: "X-Frame-Options", value: "DENY" },
+          {
+            key: "Content-Security-Policy",
+            value: contentSecurityPolicy("'none'"),
+          },
+          homepageCacheControl,
+        ],
+      },
+      {
+        source: "/pt-br",
+        headers: [
+          ...sharedHeaders,
+          { key: "X-Frame-Options", value: "DENY" },
+          {
+            key: "Content-Security-Policy",
+            value: contentSecurityPolicy("'none'"),
+          },
+          homepageCacheControl,
+        ],
+      },
       {
         source: "/preview/:path*",
         headers: [

@@ -19,12 +19,15 @@ export default defineConfig({
   webServer: {
     command: "npm run dev",
     url: "http://localhost:3010",
-    reuseExistingServer: true,
+    // Reuse only when explicitly requested; otherwise pricing e2e needs fixture env on a fresh dev server.
+    reuseExistingServer: process.env.PLAYWRIGHT_REUSE_EXISTING_SERVER === "1",
     timeout: 120_000,
     env: {
       ...process.env,
       MARKETING_GEO_HEADER_SECRET: process.env.MARKETING_GEO_HEADER_SECRET || "e2e-geo-secret",
-      MARKETING_PRICING_FIXTURE_JSON: JSON.stringify({
+      MARKETING_PRICING_FIXTURE_JSON:
+        process.env.MARKETING_PRICING_FIXTURE_JSON ??
+        JSON.stringify({
         success: true,
         data: [
           {

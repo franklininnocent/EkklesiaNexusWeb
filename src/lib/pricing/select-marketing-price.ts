@@ -1,12 +1,48 @@
 import type { PricingPlanId } from "@/data/regional-pricing";
 import type { MarketingCurrency } from "@/lib/pricing/marketing-currency";
+import type { FetchPublicPlansResult } from "@/lib/api/subscription-plans";
 import type { PublicPlanCard, RegionalPriceEntry } from "@/types/subscription-plans";
+
+export type PricingCatalogState = "ready" | "unpublished" | "unavailable";
+
+export function pricingCatalogStateFromFetch(result: FetchPublicPlansResult): PricingCatalogState {
+  if (!result.ok) {
+    return "unavailable";
+  }
+  if (result.plans.length === 0) {
+    return "unpublished";
+  }
+  return "ready";
+}
 
 export const PLAN_CODE_BY_CARD_ID: Record<PricingPlanId, string> = {
   seed: "STARTER",
   growth: "STANDARD",
   summit: "PROFESSIONAL",
 };
+
+/** Homepage #pricing only needs names and regional list prices — not entitlements/features. */
+export type HomepagePricingPlanCard = {
+  code: string;
+  name: string;
+  pricing_type: string;
+  currency_code?: string | null;
+  monthly_price?: string | null;
+  annual_price?: string | null;
+  regional_prices?: PublicPlanCard["regional_prices"];
+};
+
+export function pickHomepagePricingPlans(plans: PublicPlanCard[]): HomepagePricingPlanCard[] {
+  return plans.map((plan) => ({
+    code: plan.code,
+    name: plan.name,
+    pricing_type: plan.pricing_type,
+    currency_code: plan.currency_code,
+    monthly_price: plan.monthly_price,
+    annual_price: plan.annual_price,
+    regional_prices: plan.regional_prices,
+  }));
+}
 
 export type SelectedMarketingPrice = {
   monthly: string | null;
@@ -15,7 +51,7 @@ export type SelectedMarketingPrice = {
 };
 
 export function selectMarketingPrice(
-  plan: PublicPlanCard,
+  plan: HomepagePricingPlanCard | PublicPlanCard,
   currency: MarketingCurrency,
 ): SelectedMarketingPrice | null {
   const fromRegional = pickRegionalEntry(plan.regional_prices?.[currency]);
@@ -48,7 +84,7 @@ function pickRegionalEntry(entry: RegionalPriceEntry | undefined): { monthly: st
 }
 
 export function buildCardPricesByPlanId(
-  plans: PublicPlanCard[],
+  plans: HomepagePricingPlanCard[],
   currency: MarketingCurrency,
 ): Record<PricingPlanId, SelectedMarketingPrice | null> {
   const byCode = new Map(plans.map((p) => [p.code, p]));
@@ -66,7 +102,7 @@ export function buildCardPricesByPlanId(
   return out;
 }
 
-export function buildCardNamesByPlanId(plans: PublicPlanCard[]): Record<PricingPlanId, string | null> {
+export function buildCardNamesByPlanId(plans: HomepagePricingPlanCard[]): Record<PricingPlanId, string | null> {
   const byCode = new Map(plans.map((p) => [p.code, p]));
   return {
     seed: byCode.get("STARTER")?.name?.trim() || null,
@@ -77,4 +113,24 @@ export function buildCardNamesByPlanId(plans: PublicPlanCard[]): Record<PricingP
 
 export function logMissingMarketingListPrice(planCode: string, currency: MarketingCurrency): void {
   console.info("marketing.pricing.missing_list_price", { plan_code: planCode, currency });
+}
+
+export function logMarketingPricingDiagnostics(
+  plansResult: FetchPublicPlansResult,
+  pricesByPlanId: Record<PricingPlanId, SelectedMarketingPrice | null>,
+  currency: MarketingCurrency,
+): void {
+  if (!plansResult.ok) {
+    console.info("marketing.pricing.catalog_unavailable", { status: plansResult.status });
+    return;
+  }
+  if (plansResult.plans.length === 0) {
+    console.info("marketing.pricing.catalog_unpublished");
+    return;
+  }
+  for (const planId of Object.keys(PLAN_CODE_BY_CARD_ID) as PricingPlanId[]) {
+    if (pricesByPlanId[planId]?.monthly == null) {
+      logMissingMarketingListPrice(PLAN_CODE_BY_CARD_ID[planId], currency);
+    }
+  }
 }
