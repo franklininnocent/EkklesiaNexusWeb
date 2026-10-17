@@ -29,5 +29,5 @@ Preview (draft only, token-scoped): `GET /api/public/marketing-plan-catalog/prev
 
 ## Cache
 
-- Laravel: `marketing:published_plan_catalog` (forgotten only after successful marketing publication).
+- Laravel: `marketing:published_plan_catalog` (forgotten on successful marketing publication; empty unpublished responses are not cached).
 - Typical visitor lag: up to ~60s without revalidate hook; faster when `MARKETING_REVALIDATE_SECRET` is configured.
