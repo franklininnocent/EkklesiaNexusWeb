@@ -4,7 +4,7 @@ test("Portuguese homepage renders localized hero and language switcher", async (
   await page.goto("/pt-br", { waitUntil: "domcontentloaded" });
   await expect(page.locator("html")).toHaveAttribute("lang", "pt-BR");
   await expect(
-    page.locator("#home p").getByText("A nova geração de sistema de gestão paroquial.", { exact: true }),
+    page.locator("#home p").getByText("A Próxima Geração de Sistema de Gestão de Igrejas.", { exact: true }),
   ).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Idioma" })).toBeVisible();
   await expect(page.getByRole("link", { name: "English" })).toBeVisible();
@@ -22,7 +22,7 @@ test("language switcher updates homepage copy on client navigation", async ({ pa
   await page.getByRole("navigation", { name: "Language" }).getByRole("link", { name: "Português (Brasil)", exact: true }).click();
   await expect(page).toHaveURL(/\/pt-br/);
   await expect(
-    page.locator("#home p").getByText("A nova geração de sistema de gestão paroquial.", { exact: true }),
+    page.locator("#home p").getByText("A Próxima Geração de Sistema de Gestão de Igrejas.", { exact: true }),
   ).toBeVisible();
   await page
     .getByRole("navigation", { name: "Idioma" })
