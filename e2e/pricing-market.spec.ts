@@ -27,11 +27,18 @@ async function assertStarterMonthly(
   locale: "en-US" | "pt-BR",
 ) {
   await openStarterPrice(page);
-  const amount = currency === "INR" ? "1499.00" : currency === "USD" ? "39.00" : "99.00";
-  const monthly = formatMarketingMoneyFromDecimal(amount, currency, locale);
+  const amounts =
+    currency === "INR"
+      ? { monthly: "1499.00", annual: "14990.00" }
+      : currency === "USD"
+        ? { monthly: "39.00", annual: "390.00" }
+        : { monthly: "99.00", annual: "990.00" };
+  const monthly = formatMarketingMoneyFromDecimal(amounts.monthly, currency, locale);
+  const annual = formatMarketingMoneyFromDecimal(amounts.annual, currency, locale);
   await expect(page.locator("#pricing").getByText(monthly, { exact: true }).first()).toBeVisible({
     timeout: 15_000,
   });
+  await expect(page.locator("#pricing").getByText(annual, { exact: true }).first()).toBeVisible();
 }
 
 const matrix: Array<{
@@ -52,6 +59,24 @@ const matrix: Array<{
 
 test.beforeEach(async ({ page }) => {
   await page.setExtraHTTPHeaders(trustedGeoHeaders(null));
+});
+
+test("every plan shows Show Price while prices are hidden", async ({ page }) => {
+  await page.goto("/#pricing", { waitUntil: "domcontentloaded" });
+  await page.locator("#pricing").scrollIntoViewIfNeeded();
+  await expect(page.locator("#pricing").getByRole("button", { name: /Show Price|Ver preço/i })).toHaveCount(3);
+});
+
+test("hiding a price does not change the revealed amount", async ({ page }) => {
+  await page.setExtraHTTPHeaders(trustedGeoHeaders("US"));
+  await page.goto("/#pricing", { waitUntil: "domcontentloaded" });
+  await openStarterPrice(page);
+  const usd = formatMarketingMoneyFromDecimal("39.00", "USD", "en-US");
+  await expect(page.locator("#pricing").getByText(usd, { exact: true }).first()).toBeVisible();
+  await page.locator("#pricing").getByRole("button", { name: /Hide Price|Ocultar preço/i }).click();
+  await expect(page.locator("#pricing").getByRole("button", { name: /Show Price|Ver preço/i })).toHaveCount(3);
+  await openStarterPrice(page);
+  await expect(page.locator("#pricing").getByText(usd, { exact: true }).first()).toBeVisible();
 });
 
 for (const row of matrix) {

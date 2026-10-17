@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import type { PublicPlanCard } from "@/types/subscription-plans";
-import { buildCardPricesByPlanId, selectMarketingPrice } from "./select-marketing-price";
+import { buildCardNamesByPlanId, buildCardPricesByPlanId, selectMarketingPrice } from "./select-marketing-price";
 
 const starter: PublicPlanCard = {
   code: "STARTER",
@@ -12,8 +12,8 @@ const starter: PublicPlanCard = {
   annual_price: "14990.00",
   regional_prices: {
     INR: { monthly_price: "1499.00", annual_price: "14990.00" },
-    USD: { monthly_price: "39.00", annual_price: null },
-    BRL: { monthly_price: "99.00", annual_price: null },
+    USD: { monthly_price: "39.00", annual_price: "390.00" },
+    BRL: { monthly_price: "99.00", annual_price: "990.00" },
   },
 };
 
@@ -21,7 +21,7 @@ describe("selectMarketingPrice", () => {
   it("picks configured regional amounts without FX", () => {
     assert.deepEqual(selectMarketingPrice(starter, "USD"), {
       monthly: "39.00",
-      annual: null,
+      annual: "390.00",
       currencyCode: "USD",
     });
   });
@@ -55,5 +55,14 @@ describe("buildCardPricesByPlanId", () => {
     assert.equal(cards.seed?.monthly, "39.00");
     assert.equal(cards.growth?.monthly, "39.00");
     assert.equal(cards.summit?.monthly, "39.00");
+  });
+
+  it("uses API plan names and leaves prices null when the catalog is empty", () => {
+    assert.deepEqual(buildCardPricesByPlanId([], "USD"), { seed: null, growth: null, summit: null });
+    assert.deepEqual(buildCardNamesByPlanId([{ ...starter, name: "Starter Parish" }]), {
+      seed: "Starter Parish",
+      growth: null,
+      summit: null,
+    });
   });
 });

@@ -19,7 +19,7 @@ Preview (draft only, token-scoped): `GET /api/public/marketing-plan-catalog/prev
 
 ## Next.js
 
-- **Public homepage `#pricing`** loads `fetchPublishedSubscriptionPlans()` and selects amounts from each plan’s `regional_prices` block using trusted visitor country (IN→INR, BR→BRL, else USD). Card copy/layout stays in the marketing UI; amounts never come from hardcoded catalogs or FX.
+- **Public homepage `#pricing`** loads `fetchPublishedSubscriptionPlans()` and selects amounts from each plan’s `regional_prices` block using trusted visitor country (IN→INR, BR→BRL, else USD). Each card always shows **Show Price**; the revealed amount comes from the published API catalog. If the catalog is unpublished or a regional amount is missing, the control still appears and reveals a contact prompt rather than a fabricated price. Card layout stays in the marketing UI; amounts never come from hardcoded catalogs or FX.
 - Visitor country: nginx sets `X-EN-Geo-Country` from GeoIP or Cloudflare and `X-EN-Geo-Token` (must match `MARKETING_GEO_HEADER_SECRET`). Local dev may use `MARKETING_VISITOR_COUNTRY` when geo headers are absent.
 - Plan JSON fetch: `revalidate: 60` (country-independent). Homepage HTML is `force-dynamic` / private so one region’s prices are not cached for another.
 - Optional on-demand refresh: `POST /api/revalidate-plans` with header `X-Revalidate-Secret` (must match `MARKETING_REVALIDATE_SECRET` on both apps).

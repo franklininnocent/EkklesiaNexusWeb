@@ -25,20 +25,25 @@ type PricingPlan = (typeof PRICING_PLANS)[number];
 
 type PricingPlanCardProps = {
   plan: PricingPlan;
+  displayName: string;
   priceRow: SelectedMarketingPrice | null;
   expanded: boolean;
   onToggle: (planId: string) => void;
 };
 
-function PricingPlanCard({ plan, priceRow, expanded, onToggle }: PricingPlanCardProps) {
+function PricingPlanCard({ plan, displayName, priceRow, expanded, onToggle }: PricingPlanCardProps) {
   const { locale, t } = useI18n();
   const pricePanelId = planPricePanelId(plan.id);
   const hasLimits = Boolean(plan.limits?.length);
-  const currencyCode = priceRow?.currencyCode ?? "USD";
+  const currencyCode = priceRow?.currencyCode;
   const monthly =
-    priceRow?.monthly != null ? formatMarketingMoneyFromDecimal(priceRow.monthly, currencyCode, locale) : "";
+    priceRow?.monthly != null && currencyCode
+      ? formatMarketingMoneyFromDecimal(priceRow.monthly, currencyCode, locale)
+      : "";
   const annual =
-    priceRow?.annual != null ? formatMarketingMoneyFromDecimal(priceRow.annual, currencyCode, locale) : "";
+    priceRow?.annual != null && currencyCode
+      ? formatMarketingMoneyFromDecimal(priceRow.annual, currencyCode, locale)
+      : "";
   const freeMonths =
     priceRow?.monthly != null && priceRow.annual != null
       ? derivedFreeMonthsFromDecimalStrings(priceRow.monthly, priceRow.annual)
@@ -49,7 +54,6 @@ function PricingPlanCard({ plan, priceRow, expanded, onToggle }: PricingPlanCard
     : hasLimits
       ? t("common.pricing.includes")
       : null;
-  const canRevealPrice = Boolean(monthly);
   const panelTransition = { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const };
   const tagline = t(`home.pricing.plans.${plan.id}.tagline`);
 
@@ -61,57 +65,66 @@ function PricingPlanCard({ plan, priceRow, expanded, onToggle }: PricingPlanCard
             {t(`home.pricing.${plan.badgeKey}`)}
           </p>
         ) : null}
-        <h3 className="text-[1.35rem] font-bold text-slate-900">{plan.name}</h3>
+        <h3 className="text-[1.35rem] font-bold text-slate-900">{displayName}</h3>
         {tagline ? (
           <p className="mx-auto mt-2 max-w-[17rem] text-[13px] leading-relaxed text-slate-600">{tagline}</p>
         ) : null}
       </div>
 
-      {canRevealPrice ? (
-        <AnimatePresence initial={false}>
-          {expanded ? (
+      <AnimatePresence initial={false}>
+        {expanded ? (
+          <motion.div
+            key={pricePanelId}
+            id={pricePanelId}
+            role="region"
+            aria-label={t("common.pricing.pricingRegionLabel", { planName: displayName })}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={panelTransition}
+            className="overflow-hidden motion-reduce:transition-none"
+          >
             <motion.div
-              key={pricePanelId}
-              id={pricePanelId}
-              role="region"
-              aria-label={t("common.pricing.pricingRegionLabel", { planName: plan.name })}
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={panelTransition}
-              className="overflow-hidden motion-reduce:transition-none"
+              initial={{ y: 8, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 6, opacity: 0 }}
+              transition={{ duration: 0.26, delay: 0.04, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-5 rounded-2xl bg-white/80 px-4 py-4 text-center shadow-[0_4px_14px_rgba(15,23,42,0.04)] motion-reduce:transition-none"
             >
-              <motion.div
-                initial={{ y: 8, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 6, opacity: 0 }}
-                transition={{ duration: 0.26, delay: 0.04, ease: [0.22, 1, 0.36, 1] }}
-                className="mt-5 rounded-2xl bg-white/80 px-4 py-4 text-center shadow-[0_4px_14px_rgba(15,23,42,0.04)] motion-reduce:transition-none"
-              >
-                <p className="text-[1.45rem] font-bold tracking-tight text-slate-900">
-                  {monthly}{" "}
-                  <span className="text-sm font-semibold text-slate-500">{t("common.pricing.perMonth")}</span>
-                </p>
-                {annual ? (
-                  <p className="mt-1 text-[13px] leading-relaxed text-slate-600">
-                    {t("common.pricing.orAnnual", { annual })}{" "}
-                    <span className="text-slate-500">{t("common.pricing.perYear")}</span>
-                    {freeMonths != null ? (
-                      <>
-                        {" ("}
-                        <span className="font-semibold text-brand-blue">
-                          {t("home.pricing.monthsFreeHighlight")}
-                        </span>
-                        {")"}
-                      </>
-                    ) : null}
+              {monthly ? (
+                <>
+                  <p className="text-[1.45rem] font-bold tracking-tight text-slate-900">
+                    {monthly}{" "}
+                    <span className="text-sm font-semibold text-slate-500">{t("common.pricing.perMonth")}</span>
                   </p>
-                ) : null}
-              </motion.div>
+                  {annual ? (
+                    <p className="mt-1 text-[13px] leading-relaxed text-slate-600">
+                      {t("common.pricing.orAnnual", { annual })}{" "}
+                      <span className="text-slate-500">{t("common.pricing.perYear")}</span>
+                      {freeMonths != null ? (
+                        <>
+                          {" ("}
+                          <span className="font-semibold text-brand-blue">
+                            {t("home.pricing.monthsFreeHighlight")}
+                          </span>
+                          {")"}
+                        </>
+                      ) : null}
+                    </p>
+                  ) : null}
+                </>
+              ) : (
+                <p className="text-[13px] leading-relaxed text-slate-600">
+                  {t("home.pricing.priceUnavailable")}{" "}
+                  <a href="#contact" className="font-semibold text-brand-blue underline-offset-2 hover:underline">
+                    {t("home.pricing.contactForPrice")}
+                  </a>
+                </p>
+              )}
             </motion.div>
-          ) : null}
-        </AnimatePresence>
-      ) : null}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       <div className="mt-6 flex flex-1 flex-col">
         {includesLabel ? (
@@ -142,21 +155,19 @@ function PricingPlanCard({ plan, priceRow, expanded, onToggle }: PricingPlanCard
         </ul>
       </div>
 
-      {canRevealPrice ? (
-        <Button
-          type="button"
-          variant="outline"
-          className={`mt-6 w-full rounded-full border-slate-300 bg-white/90 text-slate-800 hover:bg-white ${
-            plan.featured ? "shadow-md" : "bg-white"
-          }`}
-          onClick={() => onToggle(plan.id)}
-          aria-expanded={expanded}
-          aria-controls={pricePanelId}
-        >
-          {expanded ? <EyeOff className="h-4 w-4" aria-hidden="true" /> : <Eye className="h-4 w-4" aria-hidden="true" />}
-          {expanded ? t("common.pricing.hidePrice") : t("common.pricing.showPrice")}
-        </Button>
-      ) : null}
+      <Button
+        type="button"
+        variant="outline"
+        className={`mt-6 w-full rounded-full border-slate-300 bg-white/90 text-slate-800 hover:bg-white ${
+          plan.featured ? "shadow-md" : "bg-white"
+        }`}
+        onClick={() => onToggle(plan.id)}
+        aria-expanded={expanded}
+        aria-controls={pricePanelId}
+      >
+        {expanded ? <EyeOff className="h-4 w-4" aria-hidden="true" /> : <Eye className="h-4 w-4" aria-hidden="true" />}
+        {expanded ? t("common.actions.hidePrice") : t("common.actions.showPrice")}
+      </Button>
     </article>
   );
 }
@@ -164,9 +175,10 @@ function PricingPlanCard({ plan, priceRow, expanded, onToggle }: PricingPlanCard
 type MockupPricingProps = {
   currencyCode: MarketingCurrency;
   pricesByPlanId: Record<PricingPlanId, SelectedMarketingPrice | null>;
+  namesByPlanId: Record<PricingPlanId, string | null>;
 };
 
-export function MockupPricing({ currencyCode: _currencyCode, pricesByPlanId }: MockupPricingProps) {
+export function MockupPricing({ currencyCode: _currencyCode, pricesByPlanId, namesByPlanId }: MockupPricingProps) {
   const { t } = useI18n();
   const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
 
@@ -183,6 +195,7 @@ export function MockupPricing({ currencyCode: _currencyCode, pricesByPlanId }: M
             <AnimatedReveal key={plan.id} delay={i * 0.07} className="h-full">
               <PricingPlanCard
                 plan={plan}
+                displayName={namesByPlanId[plan.id as PricingPlanId] || plan.name}
                 priceRow={pricesByPlanId[plan.id as PricingPlanId]}
                 expanded={isPlanPriceExpanded(expandedPlanId, plan.id)}
                 onToggle={onTogglePlan}

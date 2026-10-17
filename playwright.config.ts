@@ -36,8 +36,8 @@ export default defineConfig({
             annual_price: "14990.00",
             regional_prices: {
               INR: { monthly_price: "1499.00", annual_price: "14990.00" },
-              USD: { monthly_price: "39.00", annual_price: null },
-              BRL: { monthly_price: "99.00", annual_price: null },
+              USD: { monthly_price: "39.00", annual_price: "390.00" },
+              BRL: { monthly_price: "99.00", annual_price: "990.00" },
             },
           },
           {
@@ -49,8 +49,8 @@ export default defineConfig({
             annual_price: "29990.00",
             regional_prices: {
               INR: { monthly_price: "2999.00", annual_price: "29990.00" },
-              USD: { monthly_price: "59.00", annual_price: null },
-              BRL: { monthly_price: "199.00", annual_price: null },
+              USD: { monthly_price: "59.00", annual_price: "590.00" },
+              BRL: { monthly_price: "199.00", annual_price: "1990.00" },
             },
           },
           {
@@ -62,8 +62,8 @@ export default defineConfig({
             annual_price: "49990.00",
             regional_prices: {
               INR: { monthly_price: "4999.00", annual_price: "49990.00" },
-              USD: { monthly_price: "89.00", annual_price: null },
-              BRL: { monthly_price: "399.00", annual_price: null },
+              USD: { monthly_price: "89.00", annual_price: "890.00" },
+              BRL: { monthly_price: "399.00", annual_price: "3990.00" },
             },
           },
         ],

@@ -12,8 +12,14 @@ import { MockupTestimonialsRow } from "@/components/mockup/testimonials";
 import { MockupTrust } from "@/components/mockup/trust";
 import { headers } from "next/headers";
 import { fetchPublishedSubscriptionPlans } from "@/lib/api/subscription-plans";
-import { buildCardPricesByPlanId } from "@/lib/pricing/select-marketing-price";
+import {
+  PLAN_CODE_BY_CARD_ID,
+  buildCardNamesByPlanId,
+  buildCardPricesByPlanId,
+  logMissingMarketingListPrice,
+} from "@/lib/pricing/select-marketing-price";
 import { marketingCurrencyForRequest } from "@/lib/pricing/resolve-pricing-market";
+import type { PricingPlanId } from "@/data/regional-pricing";
 
 export async function MockupPage() {
   const headerList = await headers();
@@ -22,6 +28,19 @@ export async function MockupPage() {
   const pricesByPlanId = plansResult.ok
     ? buildCardPricesByPlanId(plansResult.plans, currency)
     : { seed: null, growth: null, summit: null };
+  const namesByPlanId = plansResult.ok
+    ? buildCardNamesByPlanId(plansResult.plans)
+    : { seed: null, growth: null, summit: null };
+
+  if (!plansResult.ok) {
+    console.info("marketing.pricing.catalog_unavailable", { status: plansResult.status });
+  } else {
+    for (const planId of Object.keys(PLAN_CODE_BY_CARD_ID) as PricingPlanId[]) {
+      if (pricesByPlanId[planId]?.monthly == null) {
+        logMissingMarketingListPrice(PLAN_CODE_BY_CARD_ID[planId], currency);
+      }
+    }
+  }
 
   return (
     <>
@@ -34,7 +53,12 @@ export async function MockupPage() {
         <MockupSlider />
         <MockupTech />
         <MockupTestimonialsRow />
-        <MockupPricing key={currency} currencyCode={currency} pricesByPlanId={pricesByPlanId} />
+        <MockupPricing
+          key={currency}
+          currencyCode={currency}
+          pricesByPlanId={pricesByPlanId}
+          namesByPlanId={namesByPlanId}
+        />
         <MockupCta />
         <MockupContact />
       </main>
