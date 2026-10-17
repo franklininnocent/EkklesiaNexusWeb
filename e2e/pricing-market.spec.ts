@@ -1,86 +1,83 @@
 import { expect, test } from "@playwright/test";
-import { formatMarketingMoney } from "../src/lib/marketing-money";
-import { getPlanPrice, type PricingMarket } from "../src/data/regional-pricing";
+import { formatMarketingMoneyFromDecimal } from "../src/lib/marketing-money";
+
+const GEO_SECRET = process.env.MARKETING_GEO_HEADER_SECRET || "e2e-geo-secret";
 
 const TAX_SNIPPET = {
   "en-US": "Prices exclude applicable taxes",
   "pt-BR": "Os preços não incluem os impostos aplicáveis",
 };
 
+function trustedGeoHeaders(country: string | null): Record<string, string> {
+  const headers: Record<string, string> = { "x-en-geo-token": GEO_SECRET };
+  if (country) {
+    headers["x-en-geo-country"] = country;
+  }
+  return headers;
+}
+
 async function openStarterPrice(page: import("@playwright/test").Page) {
   await page.locator("#pricing").scrollIntoViewIfNeeded();
   await page.getByRole("button", { name: /Show Price|Ver preço/i }).first().click();
 }
 
-async function assertStarterPrices(
+async function assertStarterMonthly(
   page: import("@playwright/test").Page,
-  market: PricingMarket,
+  currency: "INR" | "USD" | "BRL",
   locale: "en-US" | "pt-BR",
 ) {
   await openStarterPrice(page);
-  const row = getPlanPrice(market, "seed");
-  if (!row) throw new Error("missing plan");
-  const currency = market === "IN" ? "INR" : market === "US" ? "USD" : "BRL";
-  const monthly = formatMarketingMoney(row.monthlyAmount, currency, locale);
-  const annual = formatMarketingMoney(row.annualAmount, currency, locale);
+  const amount = currency === "INR" ? "1499.00" : currency === "USD" ? "39.00" : "99.00";
+  const monthly = formatMarketingMoneyFromDecimal(amount, currency, locale);
   await expect(page.locator("#pricing").getByText(monthly, { exact: true }).first()).toBeVisible({
     timeout: 15_000,
   });
-  await expect(page.locator("#pricing").getByText(annual, { exact: true }).first()).toBeVisible();
 }
 
 const matrix: Array<{
   country: string | null;
   path: string;
   locale: "en-US" | "pt-BR";
-  market: PricingMarket;
+  currency: "INR" | "USD" | "BRL";
 }> = [
-  { country: "IN", path: "/", locale: "en-US", market: "IN" },
-  { country: "IN", path: "/pt-br", locale: "pt-BR", market: "BR" },
-  { country: "BR", path: "/", locale: "en-US", market: "BR" },
-  { country: "BR", path: "/pt-br", locale: "pt-BR", market: "BR" },
-  { country: "US", path: "/", locale: "en-US", market: "US" },
-  { country: "US", path: "/pt-br", locale: "pt-BR", market: "BR" },
-  { country: "DE", path: "/", locale: "en-US", market: "US" },
-  { country: null, path: "/", locale: "en-US", market: "US" },
-  { country: null, path: "/pt-br", locale: "pt-BR", market: "BR" },
+  { country: "IN", path: "/", locale: "en-US", currency: "INR" },
+  { country: "IN", path: "/pt-br", locale: "pt-BR", currency: "INR" },
+  { country: "BR", path: "/", locale: "en-US", currency: "BRL" },
+  { country: "BR", path: "/pt-br", locale: "pt-BR", currency: "BRL" },
+  { country: "US", path: "/", locale: "en-US", currency: "USD" },
+  { country: "US", path: "/pt-br", locale: "pt-BR", currency: "USD" },
+  { country: "DE", path: "/", locale: "en-US", currency: "USD" },
+  { country: null, path: "/", locale: "en-US", currency: "USD" },
 ];
 
+test.beforeEach(async ({ page }) => {
+  await page.setExtraHTTPHeaders(trustedGeoHeaders(null));
+});
+
 for (const row of matrix) {
-  test(`geo ${row.country ?? "none"} ${row.path} → ${row.market}`, async ({ page }) => {
-    const headers: Record<string, string> = {};
-    if (row.country) {
-      headers["cf-ipcountry"] = row.country;
-    }
-    await page.setExtraHTTPHeaders(headers);
+  test(`geo ${row.country ?? "none"} ${row.path} → ${row.currency}`, async ({ page }) => {
+    await page.setExtraHTTPHeaders(trustedGeoHeaders(row.country));
     await page.goto(`${row.path}#pricing`, { waitUntil: "domcontentloaded" });
-    await assertStarterPrices(page, row.market, row.locale);
+    await assertStarterMonthly(page, row.currency, row.locale);
     await expect(page.locator("#pricing")).toContainText(TAX_SNIPPET[row.locale]);
     await expect(page.locator("#pricing")).not.toContainText("%");
   });
 }
 
-test("language switch updates price region when country is not India or Brazil", async ({ page }) => {
-  await page.setExtraHTTPHeaders({ "cf-ipcountry": "US" });
-  await page.goto("/#pricing", { waitUntil: "domcontentloaded" });
-  await openStarterPrice(page);
-  await expect(page.locator("#pricing").getByText("$39", { exact: true }).first()).toBeVisible();
-
-  await page.getByRole("navigation", { name: "Language" }).getByRole("link", { name: "Português (Brasil)", exact: true }).click();
-  await expect(page).toHaveURL(/\/pt-br/);
-  await page.locator("#pricing").scrollIntoViewIfNeeded();
-  await openStarterPrice(page);
-  await expect(page.locator("#pricing").getByText("R$", { exact: false }).first()).toBeVisible();
-});
-
-test("India with English shows INR; Portuguese site shows BRL", async ({ page }) => {
+test("spoofed cf-ipcountry without geo token does not change currency", async ({ page }) => {
   await page.setExtraHTTPHeaders({ "cf-ipcountry": "IN" });
   await page.goto("/#pricing", { waitUntil: "domcontentloaded" });
   await openStarterPrice(page);
-  await expect(page.locator("#pricing").getByText("₹1,499", { exact: true }).first()).toBeVisible();
+  const usd = formatMarketingMoneyFromDecimal("39.00", "USD", "en-US");
+  await expect(page.locator("#pricing").getByText(usd, { exact: true }).first()).toBeVisible();
+});
+
+test("India with English shows INR; Portuguese UI in India still INR", async ({ page }) => {
+  await page.setExtraHTTPHeaders(trustedGeoHeaders("IN"));
+  await page.goto("/#pricing", { waitUntil: "domcontentloaded" });
+  await assertStarterMonthly(page, "INR", "en-US");
 
   await page.getByRole("navigation", { name: "Language" }).getByRole("link", { name: "Português (Brasil)", exact: true }).click();
   await page.locator("#pricing").scrollIntoViewIfNeeded();
-  await openStarterPrice(page);
-  await expect(page.locator("#pricing").getByText("R$", { exact: false }).first()).toBeVisible();
+  await assertStarterMonthly(page, "INR", "pt-BR");
 });

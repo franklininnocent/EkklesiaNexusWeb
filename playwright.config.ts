@@ -21,6 +21,54 @@ export default defineConfig({
     url: "http://localhost:3010",
     reuseExistingServer: true,
     timeout: 120_000,
+    env: {
+      ...process.env,
+      MARKETING_GEO_HEADER_SECRET: process.env.MARKETING_GEO_HEADER_SECRET || "e2e-geo-secret",
+      MARKETING_PRICING_FIXTURE_JSON: JSON.stringify({
+        success: true,
+        data: [
+          {
+            code: "STARTER",
+            name: "Starter",
+            pricing_type: "FIXED",
+            currency_code: "INR",
+            monthly_price: "1499.00",
+            annual_price: "14990.00",
+            regional_prices: {
+              INR: { monthly_price: "1499.00", annual_price: "14990.00" },
+              USD: { monthly_price: "39.00", annual_price: null },
+              BRL: { monthly_price: "99.00", annual_price: null },
+            },
+          },
+          {
+            code: "STANDARD",
+            name: "Standard",
+            pricing_type: "FIXED",
+            currency_code: "INR",
+            monthly_price: "2999.00",
+            annual_price: "29990.00",
+            regional_prices: {
+              INR: { monthly_price: "2999.00", annual_price: "29990.00" },
+              USD: { monthly_price: "59.00", annual_price: null },
+              BRL: { monthly_price: "199.00", annual_price: null },
+            },
+          },
+          {
+            code: "PROFESSIONAL",
+            name: "Professional",
+            pricing_type: "FIXED",
+            currency_code: "INR",
+            monthly_price: "4999.00",
+            annual_price: "49990.00",
+            regional_prices: {
+              INR: { monthly_price: "4999.00", annual_price: "49990.00" },
+              USD: { monthly_price: "89.00", annual_price: null },
+              BRL: { monthly_price: "399.00", annual_price: null },
+            },
+          },
+        ],
+      }),
+    },
   },
   projects: [
     {

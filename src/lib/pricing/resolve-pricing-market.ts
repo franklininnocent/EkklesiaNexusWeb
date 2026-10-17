@@ -1,62 +1,68 @@
-import { type PricingMarket } from "@/data/regional-pricing";
-import type { AppLocale } from "@/lib/i18n/locale";
+import type { MarketingCurrency } from "@/lib/pricing/marketing-currency";
+import { currencyForVisitorCountry } from "@/lib/pricing/marketing-currency";
 
-const COUNTRY_HEADER_KEYS = [
-  "x-en-country",
-  "cf-ipcountry",
-  "x-vercel-ip-country",
-  "cloudfront-viewer-country",
-  "x-country-code",
-] as const;
+const GEO_COUNTRY_HEADER = "x-en-geo-country";
+const GEO_TOKEN_HEADER = "x-en-geo-token";
 
-/** ISO 3166-1 alpha-2 from CDN/proxy headers when present. */
-export function visitorCountryFromRequestHeaders(headerSource: Headers): string | null {
-  for (const key of COUNTRY_HEADER_KEYS) {
-    const raw = headerSource.get(key)?.trim();
-    if (!raw || raw.length !== 2) {
-      continue;
-    }
-    const code = raw.toUpperCase();
-    if (/^[A-Z]{2}$/.test(code) && code !== "XX" && code !== "T1") {
-      return code;
-    }
+function geoHeaderSecret(): string {
+  return process.env.MARKETING_GEO_HEADER_SECRET?.trim() ?? "";
+}
+
+function isValidCountryCode(code: string): boolean {
+  return /^[A-Z]{2}$/.test(code) && code !== "XX" && code !== "T1";
+}
+
+function trustedCountryFromGeoHeaders(headerSource: Headers): string | null {
+  const rawCountry = headerSource.get(GEO_COUNTRY_HEADER)?.trim().toUpperCase();
+  if (!rawCountry || !isValidCountryCode(rawCountry)) {
+    return null;
   }
-  return null;
+
+  const secret = geoHeaderSecret();
+  if (secret === "") {
+    return null;
+  }
+
+  const token = headerSource.get(GEO_TOKEN_HEADER)?.trim() ?? "";
+  if (token !== secret) {
+    return null;
+  }
+
+  return rawCountry;
 }
 
 function countryFromEnvOverride(): string | null {
   const raw = process.env.MARKETING_VISITOR_COUNTRY?.trim().toUpperCase();
-  if (!raw || raw.length !== 2 || !/^[A-Z]{2}$/.test(raw)) {
+  if (!raw || !isValidCountryCode(raw)) {
     return null;
   }
   return raw;
 }
 
 /**
- * Country for pricing: CDN/proxy headers, then optional `MARKETING_VISITOR_COUNTRY` (e.g. localhost in India).
+ * Visitor country for marketing pricing: trusted geo headers (nginx + secret), else dev env override.
  */
 export function visitorCountryForPricing(headerSource: Headers): string | null {
-  const fromHeader = visitorCountryFromRequestHeaders(headerSource);
-  if (fromHeader) {
-    return fromHeader;
+  const trusted = trustedCountryFromGeoHeaders(headerSource);
+  if (trusted) {
+    return trusted;
   }
   return countryFromEnvOverride();
 }
 
-/**
- * Marketing price list from visitor country and interface locale.
- * Brazil or Portuguese → BRL; India with English → INR; otherwise English → USD.
- */
+/** @deprecated Use currencyForVisitorCountry(visitorCountryForPricing(...)) */
+export function visitorCountryFromRequestHeaders(_headerSource: Headers): string | null {
+  return null;
+}
+
+/** @deprecated Use currencyForVisitorCountry */
 export function resolvePricingMarketFromContext(
   countryCode: string | null | undefined,
-  locale: AppLocale,
-): PricingMarket {
-  const country = countryCode?.trim().toUpperCase() ?? null;
-  if (country === "BR" || locale === "pt-BR") {
-    return "BR";
-  }
-  if (country === "IN" && locale === "en-US") {
-    return "IN";
-  }
-  return "US";
+  _locale: unknown,
+): MarketingCurrency {
+  return currencyForVisitorCountry(countryCode);
+}
+
+export function marketingCurrencyForRequest(headerSource: Headers): MarketingCurrency {
+  return currencyForVisitorCountry(visitorCountryForPricing(headerSource));
 }
