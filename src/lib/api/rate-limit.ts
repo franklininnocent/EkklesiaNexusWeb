@@ -53,8 +53,25 @@ export function consumeMemoryRateLimit(
 
 export const consumeRateLimit = consumeMemoryRateLimit;
 
-function failClosed(limit: number): RateLimitResult {
-  return { allowed: false, remaining: 0, limit, retryAfterSeconds: 30 };
+const loggedDegrade = new Set<string>();
+
+/**
+ * Shared Redis limiting is preferred. When it cannot run, keep a per-process
+ * counter so a missing secret, an unresolved visitor address, or a throttle
+ * outage does not take the CAPTCHA and public forms offline.
+ */
+function degradeToMemory(
+  reason: string,
+  bucket: BffThrottleBucket,
+  clientIp: string,
+  limit: number,
+  windowMs: number,
+): RateLimitResult {
+  if (!loggedDegrade.has(reason)) {
+    loggedDegrade.add(reason);
+    console.error(`Marketing rate limit is using a local counter (${reason}).`);
+  }
+  return consumeMemoryRateLimit(`${bucket}:${clientIp}`, limit, windowMs);
 }
 
 export async function consumeSharedRateLimit(
@@ -65,20 +82,13 @@ export async function consumeSharedRateLimit(
 ): Promise<RateLimitResult> {
   const secret = process.env.MARKETING_BFF_SECRET?.trim();
   const base = process.env.LARAVEL_API_URL?.trim().replace(/\/$/, "");
-  const production = process.env.NODE_ENV === "production";
 
   if (!secret || !base) {
-    if (production) {
-      return failClosed(limit);
-    }
-    return consumeMemoryRateLimit(`${bucket}:${clientIp}`, limit, windowMs);
+    return degradeToMemory("shared limiter is not configured", bucket, clientIp, limit, windowMs);
   }
 
   if (clientIp === "unknown") {
-    if (production) {
-      return failClosed(limit);
-    }
-    return { allowed: true, remaining: limit, limit, retryAfterSeconds: Math.ceil(windowMs / 1000) };
+    return degradeToMemory("visitor address is unresolved", bucket, clientIp, limit, windowMs);
   }
 
   const controller = new AbortController();
@@ -107,7 +117,7 @@ export async function consumeSharedRateLimit(
     }
 
     if (!response.ok) {
-      return failClosed(limit);
+      return degradeToMemory(`throttle endpoint returned ${response.status}`, bucket, clientIp, limit, windowMs);
     }
 
     const json = (await response.json()) as { remaining?: number; limit?: number };
@@ -118,7 +128,7 @@ export async function consumeSharedRateLimit(
       retryAfterSeconds: Math.ceil(windowMs / 1000),
     };
   } catch {
-    return failClosed(limit);
+    return degradeToMemory("throttle endpoint was unreachable", bucket, clientIp, limit, windowMs);
   } finally {
     clearTimeout(timeout);
   }
