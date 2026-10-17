@@ -13,34 +13,27 @@ import { MockupTrust } from "@/components/mockup/trust";
 import { headers } from "next/headers";
 import { fetchPublishedSubscriptionPlans } from "@/lib/api/subscription-plans";
 import {
-  PLAN_CODE_BY_CARD_ID,
   buildCardNamesByPlanId,
   buildCardPricesByPlanId,
-  logMissingMarketingListPrice,
+  logMarketingPricingDiagnostics,
+  pickHomepagePricingPlans,
+  pricingCatalogStateFromFetch,
 } from "@/lib/pricing/select-marketing-price";
 import { marketingCurrencyForRequest } from "@/lib/pricing/resolve-pricing-market";
-import type { PricingPlanId } from "@/data/regional-pricing";
-
 export async function MockupPage() {
   const headerList = await headers();
   const currency = marketingCurrencyForRequest(headerList);
   const plansResult = await fetchPublishedSubscriptionPlans();
+  const pricingPlans = plansResult.ok ? pickHomepagePricingPlans(plansResult.plans) : [];
   const pricesByPlanId = plansResult.ok
-    ? buildCardPricesByPlanId(plansResult.plans, currency)
+    ? buildCardPricesByPlanId(pricingPlans, currency)
     : { seed: null, growth: null, summit: null };
   const namesByPlanId = plansResult.ok
-    ? buildCardNamesByPlanId(plansResult.plans)
+    ? buildCardNamesByPlanId(pricingPlans)
     : { seed: null, growth: null, summit: null };
+  const catalogState = pricingCatalogStateFromFetch(plansResult);
 
-  if (!plansResult.ok) {
-    console.info("marketing.pricing.catalog_unavailable", { status: plansResult.status });
-  } else {
-    for (const planId of Object.keys(PLAN_CODE_BY_CARD_ID) as PricingPlanId[]) {
-      if (pricesByPlanId[planId]?.monthly == null) {
-        logMissingMarketingListPrice(PLAN_CODE_BY_CARD_ID[planId], currency);
-      }
-    }
-  }
+  logMarketingPricingDiagnostics(plansResult, pricesByPlanId, currency);
 
   return (
     <>
@@ -56,6 +49,7 @@ export async function MockupPage() {
         <MockupPricing
           key={currency}
           currencyCode={currency}
+          catalogState={catalogState}
           pricesByPlanId={pricesByPlanId}
           namesByPlanId={namesByPlanId}
         />

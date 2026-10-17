@@ -12,7 +12,7 @@ import { useI18n } from "@/lib/i18n/i18n-provider";
 import { formatMarketingMoneyFromDecimal } from "@/lib/marketing-money";
 import type { MarketingCurrency } from "@/lib/pricing/marketing-currency";
 import { derivedFreeMonthsFromDecimalStrings } from "@/lib/pricing/marketing-pricing-math";
-import type { SelectedMarketingPrice } from "@/lib/pricing/select-marketing-price";
+import type { PricingCatalogState, SelectedMarketingPrice } from "@/lib/pricing/select-marketing-price";
 import { isPlanPriceExpanded, planPricePanelId, toggleExpandedPlanId } from "@/lib/pricing-expand";
 
 const tones = {
@@ -27,11 +27,12 @@ type PricingPlanCardProps = {
   plan: PricingPlan;
   displayName: string;
   priceRow: SelectedMarketingPrice | null;
+  catalogState: PricingCatalogState;
   expanded: boolean;
   onToggle: (planId: string) => void;
 };
 
-function PricingPlanCard({ plan, displayName, priceRow, expanded, onToggle }: PricingPlanCardProps) {
+function PricingPlanCard({ plan, displayName, priceRow, catalogState, expanded, onToggle }: PricingPlanCardProps) {
   const { locale, t } = useI18n();
   const pricePanelId = planPricePanelId(plan.id);
   const hasLimits = Boolean(plan.limits?.length);
@@ -115,7 +116,9 @@ function PricingPlanCard({ plan, displayName, priceRow, expanded, onToggle }: Pr
                 </>
               ) : (
                 <p className="text-[13px] leading-relaxed text-slate-600">
-                  {t("home.pricing.priceUnavailable")}{" "}
+                  {catalogState === "ready"
+                    ? t("home.pricing.priceUnavailable")
+                    : t("home.pricing.catalogUnpublished")}{" "}
                   <a href="#contact" className="font-semibold text-brand-blue underline-offset-2 hover:underline">
                     {t("home.pricing.contactForPrice")}
                   </a>
@@ -145,6 +148,7 @@ function PricingPlanCard({ plan, displayName, priceRow, expanded, onToggle }: Pr
             ))}
           </ul>
         ) : null}
+        {/* Feature bullets are local i18n copy — not loaded from the subscription API. */}
         <ul className="flex flex-1 flex-col gap-2.5 text-[13px] leading-snug text-slate-700">
           {plan.featureKeys.map((featureKey) => (
             <li key={featureKey} className="flex gap-2">
@@ -157,8 +161,8 @@ function PricingPlanCard({ plan, displayName, priceRow, expanded, onToggle }: Pr
 
       <Button
         type="button"
-        variant="outline"
-        className={`mt-6 w-full rounded-full border-slate-300 bg-white/90 text-slate-800 hover:bg-white ${
+        variant={plan.featured ? "primary" : "outline"}
+        className={`mt-7 w-full gap-2 whitespace-normal rounded-full py-2.5 text-sm transition-transform duration-200 active:scale-[0.98] motion-reduce:transform-none ${
           plan.featured ? "shadow-md" : "bg-white"
         }`}
         onClick={() => onToggle(plan.id)}
@@ -174,11 +178,17 @@ function PricingPlanCard({ plan, displayName, priceRow, expanded, onToggle }: Pr
 
 type MockupPricingProps = {
   currencyCode: MarketingCurrency;
+  catalogState: PricingCatalogState;
   pricesByPlanId: Record<PricingPlanId, SelectedMarketingPrice | null>;
   namesByPlanId: Record<PricingPlanId, string | null>;
 };
 
-export function MockupPricing({ currencyCode: _currencyCode, pricesByPlanId, namesByPlanId }: MockupPricingProps) {
+export function MockupPricing({
+  currencyCode: _currencyCode,
+  catalogState,
+  pricesByPlanId,
+  namesByPlanId,
+}: MockupPricingProps) {
   const { t } = useI18n();
   const [expandedPlanId, setExpandedPlanId] = useState<string | null>(null);
 
@@ -197,6 +207,7 @@ export function MockupPricing({ currencyCode: _currencyCode, pricesByPlanId, nam
                 plan={plan}
                 displayName={namesByPlanId[plan.id as PricingPlanId] || plan.name}
                 priceRow={pricesByPlanId[plan.id as PricingPlanId]}
+                catalogState={catalogState}
                 expanded={isPlanPriceExpanded(expandedPlanId, plan.id)}
                 onToggle={onTogglePlan}
               />

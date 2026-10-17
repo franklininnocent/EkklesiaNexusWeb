@@ -6,7 +6,9 @@ import { visitorCountryForPricing } from "./resolve-pricing-market";
 describe("currencyForVisitorCountry", () => {
   it("maps India, Brazil, and default to USD", () => {
     assert.equal(currencyForVisitorCountry("IN"), "INR");
+    assert.equal(currencyForVisitorCountry("in"), "INR");
     assert.equal(currencyForVisitorCountry("BR"), "BRL");
+    assert.equal(currencyForVisitorCountry("br"), "BRL");
     assert.equal(currencyForVisitorCountry("US"), "USD");
     assert.equal(currencyForVisitorCountry("GB"), "USD");
     assert.equal(currencyForVisitorCountry("PT"), "USD");

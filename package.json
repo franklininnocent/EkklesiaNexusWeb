@@ -16,6 +16,7 @@
     "generate:review-matrix": "tsx scripts/generate-review-matrix.ts",
     "test:unit": "tsx src/lib/application-entry.test.ts && tsx src/lib/contact-form-validation.test.ts && tsx src/lib/i18n/locale.test.ts && tsx src/lib/pricing-expand.test.ts && tsx src/lib/pricing/map-public-plans.test.ts && tsx src/data/regional-pricing.test.ts && tsx src/lib/pricing/select-marketing-price.test.ts && tsx src/lib/marketing-money.test.ts && tsx src/lib/pricing/market-preference.test.ts && tsx src/lib/pricing/resolve-pricing-market.test.ts && tsx scripts/seo-metadata.test.ts && tsx scripts/robots-policy.test.ts && tsx src/lib/marketing/ga4-events.test.ts && tsx src/lib/api/rate-limit.test.ts && tsx src/lib/api/secrets.test.ts && tsx src/lib/marketing/ga4-id.test.ts && tsx src/lib/api/client-ip.test.ts",
     "test:e2e": "bash scripts/ensure-webkit-host-libs.sh && playwright test",
+    "test:e2e:pricing-empty": "bash scripts/ensure-webkit-host-libs.sh && MARKETING_PRICING_FIXTURE_JSON='{\"success\":true,\"data\":[]}' playwright test e2e/pricing-empty-catalog.spec.ts --project=chrome",
     "test:e2e:i18n-evidence": "bash scripts/ensure-webkit-host-libs.sh && playwright test e2e/i18n-evidence.spec.ts --project=chrome",
     "generate:og": "python3 scripts/generate-og-preview.py",
     "generate:brand-webp": "bash scripts/export-brand-webp.sh",

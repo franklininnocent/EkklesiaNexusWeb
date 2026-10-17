@@ -210,6 +210,7 @@
       },
       "taxDisclaimer": "Os preços não incluem os impostos aplicáveis. Eventuais impostos serão determinados separadamente com base nos dados de faturamento do cliente e na legislação aplicável.",
       "priceUnavailable": "O preço deste plano não está disponível para a sua região.",
+      "catalogUnpublished": "Os preços publicados ainda não estão no site.",
       "contactForPrice": "Fale conosco sobre o preço",
       "badgeMostPopular": "Mais popular",
       "limitsPeople": "Pessoas",

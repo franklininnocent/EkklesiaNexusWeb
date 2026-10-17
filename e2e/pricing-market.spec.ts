@@ -54,6 +54,8 @@ const matrix: Array<{
   { country: "US", path: "/", locale: "en-US", currency: "USD" },
   { country: "US", path: "/pt-br", locale: "pt-BR", currency: "USD" },
   { country: "DE", path: "/", locale: "en-US", currency: "USD" },
+  { country: "GB", path: "/", locale: "en-US", currency: "USD" },
+  { country: "PT", path: "/", locale: "en-US", currency: "USD" },
   { country: null, path: "/", locale: "en-US", currency: "USD" },
 ];
 
@@ -95,6 +97,23 @@ test("spoofed cf-ipcountry without geo token does not change currency", async ({
   await openStarterPrice(page);
   const usd = formatMarketingMoneyFromDecimal("39.00", "USD", "en-US");
   await expect(page.locator("#pricing").getByText(usd, { exact: true }).first()).toBeVisible();
+});
+
+test("featured Standard plan Show Price uses primary button styling", async ({ page }) => {
+  await page.goto("/#pricing", { waitUntil: "domcontentloaded" });
+  const standardCard = page.locator("#pricing article").nth(1);
+  const starterCard = page.locator("#pricing article").nth(0);
+  await expect(standardCard.getByRole("button", { name: /Show Price|Ver preço/i })).toHaveClass(/bg-brand-blue/);
+  await expect(starterCard.getByRole("button", { name: /Show Price|Ver preço/i })).toHaveClass(/border-brand-blue/);
+});
+
+test("Show Price expands via keyboard", async ({ page }) => {
+  await page.setExtraHTTPHeaders(trustedGeoHeaders("US"));
+  await page.goto("/#pricing", { waitUntil: "domcontentloaded" });
+  const button = page.locator("#pricing article").first().getByRole("button", { name: /Show Price/i });
+  await button.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#pricing").getByRole("button", { name: /Hide Price/i }).first()).toBeVisible();
 });
 
 test("India with English shows INR; Portuguese UI in India still INR", async ({ page }) => {
