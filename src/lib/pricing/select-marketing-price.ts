@@ -65,3 +65,16 @@ export function buildCardPricesByPlanId(
 
   return out;
 }
+
+export function buildCardNamesByPlanId(plans: PublicPlanCard[]): Record<PricingPlanId, string | null> {
+  const byCode = new Map(plans.map((p) => [p.code, p]));
+  return {
+    seed: byCode.get("STARTER")?.name?.trim() || null,
+    growth: byCode.get("STANDARD")?.name?.trim() || null,
+    summit: byCode.get("PROFESSIONAL")?.name?.trim() || null,
+  };
+}
+
+export function logMissingMarketingListPrice(planCode: string, currency: MarketingCurrency): void {
+  console.info("marketing.pricing.missing_list_price", { plan_code: planCode, currency });
+}
