@@ -11,15 +11,17 @@ Plan-specific **Show on website / Hide on website** flags live on the draft mark
 
 ## Public API
 
-`GET /api/public/subscription-plans` returns `{ success: true, data: PublicPlanCard[] }` from the **currently published marketing revision only**. If nothing is published, `data` is `[]`.
+`GET /api/public/subscription-plans` (e.g. `https://api.ekklesianexus.com/api/public/subscription-plans`) returns `{ success: true, data: PublicPlanCard[] }` from the **currently published marketing revision only**. If nothing is published, `data` is `[]`.
+
+Each plan includes `regional_prices` built from **`plan_catalog_prices`** (`IN` / `US` / `BR` rows → INR / USD / BRL). If an `IN` row is missing at publish time, INR is taken from the active `plan_version` until admins add the India row.
 
 Preview (draft only, token-scoped): `GET /api/public/marketing-plan-catalog/preview?token=…`
 
 ## Next.js
 
-- **Public homepage `#pricing`** uses regional demonstration data (`regional-pricing.ts`), not this API. That keeps marketing copy independent of the published catalog until product explicitly approves a catalog-backed `/pricing` URL.
-- Server fetch: `fetchPublishedSubscriptionPlans()` using `LARAVEL_API_URL` (used for `/preview/plans` and internal flows).
-- ISR: `revalidate: 60` on the homepage pricing section.
+- **Public homepage `#pricing`** loads `fetchPublishedSubscriptionPlans()` and selects amounts from each plan’s `regional_prices` block using trusted visitor country (IN→INR, BR→BRL, else USD). Card copy/layout stays in the marketing UI; amounts never come from hardcoded catalogs or FX.
+- Visitor country: nginx sets `X-EN-Geo-Country` from GeoIP or Cloudflare and `X-EN-Geo-Token` (must match `MARKETING_GEO_HEADER_SECRET`). Local dev may use `MARKETING_VISITOR_COUNTRY` when geo headers are absent.
+- Plan JSON fetch: `revalidate: 60` (country-independent). Homepage HTML is `force-dynamic` / private so one region’s prices are not cached for another.
 - Optional on-demand refresh: `POST /api/revalidate-plans` with header `X-Revalidate-Secret` (must match `MARKETING_REVALIDATE_SECRET` on both apps).
 - Live preview: `/preview/plans?token=…` (noindex). Local dev: `npm run dev` serves **port 3010** (matches Angular `websiteUrl`).
 - Embedded preview in the parish app requires `MARKETING_PREVIEW_FRAME_ANCESTORS` (optional; defaults include `http://localhost:4200` in development).

@@ -29,6 +29,13 @@ export type PublicPlanCoverageRow = PublicPlanFeature & {
   unlimited?: boolean;
 };
 
+export type RegionalPriceEntry = {
+  monthly_price: string | null;
+  annual_price: string | null;
+};
+
+export type PublicPlanRegionalPrices = Partial<Record<"INR" | "USD" | "BRL", RegionalPriceEntry>>;
+
 export type PublicPlanCard = {
   code: string;
   name: string;
@@ -49,6 +56,7 @@ export type PublicPlanCard = {
   limits?: PublicPlanLimit[];
   coverage?: PublicPlanCoverageRow[];
   version_number?: number;
+  regional_prices?: PublicPlanRegionalPrices;
 };
 
 export type PricingViewPlan = {
