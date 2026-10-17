@@ -32,11 +32,14 @@ export function ContactCaptchaField({
   const { t } = useI18n();
   const { captchaImage, captchaLoading, captchaError, loadCaptcha } = captcha;
 
+  const imageReady = Boolean(captchaImage) || captchaLoading;
   const imageRegion = (
     <div
       className={
         variant === "mockup"
-          ? "flex h-16 w-full max-w-[220px] items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50"
+          ? imageReady
+            ? "flex h-16 w-full max-w-[220px] shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-md)] border border-slate-300 bg-slate-50"
+            : "flex min-h-16 w-full items-center justify-center rounded-[var(--radius-md)] border border-rose-200 bg-rose-50 px-3 py-2.5"
           : "flex h-16 min-w-[220px] flex-1 items-center justify-center rounded-[var(--radius-md)] border border-[var(--border-subtle)] bg-slate-50"
       }
     >
@@ -54,12 +57,12 @@ export function ContactCaptchaField({
           className="h-16 w-full max-w-[220px] object-contain"
         />
       ) : (
-        <div className="px-2 text-center text-xs text-rose-700" role="alert">
+        <div className="px-2.5 text-center text-xs leading-snug break-words text-rose-700" role="alert">
           <p>{captchaError ?? t("common.states.unavailable")}</p>
           {captchaError ? (
             <button
               type="button"
-              className="mt-2 font-medium text-slate-700 underline underline-offset-2"
+              className="mt-1 inline-flex min-h-11 items-center font-medium text-slate-700 underline underline-offset-2"
               onClick={() => void loadCaptcha()}
             >
               {t("common.actions.tryAgain")}
@@ -75,7 +78,7 @@ export function ContactCaptchaField({
       type="button"
       className={
         variant === "mockup"
-          ? "inline-flex h-11 min-h-11 items-center gap-1.5 rounded-lg border border-slate-200 px-3 text-sm text-slate-700 hover:bg-slate-50"
+          ? "inline-flex h-11 min-h-11 shrink-0 items-center gap-1.5 rounded-[var(--radius-md)] border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700 transition-colors duration-150 hover:border-slate-400 hover:bg-slate-50"
           : "rounded-[var(--radius-md)] border border-[var(--border-subtle)] px-3 py-2 text-sm"
       }
       onClick={() => void loadCaptcha()}
@@ -87,11 +90,11 @@ export function ContactCaptchaField({
   );
 
   return (
-    <div className={variant === "mockup" ? "min-h-[104px]" : undefined}>
+    <div>
       <div
         className={
           variant === "mockup"
-            ? "flex min-w-0 flex-wrap items-start gap-3"
+            ? "flex min-w-0 flex-wrap items-center gap-2.5"
             : "mt-1 flex flex-wrap items-center gap-2"
         }
       >
@@ -104,14 +107,17 @@ export function ContactCaptchaField({
         autoComplete="off"
         spellCheck={false}
         placeholder={t("forms.contact.captcha.placeholder")}
-        className={variant === "mockup" ? "mt-2" : fieldClassStacked}
+        boxed={variant === "mockup"}
+        required={variant === "mockup"}
+        aria-required={variant === "mockup" ? true : undefined}
+        className={variant === "mockup" ? "mt-2.5" : fieldClassStacked}
         aria-describedby={[helpId, describedBy].filter(Boolean).join(" ") || undefined}
         aria-invalid={invalid}
         value={value}
         onChange={(e) => onValueChange(e.target.value)}
         onBlur={onBlur}
       />
-      <p id={helpId} className="mt-1 text-[12px] text-slate-500">
+      <p id={helpId} className={variant === "mockup" ? "mt-1.5 text-xs leading-5 text-slate-500" : "mt-1 text-[12px] text-slate-500"}>
         {t("forms.contact.captchaHelp")}
       </p>
     </div>

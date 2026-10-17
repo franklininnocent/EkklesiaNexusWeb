@@ -38,7 +38,25 @@ function parseEnvelope(body: ApiEnvelope | null, status: number): FetchPublicPla
   return { ok: true, plans: body.data };
 }
 
+function fixturePlansResult(): FetchPublicPlansResult | null {
+  const raw = process.env.MARKETING_PRICING_FIXTURE_JSON?.trim();
+  if (!raw || process.env.NODE_ENV === "production") {
+    return null;
+  }
+  try {
+    const body = JSON.parse(raw) as ApiEnvelope;
+    return parseEnvelope(body, 200);
+  } catch {
+    return { ok: false, status: 502, message: "Invalid MARKETING_PRICING_FIXTURE_JSON." };
+  }
+}
+
 async function fetchPlansFromPath(path: string, revalidate: number | false): Promise<FetchPublicPlansResult> {
+  const fixture = fixturePlansResult();
+  if (fixture) {
+    return fixture;
+  }
+
   const base = siteConfig.laravelApiUrl.replace(/\/$/, "");
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);

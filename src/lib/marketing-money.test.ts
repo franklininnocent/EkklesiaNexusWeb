@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { formatMarketingMoney } from "./marketing-money";
+import { formatMarketingMoney, formatMarketingMoneyFromDecimal } from "./marketing-money";
+
+describe("formatMarketingMoneyFromDecimal", () => {
+  it("preserves non-zero fractional digits", () => {
+    assert.equal(formatMarketingMoneyFromDecimal("39.50", "USD", "en-US"), "$39.50");
+  });
+});
 
 describe("formatMarketingMoney", () => {
   it("formats en-US INR", () => {
