@@ -35,6 +35,7 @@
   },
   "footer": {
     "features": "Recursos",
+    "catholicParishes": "Paróquias católicas",
     "about": "Sobre",
     "contact": "Contato",
     "terms": "Termos",
@@ -71,6 +72,8 @@
     "features": {
       "title": "Recursos",
       "subtitle": "O EkklesiaNexus unifica pessoas, dízimos e fluxos de ministério — escolhido por comunidades que pensam no futuro.",
+      "exploreLink": "Explore church management features",
+      "catholicParishesLink": "Catholic parish management software",
       "members": {
         "title": "Famílias e fiéis",
         "body": "Mantenha famílias, fiéis e funções em um cadastro único e integrado."
@@ -432,13 +435,13 @@
   },
   "seo": {
     "homeTitle": "EkklesiaNexus — Sistema de gestão paroquial de nova geração",
-    "homeDescription": "O EkklesiaNexus é um sistema completo de gestão paroquial em 360° para famílias, fiéis, sacramentos, dízimos, ministérios, liderança, projetos, relatórios e muito mais em uma experiência integrada.",
+    "homeDescription": "O EkklesiaNexus é um software de gestão paroquial para equipes da igreja—famílias, registros sacramentais, mordomia, ministérios, intenções de missa e relatórios em uma plataforma integrada.",
     "privacyTitle": "Privacidade — EkklesiaNexus",
     "privacyDescription": "Informações de privacidade do site institucional EkklesiaNexus.",
     "termsTitle": "Termos — EkklesiaNexus",
     "termsDescription": "Termos de uso do site institucional EkklesiaNexus.",
     "notFoundTitle": "Página não encontrada — EkklesiaNexus",
-    "manifestDescription": "O EkklesiaNexus é um sistema completo de gestão paroquial em 360° para famílias, fiéis, sacramentos, dízimos, ministérios, liderança, projetos, relatórios e muito mais em uma experiência integrada.",
+    "manifestDescription": "O EkklesiaNexus é um software de gestão paroquial para equipes da igreja—famílias, registros sacramentais, mordomia, ministérios, intenções de missa e relatórios em uma plataforma integrada.",
     "structuredDataAvailableLanguageEn": "English",
     "structuredDataAvailableLanguagePt": "Português"
   }

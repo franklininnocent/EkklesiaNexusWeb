@@ -26,9 +26,18 @@ export default function AboutPage() {
             <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
-        <p className="mt-10 text-sm text-slate-500">
-          <Link href="/contact" className="font-medium text-brand-blue hover:underline">Contact us</Link>
-          {" · "}
+        <p className="mt-10 max-w-3xl text-sm leading-relaxed text-slate-600">
+          Evaluating software for a Catholic parish? Read the{" "}
+          <Link href="/solutions/catholic-parishes" className="font-medium text-brand-blue hover:underline">
+            Catholic parish management overview
+          </Link>
+          , browse{" "}
+          <Link href="/features" className="font-medium text-brand-blue hover:underline">church management features</Link>
+          , or{" "}
+          <Link href="/contact" className="font-medium text-brand-blue hover:underline">contact our team</Link>
+          . Subscription plans on the homepage use country-aware pricing from the public catalog—not fixed figures in marketing copy.
+        </p>
+        <p className="mt-4 text-sm text-slate-500">
           <StaffAppLink href={officialBrand.applicationUrl} className="font-medium text-brand-blue hover:underline">
             Open Application (staff sign-in)
           </StaffAppLink>

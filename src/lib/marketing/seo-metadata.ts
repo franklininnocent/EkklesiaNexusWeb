@@ -36,10 +36,7 @@ export function buildPageMetadata(
   const canonical = path === "/" ? `${base}/` : `${base}${path}`;
   const alternates =
     page.id === "home"
-      ? {
-          ...localizedAlternates("home"),
-          canonical,
-        }
+      ? localizedAlternates("home", locale)
       : { canonical };
   const ogImage = page.ogImage ?? seo.defaultOgImage;
   const ogTitle = page.ogTitle ?? page.seoTitle;
@@ -164,7 +161,7 @@ export function buildStructuredDataGraph(
         name: officialBrand.productName,
         applicationCategory: "BusinessApplication",
         operatingSystem: "Web",
-        url: base,
+        url: officialBrand.applicationUrl,
         description: home.seoDescription,
         publisher: { "@id": organizationId },
       },

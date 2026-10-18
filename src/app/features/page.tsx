@@ -24,7 +24,11 @@ export default function FeaturesHubPage() {
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Church management features</h1>
         <p className="mt-4 max-w-3xl text-pretty text-base leading-relaxed text-slate-600">
           Explore verified EkklesiaNexus capabilities for parish office work. These pages describe modules in the
-          application—not every card on the homepage showcase.
+          application—not every card on the homepage showcase. Catholic parishes can start with our{" "}
+          <Link href="/solutions/catholic-parishes" className="font-medium text-brand-blue hover:underline">
+            Catholic parish management overview
+          </Link>
+          .
         </p>
         <ul className="mt-10 grid gap-4 sm:grid-cols-2">
           {FEATURE_SLUGS.map((slug) => {
