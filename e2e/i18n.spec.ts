@@ -17,7 +17,7 @@ test("Portuguese homepage renders localized hero and language switcher", async (
 test("language switcher updates homepage copy on client navigation", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await expect(
-    page.locator("#home p").getByText(/Church management software for parish administrators/i),
+    page.locator("#home p").getByText("The Next Generation of Church Management System.", { exact: true }),
   ).toBeVisible();
   await page.getByRole("navigation", { name: "Language" }).getByRole("link", { name: "Português (Brasil)", exact: true }).click();
   await expect(page).toHaveURL(/\/pt-br/);
@@ -31,7 +31,7 @@ test("language switcher updates homepage copy on client navigation", async ({ pa
     .click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await expect(
-    page.locator("#home p").getByText(/Church management software for parish administrators/i),
+    page.locator("#home p").getByText("The Next Generation of Church Management System.", { exact: true }),
   ).toBeVisible();
 });
 
@@ -46,7 +46,7 @@ test("English homepage keeps canonical URLs", async ({ page }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await expect(
-    page.locator("#home p").getByText(/Church management software for parish administrators/i),
+    page.locator("#home p").getByText("The Next Generation of Church Management System.", { exact: true }),
   ).toBeVisible();
 });
 
