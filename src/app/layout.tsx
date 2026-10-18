@@ -6,7 +6,7 @@ import { StructuredData } from "@/components/marketing/structured-data";
 import { I18nProvider } from "@/lib/i18n/i18n-provider";
 import { htmlLangAttribute } from "@/lib/i18n/locale";
 import { getMessages } from "@/lib/i18n/messages";
-import { getRequestLocale } from "@/lib/i18n/server";
+import { getRequestLocale, getRequestPathname } from "@/lib/i18n/server";
 import { getMarketingContentAsync } from "@/lib/marketing/get-content";
 import { officialBrand } from "@/config/brand";
 import { buildLocalizedHomeMetadata } from "@/lib/marketing/localized-metadata";
@@ -21,12 +21,16 @@ const jakarta = Plus_Jakarta_Sans({
 
 export const revalidate = 60;
 
+function isLocalizedHomePath(pathname: string): boolean {
+  const normalized = pathname.split("?")[0]?.split("#")[0] ?? "/";
+  return normalized === "/" || normalized === "/pt-br";
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const content = await getMarketingContentAsync();
   const locale = await getRequestLocale();
-  const localized = buildLocalizedHomeMetadata(content, locale);
-  return {
-    ...localized,
+  const pathname = await getRequestPathname();
+  const shared: Metadata = {
     applicationName: officialBrand.productName,
     authors: [{ name: officialBrand.productName, url: officialBrand.websiteUrl }],
     creator: officialBrand.productName,
@@ -38,6 +42,15 @@ export async function generateMetadata(): Promise<Metadata> {
       ],
       apple: [{ url: "/logos/ekklesia-circular-badge.png" }],
     },
+  };
+
+  if (!isLocalizedHomePath(pathname)) {
+    return shared;
+  }
+
+  return {
+    ...shared,
+    ...buildLocalizedHomeMetadata(content, locale),
   };
 }
 

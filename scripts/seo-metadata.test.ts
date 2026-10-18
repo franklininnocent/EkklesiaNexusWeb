@@ -43,8 +43,10 @@ async function run(): Promise<void> {
   const types = graph["@graph"].map((n) => n["@type"]);
   assert.deepEqual(types, ["Organization", "WebSite", "SoftwareApplication"]);
   const org = graph["@graph"][0];
+  const app = graph["@graph"].find((n) => n["@type"] === "SoftwareApplication");
   assert.equal(org.email, "contact@ekklesianexus.com");
   assert.equal(String(org.url), "https://ekklesianexus.com");
+  assert.equal(String(app?.url), "https://app.ekklesianexus.com");
 
   assert.ok(!safeJsonLdStringify({ x: "</script>" }).includes("</script>"));
 

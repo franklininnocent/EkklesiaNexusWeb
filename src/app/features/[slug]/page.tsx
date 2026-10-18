@@ -52,6 +52,20 @@ export default async function FeatureDetailPage({ params }: PageProps) {
           <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Scope and limits</h2>
           <p className="mt-2 max-w-3xl text-pretty text-sm leading-relaxed text-slate-600">{spec.limitations}</p>
         </section>
+        {spec.detailSections && spec.detailSections.length > 0 ? (
+          <div className="mt-10 space-y-8">
+            {spec.detailSections.map((section) => (
+              <section key={section.title}>
+                <h2 className="text-xl font-semibold text-slate-900">{section.title}</h2>
+                {section.paragraphs.map((paragraph) => (
+                  <p key={paragraph} className="mt-2 max-w-3xl text-pretty text-sm leading-relaxed text-slate-600">
+                    {paragraph}
+                  </p>
+                ))}
+              </section>
+            ))}
+          </div>
+        ) : null}
         <div className="mt-10 space-y-8">
           {items.map((item) => (
             <section key={item.id}>
@@ -78,6 +92,10 @@ export default async function FeatureDetailPage({ params }: PageProps) {
           </section>
         ) : null}
         <p className="mt-10 text-sm text-slate-500">
+          <Link href="/solutions/catholic-parishes" className="font-medium text-brand-blue hover:underline">
+            Catholic parish software overview
+          </Link>
+          {" · "}
           <Link href="/contact" className="font-medium text-brand-blue hover:underline">
             Request a conversation
           </Link>

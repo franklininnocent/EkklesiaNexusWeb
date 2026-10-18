@@ -4,7 +4,8 @@ import { marketingCopyContract } from "@/content/contract";
 export const heroContent = {
   title: marketingCopyContract.slogan,
   supportingLine: marketingCopyContract.supportingLine,
-  description: "The Next Generation of Church Management System.",
+  description:
+    "Church management software for parish administrators and church leadership—unify families, sacramental registers, stewardship, ministries, and Mass intentions in one secure platform.",
   image: "/images/product/dashboard.png",
   imageAlt: "EkklesiaNexus parish dashboard showing connected parish overview",
   ctas: [

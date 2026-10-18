@@ -22,6 +22,19 @@ export default function ContactPage() {
           request a guided conversation. We respond using the contact details you provide—never passwords or parish
           records through this public form.
         </p>
+        <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600">
+          Before you write, you may find answers on{" "}
+          <Link href="/features" className="font-medium text-brand-blue hover:underline">feature pages</Link>
+          , the{" "}
+          <Link href="/solutions/catholic-parishes" className="font-medium text-brand-blue hover:underline">
+            Catholic parish evaluation guide
+          </Link>
+          , or{" "}
+          <Link href="/#pricing" className="font-medium text-brand-blue hover:underline">
+            homepage pricing
+          </Link>{" "}
+          (plans and currency depend on your country).
+        </p>
         <p className="mt-4 text-sm text-slate-500">
           Already a parish user?{" "}
           <Link href="/#demo" className="font-medium text-brand-blue hover:underline">

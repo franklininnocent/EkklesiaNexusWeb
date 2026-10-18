@@ -1,0 +1,98 @@
+# Apache vhosts for EkklesiaNexus production (example).
+# Apply only on the production server after:
+#   sudo apache2ctl -S
+# and inventory of every ServerName / ServerAlias in sites-enabled.
+#
+# Backup before change:
+#   sudo cp /etc/apache2/sites-available/<file> /etc/apache2/sites-available/<file>.bak-$(date -u +%Y%m%dT%H%M%SZ)
+#
+# Validate and reload:
+#   sudo apache2ctl configtest
+#   sudo systemctl reload apache2
+#
+# Do NOT request certificates for unauthorized hostnames (e.g. dwm.matchpointgps.in).
+# Do NOT 301 unauthorized hosts to ekklesianexus.com.
+
+# --- Default catch-all: refuse marketing on unknown Host / raw IP ---
+# This vhost must NOT ProxyPass to Next.js and must NOT set X-Forwarded-Host to the apex.
+# If an unknown Host (Matchpoint, raw IP) still reaches Next.js, fix vhost matching first.
+<VirtualHost *:80>
+    ServerName default.invalid
+    DocumentRoot /var/www/html-default-empty
+
+    <Directory /var/www/html-default-empty>
+        Require all denied
+    </Directory>
+
+    ErrorDocument 404 "Not Found"
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName default.invalid
+    # Use an existing official cert only for the default SSL vhost; browsers on wrong Host still see mismatch.
+    # Prefer returning 404 without proxying to Next.js.
+
+    SSLEngine on
+    SSLCertificateFile      /etc/letsencrypt/live/ekklesianexus.com/fullchain.pem
+    SSLCertificateKeyFile   /etc/letsencrypt/live/ekklesianexus.com/privkey.pem
+
+    DocumentRoot /var/www/html-default-empty
+    <Directory /var/www/html-default-empty>
+        Require all denied
+    </Directory>
+    ErrorDocument 404 "Not Found"
+</VirtualHost>
+
+# --- Marketing HTTP → HTTPS (apex) ---
+<VirtualHost *:80>
+    ServerName ekklesianexus.com
+    Redirect permanent / https://ekklesianexus.com/
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName www.ekklesianexus.com
+    Redirect permanent / https://ekklesianexus.com/
+</VirtualHost>
+
+# --- Marketing HTTPS (Next.js on loopback; confirm port from live config) ---
+<VirtualHost *:443>
+    ServerName ekklesianexus.com
+
+    SSLEngine on
+    SSLCertificateFile      /etc/letsencrypt/live/ekklesianexus.com/fullchain.pem
+    SSLCertificateKeyFile   /etc/letsencrypt/live/ekklesianexus.com/privkey.pem
+
+    # ProxyPreserveHost On — forward the real client Host to Next.js (required for host allowlist).
+    ProxyPreserveHost On
+    RequestHeader set X-Forwarded-Proto "https"
+    # Optional on this vhost only (ServerName must be ekklesianexus.com, never the default):
+    # RequestHeader set X-Forwarded-Host "ekklesianexus.com"
+    # Do NOT set X-Forwarded-Host to the apex on a catch-all vhost; that bypasses Host-based guards.
+
+    ProxyPass / http://127.0.0.1:3000/
+    ProxyPassReverse / http://127.0.0.1:3000/
+
+    # Certbot HTTP-01 (if used):
+    Alias /.well-known/acme-challenge/ /var/www/letsencrypt/.well-known/acme-challenge/
+    <Directory /var/www/letsencrypt/.well-known/acme-challenge/>
+        Require all granted
+    </Directory>
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName www.ekklesianexus.com
+
+    SSLEngine on
+    SSLCertificateFile      /etc/letsencrypt/live/ekklesianexus.com/fullchain.pem
+    SSLCertificateKeyFile   /etc/letsencrypt/live/ekklesianexus.com/privkey.pem
+
+    Redirect permanent / https://ekklesianexus.com/
+</VirtualHost>
+
+# --- Parish app and API: keep existing separate vhost files ---
+# ServerName app.ekklesianexus.com
+# ServerName api.ekklesianexus.com
+#
+# Ensure named vhosts are loaded and match before the default catch-all.
+# a2enconf / sites-enabled order: default catch-all should be FIRST in sites-enabled
+# only if your Apache version uses first-match; otherwise use explicit ServerName matching.

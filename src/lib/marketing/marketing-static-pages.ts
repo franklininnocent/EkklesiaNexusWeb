@@ -43,7 +43,7 @@ const CONTACT_PAGE: StaticPageSeoDefaults = {
   path: "/contact",
   seoTitle: "Contact EkklesiaNexus",
   seoDescription:
-    "Reach the EkklesiaNexus team about parish software for your church. Request a conversation or send a message through our secure form.",
+    "Contact EkklesiaNexus about Catholic parish management software—product questions, pricing context, or a guided evaluation conversation via our secure form.",
   robotsIndex: true,
 };
 
@@ -52,7 +52,7 @@ const CATHOLIC_SOLUTIONS: StaticPageSeoDefaults = {
   path: "/solutions/catholic-parishes",
   seoTitle: "Catholic parish management software — EkklesiaNexus",
   seoDescription:
-    "Catholic parish administration with family registers, sacramental records, Mass intentions, Life Groups / BCCs, and stewardship—built for parish office workflows.",
+    "Catholic church management for parish offices—family registers, sacramental books, Mass intentions, BCCs, and stewardship records without attendance or mobile-giving claims.",
   robotsIndex: true,
 };
 
@@ -144,6 +144,7 @@ export function aboutPageCopy() {
     h1: `About ${officialBrand.productName}`,
     paragraphs: [
       `${officialBrand.productName} is a church management system for parish priests, secretaries, treasurers, and other authorized church staff.`,
+      "The product emphasizes household registers, sacramental records, Mass intentions, ministries and Life Groups / BCCs, and stewardship workflows in a family-first parish office experience.",
       siteContent.supportingLine,
       siteContent.slogan,
       `For product questions or a guided conversation, use the contact form or email ${officialBrand.contactEmail}. Staff sign-in for parishes is at ${officialBrand.applicationUrl}.`,

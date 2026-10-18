@@ -12,21 +12,30 @@ function siteBaseUrl(): string {
   return siteConfig.url.replace(/\/$/, "");
 }
 
-export function localizedAlternates(page: PublicPageId): Metadata["alternates"] {
+export function localizedLanguageAlternates(page: PublicPageId): Record<string, string> {
   const base = siteBaseUrl();
   const enPath = publicPagePath("en-US", page);
   const ptPath = publicPagePath("pt-BR", page);
   const enUrl = enPath === "/" ? `${base}/` : `${base}${enPath}`;
   const ptUrl = `${base}${ptPath}`;
-  const canonicalFor = (locale: AppLocale) => (locale === "pt-BR" ? ptUrl : enUrl);
+  return {
+    "en-US": enUrl,
+    "pt-BR": ptUrl,
+    "x-default": enUrl,
+  };
+}
+
+export function localizedAlternates(
+  page: PublicPageId,
+  canonicalLocale: AppLocale = "en-US",
+): Metadata["alternates"] {
+  const languages = localizedLanguageAlternates(page);
+  const canonical: string =
+    canonicalLocale === "pt-BR" ? languages["pt-BR"] : languages["en-US"];
 
   return {
-    canonical: canonicalFor("en-US"),
-    languages: {
-      "en-US": enUrl,
-      "pt-BR": ptUrl,
-      "x-default": enUrl,
-    },
+    canonical,
+    languages,
   };
 }
 
