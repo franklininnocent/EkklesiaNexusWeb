@@ -62,9 +62,12 @@
   },
   "home": {
     "hero": {
-      "titleLead": "The Next Generation of Church Management System",
-      "subtitle": "Church management software for parish administrators and church leadership—unify families, sacramental registers, stewardship, ministries, and Mass intentions in one secure platform.",
+      "titleLead": "EkklesiaNexus",
+      "subtitle": "The Next Generation of Church Management System.",
       "primaryCta": "Request a Demo"
+    },
+    "intro": {
+      "lead": "Church management software for parish administrators and church leadership—unify families, sacramental registers, stewardship, ministries, and Mass intentions in one secure platform."
     },
     "trust": {
       "title": "Built for parish leadership teams"
