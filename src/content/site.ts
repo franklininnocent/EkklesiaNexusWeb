@@ -6,7 +6,7 @@ export const siteContent: SiteConfig = {
   tagline: marketingCopyContract.supportingLine,
   slogan: marketingCopyContract.slogan,
   supportingLine: marketingCopyContract.supportingLine,
-  seoTitle: "EkklesiaNexus — Next-Generation Church Management System",
+  seoTitle: "EkklesiaNexus — The Next Generation of Church Management System",
   seoDescription:
-    "EkklesiaNexus is a complete 360° Church Management System helping churches manage families, members, sacraments, stewardship, ministries, leadership, projects, reports, and more in one connected experience.",
+    "EkklesiaNexus is church management software for parish teams—families, sacramental registers, stewardship, ministries, Mass intentions, and reports in one connected platform.",
 };

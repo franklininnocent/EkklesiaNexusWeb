@@ -16,6 +16,11 @@ export function isFeatureSlug(value: string): value is FeatureSlug {
   return (FEATURE_SLUGS as readonly string[]).includes(value);
 }
 
+export type FeatureDetailSection = {
+  title: string;
+  paragraphs: string[];
+};
+
 export type FeatureLandingSpec = {
   slug: FeatureSlug;
   path: string;
@@ -24,6 +29,7 @@ export type FeatureLandingSpec = {
   h1: string;
   intro: string;
   limitations: string;
+  detailSections?: FeatureDetailSection[];
   itemIds: string[];
   relatedSlugs: FeatureSlug[];
 };
@@ -47,14 +53,29 @@ export const FEATURE_LANDING_SPECS: Record<FeatureSlug, FeatureLandingSpec> = {
   "family-management": {
     slug: "family-management",
     path: "/features/family-management",
-    seoTitle: "Family records for parishes — EkklesiaNexus",
+    seoTitle: "Church family records for parishes — EkklesiaNexus",
     seoDescription:
-      "Maintain parish household registers with relationships, contact details, and stewardship context in one family-first workspace.",
+      "Parish household and family records with relationships, sacramental links, and stewardship context—built for secretaries and pastors in one family-first register.",
     h1: "Family records for the parish office",
     intro:
       "Parish secretaries and pastors need household information that stays current. EkklesiaNexus keeps families, members, and related parish context together so office visits and pastoral follow-up take less searching.",
     limitations:
       "This is parish office software—not a member self-service portal, attendance system, or generic CRM.",
+    detailSections: [
+      {
+        title: "Why household-first records matter",
+        paragraphs: [
+          "Catholic parish work is often family-centered: sacraments, stewardship, and pastoral care follow household relationships. A register that starts with families—not isolated name rows—matches how secretaries answer questions at the desk and on the phone.",
+          "When members, ministries, and giving history connect to the household record, your team spends less time reconciling spreadsheets and more time serving people.",
+        ],
+      },
+      {
+        title: "Typical parish office uses",
+        paragraphs: [
+          "Update contact details after a move, confirm who belongs to a household before issuing a certificate request, or review stewardship context before a treasurer follows up on an outstanding balance—all from one connected family view.",
+        ],
+      },
+    ],
     itemIds: ["families"],
     relatedSlugs: ["member-management", "stewardship-and-finance"],
   },
@@ -69,20 +90,54 @@ export const FEATURE_LANDING_SPECS: Record<FeatureSlug, FeatureLandingSpec> = {
       "Member profiles are most useful when they sit beside the registers your team uses every day. Find individuals in context during phone calls and office visits without jumping between lists.",
     limitations:
       "Members are maintained by authorized staff; there is no parishioner-facing member app or attendance check-in product here.",
+    detailSections: [
+      {
+        title: "Members in parish context",
+        paragraphs: [
+          "A member record is most useful when it sits beside household relationships, sacramental history, ministry participation, and stewardship context your office already maintains. That is how secretaries answer “who is this?” during a phone call without opening three different lists.",
+        ],
+      },
+      {
+        title: "Who maintains member data",
+        paragraphs: [
+          "Authorized parish staff update profiles according to your roles and permissions. EkklesiaNexus is office software—not a self-service parishioner portal or a check-in kiosk product.",
+        ],
+      },
+    ],
     itemIds: ["members"],
     relatedSlugs: ["family-management", "sacramental-registers"],
   },
   "sacramental-registers": {
     slug: "sacramental-registers",
     path: "/features/sacramental-registers",
-    seoTitle: "Sacramental register software — EkklesiaNexus",
+    seoTitle: "Sacramental register software for Catholic parishes — EkklesiaNexus",
     seoDescription:
-      "Organize sacramental records, certificates where supported, and parish-controlled verification links aligned with your registers.",
+      "Maintain Catholic parish sacramental registers, generate certificates where supported, and use parish-controlled verification links—without publishing private books to the open web.",
     h1: "Sacramental registers and certificates",
     intro:
       "Sacramental books are among the most valuable records a parish keeps. Search, maintain entries, and produce certificates where your workflow supports them—without exposing private registers to the public web.",
     limitations:
-      "Certificate verification links are parish-controlled and token-based; EkklesiaNexus does not publish a public directory of all sacramental records.",
+      "Certificate verification links are parish-controlled and token-based; EkklesiaNexus does not publish a public directory of all sacramental records. Reconciliation certificate workflows are not marketed here.",
+    detailSections: [
+      {
+        title: "Registers your parish stewards every day",
+        paragraphs: [
+          "Sacramental administration depends on accurate books: baptisms, confirmations, marriages, and related entries your staff is authorized to maintain. EkklesiaNexus supports sacramental record workflows in the parish application so searches and updates stay in one tenant-scoped system.",
+        ],
+      },
+      {
+        title: "Certificates and verification",
+        paragraphs: [
+          "Where your parish uses certificate generation in the product, staff can produce documents aligned with your internal process. Public verification uses token-based links your parish controls—it is not a searchable directory of sacramental data on the marketing site.",
+        ],
+      },
+      {
+        title: "What to expect during evaluation",
+        paragraphs: [
+          "Ask how your team searches historical entries, who may edit registers, and how certificates are issued today. Compare that workflow to a single parish office system rather than a generic membership database built for attendance check-in.",
+        ],
+      },
+    ],
     itemIds: ["sacraments", "certificates"],
     relatedSlugs: ["mass-intentions", "member-management"],
   },
@@ -97,6 +152,20 @@ export const FEATURE_LANDING_SPECS: Record<FeatureSlug, FeatureLandingSpec> = {
       "Sacristans and administrators need a clear view of upcoming celebrations and intention activity. Keep worship records organized alongside the rest of parish administration.",
     limitations:
       "Mass intentions are office workflows for staff; online parishioner payments for intentions are not part of this marketing scope.",
+    detailSections: [
+      {
+        title: "Worship administration alongside registers",
+        paragraphs: [
+          "Sacristans and administrators coordinate Mass schedules and intention activity next to the sacramental and family records the parish stewards every day. The goal is fewer duplicate lists and clearer handoffs between worship and office staff.",
+        ],
+      },
+      {
+        title: "What to clarify during evaluation",
+        paragraphs: [
+          "Ask how your parish records intentions today, who may edit schedules, and whether online intention payments are required. EkklesiaNexus describes office workflows here—not a parishioner payment gateway for intentions.",
+        ],
+      },
+    ],
     itemIds: ["mass"],
     relatedSlugs: ["sacramental-registers", "church-analytics"],
   },
@@ -119,12 +188,26 @@ export const FEATURE_LANDING_SPECS: Record<FeatureSlug, FeatureLandingSpec> = {
     path: "/features/stewardship-and-finance",
     seoTitle: "Church stewardship and finance records — EkklesiaNexus",
     seoDescription:
-      "Record collections, contribution plans, dues, projects, and campaigns in a parish stewardship workspace built for treasurers and secretaries.",
+      "Record parish collections, contribution plans, dues, projects, and campaigns in a family-first stewardship workspace for treasurers and secretaries—not a mobile giving app.",
     h1: "Stewardship collections and parish finance records",
     intro:
       "Stewardship work is family-first: treasurers answer questions, issue receipts, and follow outstanding balances with records that respect tenant isolation and parish roles.",
     limitations:
       "Stewardship features record parish office collections and expenses; they are not an advertised UPI, card, or parishioner mobile-giving gateway.",
+    detailSections: [
+      {
+        title: "Office stewardship, not a payment gateway",
+        paragraphs: [
+          "Many search results mix church management with online giving platforms. EkklesiaNexus focuses on how your parish office records gifts, plans, dues, projects, and campaigns—and how treasurers answer family questions with consistent data.",
+        ],
+      },
+      {
+        title: "Plans, dues, and projects",
+        paragraphs: [
+          "Contribution plans, outstanding dues, donation projects, installments, and campaigns live in the donations module your staff already permissions by role. Marketing pricing on the homepage reflects subscription plans from the public catalog API; parish collection amounts come from your parish data, not hardcoded demo figures.",
+        ],
+      },
+    ],
     itemIds: ["donations", "plans", "projects"],
     relatedSlugs: ["family-management", "church-analytics"],
   },

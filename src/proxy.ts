@@ -1,16 +1,31 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { officialBrand } from "@/config/brand";
+import {
+  isApexHttpMarketingHost,
+  isWwwMarketingHost,
+  parseForwardedProto,
+  effectiveMarketingRequestHost,
+  shouldRejectUnauthorizedMarketingHost,
+  unauthorizedMarketingHostResponse,
+} from "@/lib/marketing/marketing-request-host";
 import { PREVIEW_COOKIE, previewCookieOptions } from "@/lib/preview/preview-cookie";
 
 /**
  * Canonical host for the public website: https://ekklesianexus.com.
- * www and plain HTTP on that host redirect permanently. Other hosts
- * (local development, the parish app, and the API) are left unchanged.
+ * www and plain HTTP on that host redirect permanently. In production, unrecognized
+ * hosts (duplicate DNS, raw IP, third-party domains) receive 404 without marketing HTML.
  */
 export async function proxy(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-en-pathname", request.nextUrl.pathname);
+
+  const host = effectiveMarketingRequestHost(request);
+  const forwardedProto = parseForwardedProto(request);
+
+  if (shouldRejectUnauthorizedMarketingHost(host)) {
+    return unauthorizedMarketingHostResponse();
+  }
 
   if (request.nextUrl.pathname.startsWith("/preview/plans")) {
     const token = request.nextUrl.searchParams.get("token")?.trim();
@@ -19,12 +34,9 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  const hostHeader = request.headers.get("x-forwarded-host") ?? request.headers.get("host") ?? "";
-  const host = hostHeader.split(",")[0]?.trim().split(":")[0]?.toLowerCase() ?? "";
-  const forwardedProto = request.headers.get("x-forwarded-proto")?.split(",")[0]?.trim().toLowerCase();
   const apexHost = officialBrand.rootDomain;
-  const isWww = host === `www.${apexHost}`;
-  const isApexHttp = host === apexHost && forwardedProto === "http";
+  const isWww = isWwwMarketingHost(host);
+  const isApexHttp = isApexHttpMarketingHost(host, forwardedProto);
 
   if (!isWww && !isApexHttp) {
     const response = NextResponse.next({ request: { headers: requestHeaders } });

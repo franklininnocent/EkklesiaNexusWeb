@@ -1,0 +1,8 @@
+# Example operator cron (NOT installed by the repository).
+# Run on a trusted operator machine with Node 20+ and EkklesiaNexusWeb checked out.
+#
+# Weekly Monday 08:00 UTC — production health (email output locally)
+# 0 8 * * 1 cd /path/to/EkklesiaNexusWeb && npm run monitor:weekly:production >> /var/log/ekklesia-seo-weekly.log 2>&1
+#
+# CI: do not add production network jobs without explicit approval.
+# Safe for future CI: npm run monitor:weekly (local only)
