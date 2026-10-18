@@ -37,10 +37,17 @@ export function MockupLogo({ size = "nav", priority = false }: MockupLogoProps) 
   return (
     <span className={`inline-flex min-w-0 max-w-full items-center ${s.gap}`}>
       <Image
-        src="/logos/ekklesia-circular-badge.png"
+        src="/logos/ekklesia-circular-badge.webp"
         alt=""
         width={512}
         height={512}
+        sizes={
+          size === "hero"
+            ? "(max-width: 640px) 20vw, 88px"
+            : size === "nav"
+              ? "32px"
+              : "32px"
+        }
         className={`${s.badge} shrink-0 object-contain`}
         priority={priority}
       />

@@ -3,7 +3,7 @@ import type { AppLocale } from "@/lib/i18n/locale";
 import { getMessages } from "@/lib/i18n/messages";
 import { ogLocaleTag } from "@/lib/i18n/locale";
 import { createTranslator } from "@/lib/i18n/translate";
-import { localizedAlternates } from "@/lib/marketing/localized-metadata";
+import { localizedLanguageAlternates } from "@/lib/marketing/localized-metadata";
 import { siteConfig } from "@/config/site";
 
 type LegalPath = "/privacy" | "/terms";
@@ -15,8 +15,8 @@ export function legalPageMetadata(
 ): Metadata {
   const locale = options?.locale ?? "en-US";
   const base = siteConfig.url.replace(/\/$/, "");
-  const pageId = path === "/privacy" ? "privacy" : "terms";
   const localizedPath = locale === "pt-BR" ? `/pt-br${path}` : path;
+  const pageId = path === "/privacy" ? "privacy" : "terms";
   const description =
     options?.description ??
     createTranslator(getMessages(locale))(
@@ -27,8 +27,8 @@ export function legalPageMetadata(
     title,
     description,
     alternates: {
-      ...localizedAlternates(pageId),
       canonical: `${base}${localizedPath}`,
+      languages: localizedLanguageAlternates(pageId),
     },
     robots: { index: false, follow: false },
     openGraph: {

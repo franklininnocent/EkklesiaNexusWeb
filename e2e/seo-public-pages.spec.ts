@@ -24,6 +24,10 @@ test.describe("SEO public pages", () => {
 
     await page.goto("/solutions/catholic-parishes");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Questions parish teams ask/i })).toBeVisible();
+
+    await page.goto("/features/sacramental-registers");
+    await expect(page.getByRole("heading", { name: /Registers your parish stewards/i })).toBeVisible();
 
     await page.goto("/contact");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
@@ -47,10 +51,18 @@ test.describe("SEO public pages", () => {
     await expect(page.getByRole("heading", { level: 1 })).toContainText(/not found|não encontrada/i);
   });
 
-  test("footer links to features hub", async ({ page }) => {
+  test("footer shows brand, crawlable links, and copyright", async ({ page }) => {
     await page.goto("/");
-    const featuresLink = page.locator("footer").getByRole("link", { name: /features/i });
-    await expect(featuresLink).toHaveAttribute("href", "/features");
+    const footer = page.locator("footer");
+    await expect(footer).toBeVisible();
+    await expect(footer.getByText(/EkklesiaNexus|ekklesia/i).first()).toBeVisible();
+    await expect(footer.getByRole("link", { name: "Features" })).toHaveAttribute("href", "/features");
+    await expect(footer.getByRole("link", { name: "Catholic parishes" })).toHaveAttribute(
+      "href",
+      "/solutions/catholic-parishes",
+    );
+    await expect(footer.getByRole("link", { name: "Contact" })).toHaveAttribute("href", "/contact");
+    await expect(footer).toContainText(/\d{4}/);
   });
 
   test("non-production host robots disallows all crawlers", async ({ request }) => {

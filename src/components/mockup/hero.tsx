@@ -1,8 +1,20 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { MockupContainer } from "@/components/mockup/container";
-import { HeroDevices } from "@/components/mockup/devices";
+
+const HeroDevices = dynamic(
+  () => import("@/components/mockup/devices").then((mod) => ({ default: mod.HeroDevices })),
+  {
+    loading: () => (
+      <div
+        className="relative mx-auto h-[min(380px,78vw)] w-full min-w-0 max-w-[580px] sm:h-[440px]"
+        aria-hidden="true"
+      />
+    ),
+  },
+);
 import { MockupLogo } from "@/components/mockup/logo";
 import { useI18n } from "@/lib/i18n/i18n-provider";
 import { applicationEntryHref } from "@/lib/application-entry";

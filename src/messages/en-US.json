@@ -35,6 +35,7 @@
   },
   "footer": {
     "features": "Features",
+    "catholicParishes": "Catholic parishes",
     "about": "About",
     "contact": "Contact",
     "terms": "Terms",
@@ -62,15 +63,17 @@
   "home": {
     "hero": {
       "titleLead": "The Next Generation of Church Management System",
-      "subtitle": "The Next Generation of Church Management System.",
+      "subtitle": "Church management software for parish administrators and church leadership—unify families, sacramental registers, stewardship, ministries, and Mass intentions in one secure platform.",
       "primaryCta": "Request a Demo"
     },
     "trust": {
-      "title": "Trusted by Forward-Thinking Ministries"
+      "title": "Built for parish leadership teams"
     },
     "features": {
       "title": "Features",
-      "subtitle": "EkklesiaNexus unifies people, giving, and ministry workflows — selected by forward-thinking ministries.",
+      "subtitle": "EkklesiaNexus unifies parish people, stewardship, and ministry workflows for church administrators evaluating a modern church management system.",
+      "exploreLink": "Explore church management features",
+      "catholicParishesLink": "Catholic parish management software",
       "members": {
         "title": "Families & Members",
         "body": "Maintain households, members, and roles in one connected member directory."
@@ -80,8 +83,8 @@
         "body": "Record gifts, pledges, and stewardship in a family-first giving workflow."
       },
       "events": {
-        "title": "Intelligent Analytics",
-        "body": "Transforms raw parish operational data into executive leadership health indicators and visual stewardship metrics."
+        "title": "Reports & dashboards",
+        "body": "Review parish reports and dashboards built from records your team already maintains—role-gated, without AI or predictive analytics claims."
       },
       "comms": {
         "title": "Sacramental Registers",
@@ -139,9 +142,9 @@
     },
     "testimonials": {
       "rowTitle": "Testimonials",
-      "rowSubtitle": "Trusted by Pastors. Empowering Parishes Worldwide..",
-      "cardsTitle": "Modern Testimonials",
-      "cardsSubtitle": "We love volunteer leaders who use satisfied pastors.",
+      "rowSubtitle": "Built for pastors, parish secretaries, treasurers, and stewardship teams.",
+      "cardsTitle": "Parish perspectives",
+      "cardsSubtitle": "Sample voices illustrating how organized parish data supports calmer church administration.",
       "namoBarnes": {
         "displayName": "Namo Barnes",
         "role": "Pastor / Admin",
@@ -428,14 +431,14 @@
     "previewUnavailable": "This preview is unavailable or has expired."
   },
   "seo": {
-    "homeTitle": "EkklesiaNexus — Next-Generation Church Management System",
-    "homeDescription": "EkklesiaNexus is a complete 360° Church Management System helping churches manage families, members, sacraments, stewardship, ministries, leadership, projects, reports, and more in one connected experience.",
+    "homeTitle": "EkklesiaNexus — The Next Generation of Church Management System",
+    "homeDescription": "EkklesiaNexus is church management software for parish teams—families, sacramental registers, stewardship, ministries, Mass intentions, and reports in one connected platform.",
     "privacyTitle": "Privacy — EkklesiaNexus",
     "privacyDescription": "Privacy information for the EkklesiaNexus marketing website.",
     "termsTitle": "Terms — EkklesiaNexus",
     "termsDescription": "Terms of use for the EkklesiaNexus marketing website.",
     "notFoundTitle": "Page not found — EkklesiaNexus",
-    "manifestDescription": "EkklesiaNexus is a complete 360° Church Management System helping churches manage families, members, sacraments, stewardship, ministries, leadership, projects, reports, and more in one connected experience.",
+    "manifestDescription": "EkklesiaNexus is church management software for parish teams—families, sacramental registers, stewardship, ministries, Mass intentions, and reports in one connected platform.",
     "structuredDataAvailableLanguageEn": "English",
     "structuredDataAvailableLanguagePt": "Portuguese"
   }

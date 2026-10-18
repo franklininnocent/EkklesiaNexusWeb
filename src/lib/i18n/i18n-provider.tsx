@@ -16,7 +16,6 @@ const I18nContext = createContext<I18nContextValue | null>(null);
 
 export function I18nProvider({
   locale: serverLocale,
-  messages: _serverMessages,
   children,
 }: {
   locale: AppLocale;

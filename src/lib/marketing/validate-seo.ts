@@ -111,6 +111,16 @@ export function validateMarketingSeo(): string[] {
   if (!proxy.includes("officialBrand.rootDomain") || !proxy.includes("301")) {
     errors.push("proxy.ts must 301 www and HTTP on the official website host to the apex HTTPS origin");
   }
+  if (!proxy.includes("shouldRejectUnauthorizedMarketingHost")) {
+    errors.push("proxy.ts must reject unrecognized production marketing hosts before serving content");
+  }
+  if (!proxy.includes("unauthorizedMarketingHostResponse")) {
+    errors.push("proxy.ts must return a noindex 404 for unauthorized production marketing hosts");
+  }
+  const hostGuard = fs.readFileSync(path.join(ROOT, "src/lib/marketing/marketing-request-host.ts"), "utf8");
+  if (!hostGuard.includes("X-Robots-Tag")) {
+    errors.push("marketing-request-host.ts must set X-Robots-Tag on unauthorized host responses");
+  }
 
   const site = fs.readFileSync(path.join(ROOT, "src/config/site.ts"), "utf8");
   if (!site.includes("officialBrand.websiteUrl")) {
