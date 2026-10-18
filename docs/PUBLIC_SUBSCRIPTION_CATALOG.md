@@ -11,15 +11,17 @@ Plan-specific **Show on website / Hide on website** flags live on the draft mark
 
 ## Public API
 
-`GET /api/public/subscription-plans` returns `{ success: true, data: PublicPlanCard[] }` from the **currently published marketing revision only**. If nothing is published, `data` is `[]`.
+`GET /api/public/subscription-plans` (e.g. `https://api.ekklesianexus.com/api/public/subscription-plans`) returns `{ success: true, data: PublicPlanCard[] }` from the **currently published marketing revision only**. If nothing is published, `data` is `[]`.
+
+Each plan includes `regional_prices` built from **`plan_catalog_prices`** (`IN` / `US` / `BR` rows → INR / USD / BRL). If an `IN` row is missing at publish time, INR is taken from the active `plan_version` until admins add the India row.
 
 Preview (draft only, token-scoped): `GET /api/public/marketing-plan-catalog/preview?token=…`
 
 ## Next.js
 
-- **Public homepage `#pricing`** uses regional demonstration data (`regional-pricing.ts`), not this API. That keeps marketing copy independent of the published catalog until product explicitly approves a catalog-backed `/pricing` URL.
-- Server fetch: `fetchPublishedSubscriptionPlans()` using `LARAVEL_API_URL` (used for `/preview/plans` and internal flows).
-- ISR: `revalidate: 60` on the homepage pricing section.
+- **Public homepage `#pricing`** loads `fetchPublishedSubscriptionPlans()` and uses only each plan’s **name** and **`regional_prices`** (plus legacy INR list fields when needed). Trusted visitor country selects the amount (IN→INR, BR→BRL, else USD). Plan **feature bullets** on the homepage stay in local i18n (`mockup-structure`); they are not read from the API. Each card always shows **Show Price**; the revealed amount comes from the published API catalog. If the catalog is unpublished or a regional amount is missing, the control still appears and reveals a contact prompt rather than a fabricated price. Card layout stays in the marketing UI; amounts never come from hardcoded catalogs or FX.
+- Visitor country: nginx sets `X-EN-Geo-Country` from GeoIP or Cloudflare and `X-EN-Geo-Token` (must match `MARKETING_GEO_HEADER_SECRET`). Local dev may use `MARKETING_VISITOR_COUNTRY` when geo headers are absent.
+- Plan JSON fetch: `revalidate: 60` (country-independent). Homepage HTML is `force-dynamic` / private so one region’s prices are not cached for another.
 - Optional on-demand refresh: `POST /api/revalidate-plans` with header `X-Revalidate-Secret` (must match `MARKETING_REVALIDATE_SECRET` on both apps).
 - Live preview: `/preview/plans?token=…` (noindex). Local dev: `npm run dev` serves **port 3010** (matches Angular `websiteUrl`).
 - Embedded preview in the parish app requires `MARKETING_PREVIEW_FRAME_ANCESTORS` (optional; defaults include `http://localhost:4200` in development).
@@ -27,5 +29,5 @@ Preview (draft only, token-scoped): `GET /api/public/marketing-plan-catalog/prev
 
 ## Cache
 
-- Laravel: `marketing:published_plan_catalog` (forgotten only after successful marketing publication).
+- Laravel: `marketing:published_plan_catalog` (forgotten on successful marketing publication; empty unpublished responses are not cached).
 - Typical visitor lag: up to ~60s without revalidate hook; faster when `MARKETING_REVALIDATE_SECRET` is configured.

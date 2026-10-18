@@ -24,6 +24,7 @@ type ContactBody = {
   email?: string;
   phone?: string;
   organisation?: string;
+  organization?: string;
   message?: string;
   captcha_challenge_id?: string;
   captcha_response?: string;
@@ -36,7 +37,7 @@ function fieldErrors(body: ContactBody, locale: ReturnType<typeof resolveBffLoca
     name: body.name ?? "",
     email: body.email ?? "",
     phone: body.phone ?? "",
-    organisation: body.organisation ?? "",
+    organisation: body.organisation ?? body.organization ?? "",
     message: body.message ?? "",
     captcha_response: body.captcha_response ?? "",
   };
@@ -107,7 +108,10 @@ export async function POST(request: Request) {
       name: body.name!.trim().slice(0, 120),
       email: body.email!.trim().slice(0, 255),
       phone: body.phone!.trim().slice(0, 40),
-      organisation: body.organisation?.trim().slice(0, 200) || undefined,
+      organisation:
+        body.organisation?.trim().slice(0, 200) ||
+        body.organization?.trim().slice(0, 200) ||
+        undefined,
       message: body.message!.trim().slice(0, 5000),
       captcha_challenge_id: body.captcha_challenge_id!.trim(),
       captcha_response: body.captcha_response!.trim(),

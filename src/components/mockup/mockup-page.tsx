@@ -11,17 +11,29 @@ import { MockupTech } from "@/components/mockup/tech";
 import { MockupTestimonialsRow } from "@/components/mockup/testimonials";
 import { MockupTrust } from "@/components/mockup/trust";
 import { headers } from "next/headers";
-import { getRequestLocale } from "@/lib/i18n/server";
+import { fetchPublishedSubscriptionPlans } from "@/lib/api/subscription-plans";
 import {
-  resolvePricingMarketFromContext,
-  visitorCountryForPricing,
-} from "@/lib/pricing/resolve-pricing-market";
-
+  buildCardNamesByPlanId,
+  buildCardPricesByPlanId,
+  logMarketingPricingDiagnostics,
+  pickHomepagePricingPlans,
+  pricingCatalogStateFromFetch,
+} from "@/lib/pricing/select-marketing-price";
+import { marketingCurrencyForRequest } from "@/lib/pricing/resolve-pricing-market";
 export async function MockupPage() {
   const headerList = await headers();
-  const locale = await getRequestLocale();
-  const country = visitorCountryForPricing(headerList);
-  const market = resolvePricingMarketFromContext(country, locale);
+  const currency = marketingCurrencyForRequest(headerList);
+  const plansResult = await fetchPublishedSubscriptionPlans();
+  const pricingPlans = plansResult.ok ? pickHomepagePricingPlans(plansResult.plans) : [];
+  const pricesByPlanId = plansResult.ok
+    ? buildCardPricesByPlanId(pricingPlans, currency)
+    : { seed: null, growth: null, summit: null };
+  const namesByPlanId = plansResult.ok
+    ? buildCardNamesByPlanId(pricingPlans)
+    : { seed: null, growth: null, summit: null };
+  const catalogState = pricingCatalogStateFromFetch(plansResult);
+
+  logMarketingPricingDiagnostics(plansResult, pricesByPlanId, currency);
 
   return (
     <>
@@ -34,7 +46,13 @@ export async function MockupPage() {
         <MockupSlider />
         <MockupTech />
         <MockupTestimonialsRow />
-        <MockupPricing key={`${market}-${locale}`} market={market} />
+        <MockupPricing
+          key={currency}
+          currencyCode={currency}
+          catalogState={catalogState}
+          pricesByPlanId={pricesByPlanId}
+          namesByPlanId={namesByPlanId}
+        />
         <MockupCta />
         <MockupContact />
       </main>

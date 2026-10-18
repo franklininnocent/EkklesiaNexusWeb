@@ -32,9 +32,20 @@ function resolveContactEmail(): string | undefined {
   return undefined;
 }
 
+function resolveLaravelApiUrl(): string {
+  const configured = configuredUrl(process.env.LARAVEL_API_URL);
+  if (configured) {
+    return configured;
+  }
+  if (process.env.NODE_ENV === "production") {
+    return officialBrand.apiUrl;
+  }
+  return "http://127.0.0.1:8000";
+}
+
 export const siteConfig = {
   url: resolvePublicSiteUrl(),
-  laravelApiUrl: configuredUrl(process.env.LARAVEL_API_URL) ?? "http://127.0.0.1:8000",
+  laravelApiUrl: resolveLaravelApiUrl(),
   contactEmail: resolveContactEmail(),
   contactPhone: process.env.MARKETING_CONTACT_PHONE?.trim() || undefined,
   contactAddress: process.env.MARKETING_CONTACT_ADDRESS?.trim() || undefined,

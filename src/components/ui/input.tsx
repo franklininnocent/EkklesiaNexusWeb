@@ -1,22 +1,29 @@
 import type { InputHTMLAttributes, TextareaHTMLAttributes } from "react";
 
-const fieldBase =
-  "w-full bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none transition-[box-shadow,background-color] duration-200 ease-out";
+type BoxedFieldProps = {
+  /** When false, the caller supplies the full className (legacy demo-form CAPTCHA). */
+  boxed?: boolean;
+};
 
-const fieldInvalid =
-  "rounded-lg px-2.5 py-1.5 -mx-0.5 bg-rose-50/50 ring-1 ring-inset ring-rose-300/80 focus:ring-2 focus:ring-rose-400/25";
-
-function isAriaInvalid(invalid?: boolean | "true" | "false" | "grammar" | "spelling"): boolean {
-  return invalid === true || invalid === "true";
+function fieldClass(kind: "input" | "textarea", className?: string) {
+  return ["en-field", kind === "input" ? "en-field--input" : "en-field--textarea", className ?? ""]
+    .filter(Boolean)
+    .join(" ");
 }
 
-function mergeFieldClass(invalid?: boolean | "true" | "false" | "grammar" | "spelling", className?: string) {
-  const parts = [fieldBase, isAriaInvalid(invalid) ? fieldInvalid : "", className ?? ""];
-  return parts.filter(Boolean).join(" ");
-}
-
-export function TextInput({ className, "aria-invalid": ariaInvalid, ...props }: InputHTMLAttributes<HTMLInputElement>) {
-  return <input className={mergeFieldClass(ariaInvalid, className)} aria-invalid={ariaInvalid} {...props} />;
+export function TextInput({
+  className,
+  boxed = true,
+  "aria-invalid": ariaInvalid,
+  ...props
+}: InputHTMLAttributes<HTMLInputElement> & BoxedFieldProps) {
+  return (
+    <input
+      className={boxed ? fieldClass("input", className) : className}
+      aria-invalid={ariaInvalid}
+      {...props}
+    />
+  );
 }
 
 export function TextArea({
@@ -25,10 +32,6 @@ export function TextArea({
   ...props
 }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
-    <textarea
-      className={`${mergeFieldClass(ariaInvalid, className)} min-h-[88px] resize-none`}
-      aria-invalid={ariaInvalid}
-      {...props}
-    />
+    <textarea className={fieldClass("textarea", className)} aria-invalid={ariaInvalid} {...props} />
   );
 }

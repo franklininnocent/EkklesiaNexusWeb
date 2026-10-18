@@ -49,25 +49,26 @@ type ContactFieldRowProps = {
   label: string;
   labelFor: string;
   error?: string;
-  alignTop?: boolean;
+  required?: boolean;
   children: ReactNode;
 };
 
-function ContactFieldRow({ label, labelFor, error, alignTop, children }: ContactFieldRowProps) {
+function ContactFieldRow({ label, labelFor, error, required, children }: ContactFieldRowProps) {
   const hasError = Boolean(error);
   return (
-    <div
-      className={`flex flex-col gap-1.5 border-b py-3 transition-colors duration-200 sm:flex-row sm:gap-4 ${
-        hasError ? "border-rose-200/80" : "border-slate-100"
-      } ${alignTop ? "sm:items-start" : "sm:items-center"}`}
-    >
+    <div className="flex min-w-0 flex-col gap-1.5">
       <label
         htmlFor={labelFor}
-        className={`text-sm sm:w-28 sm:shrink-0 ${hasError ? "text-rose-800/90" : "text-slate-500"} ${alignTop ? "sm:pt-2" : ""}`}
+        className={`text-sm font-medium leading-5 ${hasError ? "text-rose-800" : "text-brand-navy"}`}
       >
         {label}
+        {required ? (
+          <span className="ml-0.5 text-rose-600" aria-hidden="true">
+            *
+          </span>
+        ) : null}
       </label>
-      <div className="min-w-0 flex-1">{children}</div>
+      <div className="min-w-0">{children}</div>
     </div>
   );
 }
@@ -252,7 +253,7 @@ export function MockupContact() {
                 method="post"
                 action="#contact"
                 onSubmit={onSubmit}
-                className="space-y-0"
+                className="flex flex-col gap-4"
                 noValidate
                 aria-label={t("a11y.contactForm")}
               >
@@ -263,6 +264,7 @@ export function MockupContact() {
                 <ContactFieldRow
                   label={t("forms.contact.labels.name")}
                   labelFor={fieldIds.name}
+                  required
                   error={shouldShowError("name") ? displayErrors.name : undefined}
                 >
                   <TextInput
@@ -270,6 +272,8 @@ export function MockupContact() {
                     name="name"
                     autoComplete="name"
                     placeholder=""
+                    required
+                    aria-required="true"
                     value={values.name}
                     onChange={(e) => updateField("name", e.target.value)}
                     onBlur={(e) => blurField("name", e.target.value)}
@@ -286,6 +290,7 @@ export function MockupContact() {
                 <ContactFieldRow
                   label={t("forms.contact.labels.email")}
                   labelFor={fieldIds.email}
+                  required
                   error={shouldShowError("email") ? displayErrors.email : undefined}
                 >
                   <TextInput
@@ -294,6 +299,8 @@ export function MockupContact() {
                     type="email"
                     autoComplete="email"
                     inputMode="email"
+                    required
+                    aria-required="true"
                     value={values.email}
                     onChange={(e) => updateField("email", e.target.value)}
                     onBlur={(e) => blurField("email", e.target.value)}
@@ -310,6 +317,7 @@ export function MockupContact() {
                 <ContactFieldRow
                   label={t("forms.contact.labels.phone")}
                   labelFor={fieldIds.phone}
+                  required
                   error={shouldShowError("phone") ? displayErrors.phone : undefined}
                 >
                   <TextInput
@@ -319,6 +327,8 @@ export function MockupContact() {
                     autoComplete="tel"
                     inputMode="tel"
                     placeholder=""
+                    required
+                    aria-required="true"
                     value={values.phone}
                     onChange={(e) => updateField("phone", e.target.value)}
                     onBlur={(e) => blurField("phone", e.target.value)}
@@ -345,12 +355,15 @@ export function MockupContact() {
                 <ContactFieldRow
                   label={t("forms.contact.labels.message")}
                   labelFor={fieldIds.message}
+                  required
                   error={shouldShowError("message") ? displayErrors.message : undefined}
-                  alignTop
                 >
                   <TextArea
                     id={fieldIds.message}
                     name="message"
+                    rows={4}
+                    required
+                    aria-required="true"
                     value={values.message}
                     onChange={(e) => updateField("message", e.target.value)}
                     onBlur={(e) => blurField("message", e.target.value)}
@@ -367,8 +380,8 @@ export function MockupContact() {
                 <ContactFieldRow
                   label={t("forms.contact.labels.securityCheck")}
                   labelFor={fieldIds.captcha}
+                  required
                   error={shouldShowError("captcha_response") ? displayErrors.captcha_response : undefined}
-                  alignTop
                 >
                   <ContactCaptchaField
                     captcha={captcha}
@@ -392,12 +405,20 @@ export function MockupContact() {
                 </ContactFieldRow>
 
                 {formError ? (
-                  <p className="mt-3 text-sm text-rose-700" role="alert">
+                  <p
+                    className="rounded-[var(--radius-md)] border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-sm leading-5 text-rose-800"
+                    role="alert"
+                  >
                     {formError}
                   </p>
                 ) : null}
 
-                <Button type="submit" className="mt-4 w-full rounded-xl py-3" disabled={submitting}>
+                <Button
+                  type="submit"
+                  className="mt-1 w-full py-3 disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={submitting}
+                  aria-busy={submitting}
+                >
                   {submitting ? t("common.actions.sending") : t("common.actions.sendMessage")}
                 </Button>
               </form>
