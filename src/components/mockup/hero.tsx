@@ -53,7 +53,7 @@ export function MockupHero() {
           <div className="relative min-w-0">
             <Sparkle className="absolute -left-3 top-1 hidden sm:block" />
             <h1 className="sr-only">
-              {t("home.hero.titleLead")}. {subtitle}
+              {t("home.hero.titleLead")} — {subtitle}
             </h1>
             <MockupLogo size="hero" priority />
             <p className="mt-4 max-w-[26rem] text-pretty text-[15px] leading-relaxed text-slate-600 sm:text-base">
