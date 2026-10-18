@@ -5,6 +5,7 @@ import { MockupFeatures } from "@/components/mockup/features";
 import { MockupFooter } from "@/components/mockup/footer";
 import { MockupHeader } from "@/components/mockup/header";
 import { MockupHero } from "@/components/mockup/hero";
+import { MockupHomeIntro } from "@/components/mockup/home-intro";
 import { MockupPricing } from "@/components/mockup/pricing";
 import { MockupSlider } from "@/components/mockup/slider";
 import { MockupTech } from "@/components/mockup/tech";
@@ -41,6 +42,7 @@ export async function MockupPage() {
       <MockupHeader />
       <main>
         <MockupHero />
+        <MockupHomeIntro />
         <MockupTrust />
         <MockupFeatures />
         <MockupSlider />
