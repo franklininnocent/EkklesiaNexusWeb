@@ -72,6 +72,32 @@
     ProxyPass / http://127.0.0.1:3000/
     ProxyPassReverse / http://127.0.0.1:3000/
 
+    # --- Regional homepage pricing (required for INR/BRL outside USD) ---
+    # Next.js prefers trusted X-EN-Geo-Country + X-EN-Geo-Token (see resolve-pricing-market.ts).
+    # Without these, it uses the client IP Apache appends on X-Forwarded-For (ProxyAddHeaders On).
+    #
+    # 1) Generate a long random secret; set the same value as MARKETING_GEO_HEADER_SECRET in
+    #    /srv/ekklesianexus/web/shared/.env and restart ekklesia-web.
+    # 2) Strip client-supplied geo headers (never trust the browser).
+    RequestHeader unset X-EN-Geo-Country
+    RequestHeader unset X-EN-Geo-Token
+    RequestHeader unset CF-IPCountry
+    RequestHeader unset X-Country-Code
+    #
+    # Mode A — Cloudflare (or another edge) in front of Apache; only Cloudflare may reach :443:
+    # RequestHeader set X-EN-Geo-Country "expr=%{HTTP:CF-IPCountry}" "expr=%{HTTP:CF-IPCountry} != ''"
+    # RequestHeader set X-EN-Geo-Token "replace-with-long-random-secret"
+    #
+    # Mode B — Apache mod_maxminddb + GeoLite2-Country on the client IP (no Cloudflare):
+    #   MaxMindDBEnable On
+    #   MaxMindDBFile COUNTRY_DB /var/lib/ekklesia/geoip/GeoLite2-Country.mmdb
+    #   MaxMindDBEnv EN_GEO_COUNTRY COUNTRY_DB Country iso_code
+    #   RequestHeader set X-EN-Geo-Country "expr=%{ENV:EN_GEO_COUNTRY}" "expr=%{ENV:EN_GEO_COUNTRY} != ''"
+    #   RequestHeader set X-EN-Geo-Token "replace-with-long-random-secret"
+    #
+    # After reload, from the server (loopback):
+    #   curl -sS -H 'X-EN-Geo-Country: IN' -H 'X-EN-Geo-Token: <secret>' http://127.0.0.1:3000/ | grep -q 1499 && echo INR OK
+
     # Certbot HTTP-01 (if used):
     Alias /.well-known/acme-challenge/ /var/www/letsencrypt/.well-known/acme-challenge/
     <Directory /var/www/letsencrypt/.well-known/acme-challenge/>

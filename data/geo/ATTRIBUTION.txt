@@ -1,0 +1,3 @@
+IP to country data: IP Geolocation by DB-IP (https://db-ip.com/), CC BY 4.0.
+File: dbip-country-lite.csv.gz (DB-IP country lite, October 2026).
+Used only to choose marketing list-price currency (IN→INR, BR→BRL, otherwise USD).

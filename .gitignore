@@ -1,5 +1,6 @@
 # Dependencies
 /node_modules
+/implementation_MD_files
 /.pnp
 .pnp.*
 .yarn/*
