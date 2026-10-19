@@ -24,6 +24,8 @@ export default defineConfig({
     timeout: 120_000,
     env: {
       ...process.env,
+      // Override developer .env.local (e.g. MARKETING_VISITOR_COUNTRY=IN) so geo-none / spoof tests see USD.
+      MARKETING_VISITOR_COUNTRY: "",
       MARKETING_GEO_HEADER_SECRET: process.env.MARKETING_GEO_HEADER_SECRET || "e2e-geo-secret",
       MARKETING_PRICING_FIXTURE_JSON:
         process.env.MARKETING_PRICING_FIXTURE_JSON ??
