@@ -29,11 +29,11 @@
 | `https://ekklesianexus.com/sitemap.xml` | 200 | same | Official URLs only (see unit tests) |
 | `https://app.ekklesianexus.com/` | 200 | same | Parish app; `noindex` in HTML |
 | `https://api.ekklesianexus.com/up` | 200 | same | Health check OK |
-| `http://dwm.matchpointgps.in/` | 200 | same | **Unauthorized host still serves full marketing HTML** |
+| `the unauthorized hostname` | 200 | same | **Unauthorized host still serves full marketing HTML** |
 | `http://139.59.18.151/` | 200 | same | **Raw IP still serves full marketing HTML** |
 | `https://ekklesianexus.com/google161c1efd34d8a358.html` | **404** | same | GSC file in repo; **not live** until deploy |
 
-HTTPS on `dwm.matchpointgps.in` was not re-tested with strict certificate validation in this pass; prior incident report documents cert mismatch and insecure **200** responses.
+HTTPS on `the unauthorized hostname` was not re-tested with strict certificate validation in this pass; prior incident report documents cert mismatch and insecure **200** responses.
 
 ---
 
@@ -56,10 +56,10 @@ HTTPS on `dwm.matchpointgps.in` was not re-tested with strict certificate valida
 
 | | |
 |---|---|
-| **Evidence** | `GET http://dwm.matchpointgps.in/` and `GET http://139.59.18.151/` → **200**, canonical `https://ekklesianexus.com`, `robots: index, follow`. |
+| **Evidence** | GET of the unauthorized hostname and `GET http://139.59.18.151/` → **200**, canonical `https://ekklesianexus.com`, `robots: index, follow`. |
 | **Impact** | Google can crawl and attribute content to the wrong hostname (see incident report). |
-| **Allowed fix** | Operator: Apache default vhost **404** per [`deploy/apache-ekklesianexus.conf.example`](deploy/apache-ekklesianexus.conf.example). Deploy Next.js host guard from repo. **No** Matchpoint → EkklesiaNexus redirect. **No** DNS edits from engineering laptop. |
-| **Test** | `scripts/marketing-request-host.test.ts`; post-deploy GET must return **404** (or non-marketing) on Matchpoint/IP. |
+| **Allowed fix** | Operator: Apache default vhost **404** per [`deploy/apache-ekklesianexus.conf.example`](deploy/apache-ekklesianexus.conf.example). Deploy Next.js host guard from repo. **Do not** redirect an unauthorized host to EkklesiaNexus. **No** DNS edits from engineering laptop. |
+| **Test** | `scripts/marketing-request-host.test.ts`; post-deploy GET must return **404** (or non-marketing) on an unauthorized host/IP. |
 | **Rollback** | Restore timestamped Apache `*.bak`; redeploy prior marketing build. |
 | **Phase 1 status** | **Open on production.** Repository guard **present**; not equivalent to production isolation. |
 
@@ -113,7 +113,7 @@ HTTPS on `dwm.matchpointgps.in` was not re-tested with strict certificate valida
 - Pricing, catalog API, Laravel, Angular feature work (except neutral app `<title>` for build gate).
 - New locale URLs, country landing pages, copy rewrites, testimonial blocks.
 - Google SERP re-check, index “fixed” claims, Core Web Vitals program.
-- DNS, Matchpoint certificates, laptop Apache.
+- DNS, the unauthorized host certificates, laptop Apache.
 
 ---
 
@@ -121,7 +121,7 @@ HTTPS on `dwm.matchpointgps.in` was not re-tested with strict certificate valida
 
 | Criterion | Result |
 |-----------|--------|
-| Audit includes official home, `/pt-br`, Matchpoint, raw IP | Yes (table above) |
+| Audit includes official home, `/pt-br`, the unauthorized host, raw IP | Yes (table above) |
 | `/` and `/pt-br` URL shape preserved | Yes |
 | Legal pages without hreflang while noindex | Repo fixed; production GET confirms no hreflang on `/privacy` |
 | Production host isolation | **Not done** |

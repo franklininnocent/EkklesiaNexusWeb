@@ -37,8 +37,8 @@ Phase 1 locked SEO contracts in code and tests: home hreflang only on `/` and `/
 
 | Layer | Status |
 |-------|--------|
-| **Repo** | `shouldRejectUnauthorizedMarketingHost()` rejects `dwm.matchpointgps.in` and raw IP in **production** `NODE_ENV`. Unit tests in `marketing-request-host.test.ts`. |
-| **Production** | **18 Oct 2026 GET:** Matchpoint and `139.59.18.151` still **200** marketing HTML. Apache default vhost fix **not applied** from this environment (SSH/operator). |
+| **Repo** | `shouldRejectUnauthorizedMarketingHost()` rejects every host outside the official allowlist, including the raw IP, in **production** `NODE_ENV`. Unit tests in `marketing-request-host.test.ts` use a synthetic host. |
+| **Production** | **18 Oct 2026 GET:** the unauthorized host and `139.59.18.151` still **200** marketing HTML. Apache default vhost fix **not applied** from this environment (SSH/operator). |
 | **Documentation** | [`deploy/apache-ekklesianexus.conf.example`](deploy/apache-ekklesianexus.conf.example), [`SEO_OPERATOR_RUNBOOK.md`](SEO_OPERATOR_RUNBOOK.md), [incident report](GOOGLE_DOMAIN_ATTRIBUTION_INCIDENT_REPORT.md). |
 
 **Caveat:** Next.js guard applies only when Apache forwards the real `Host`. If the proxy uses `127.0.0.1`, localhost is allowlisted. Durable fix = Apache catch-all **404** without proxying to Next.js.
@@ -71,7 +71,7 @@ Sandbox note: first `next build` attempt without network failed on Google Fonts 
 1. Revert Phase 1 commits under `EkklesiaNexusWeb` (and parish `index.html` if desired).
 2. Redeploy previous marketing artifact.
 3. Apache: restore `*.bak` from operator backup; `apache2ctl configtest` then reload.
-4. **Do not** add a redirect from Matchpoint to EkklesiaNexus.
+4. **Do not** add a redirect from an unauthorized host to EkklesiaNexus.
 
 ---
 
@@ -80,6 +80,6 @@ Sandbox note: first `next build` attempt without network failed on Google Fonts 
 1. Deploy marketing build; restart Next.js on production.
 2. Confirm `https://ekklesianexus.com/google161c1efd34d8a358.html` → **200**.
 3. `apache2ctl -S`, backup, apply default vhost pattern, `configtest`, reload.
-4. Re-GET Matchpoint and raw IP — expect **404** or non-marketing body.
+4. Re-GET the raw IP and a synthetic unknown `Host` — expect **404** or a non-marketing body.
 5. Complete GSC verification and submit `https://ekklesianexus.com/sitemap.xml`.
 6. Monitor Search Console; do not claim SERP fix until observed.

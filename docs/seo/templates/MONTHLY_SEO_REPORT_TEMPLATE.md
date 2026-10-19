@@ -19,7 +19,7 @@
 | GSC property verified | [Yes / No / Unknown] | [Date verified] |
 | Sitemap processing | [Success / Errors] | [Last read date] |
 | Critical indexing exclusions | [Count or None] | [Link or summary] |
-| Hostname isolation (Matchpoint / IP) | [Pass / Fail] | [Script output date] |
+| Hostname isolation (unauthorized host / IP) | [Pass / Fail] | [Script output date] |
 | GSC verification file HTTP 200 | [Pass / Fail] | [URL] |
 
 ---

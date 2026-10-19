@@ -18,7 +18,7 @@
 | `https://ekklesianexus.com/robots.txt` | 200 | same | text/plain | Crawl policy | Yes |
 | `https://ekklesianexus.com/sitemap.xml` | 200 | same | application/xml | 13 URLs | Yes |
 | `https://ekklesianexus.com/google161c1efd34d8a358.html` | **404** | same | text/html (404 page) | **No** — verification missing | Yes |
-| `http://dwm.matchpointgps.in/` | 200 | same (HTTP) | text/html | **Unexpected** — EkklesiaNexus HTML | Yes |
+| `the unauthorized hostname` | 200 | same (HTTP) | text/html | **Unexpected** — EkklesiaNexus HTML | Yes |
 | `http://139.59.18.151/` | 200 | same (HTTP) | text/html | **Unexpected** — EkklesiaNexus HTML | Yes |
 
 Re-run: `bash scripts/record-phase13-live-verification.sh`

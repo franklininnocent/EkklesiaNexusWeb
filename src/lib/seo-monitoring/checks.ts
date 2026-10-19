@@ -74,7 +74,7 @@ export function validateSitemapXml(xml: string, expectedLocCount = EXPECTED_SITE
       return true;
     }
   });
-  const forbidden = locs.filter((u) => /\/es\b|localhost|127\.0\.0\.1|matchpoint|\/api\/|\/preview\//i.test(u));
+  const forbidden = locs.filter((u) => /\/es\b|localhost|127\.0\.0\.1|\/api\/|\/preview\//i.test(u));
 
   const allHostOk = hostBad.length === 0 && bad.length === 0 && forbidden.length === 0;
   results.push({

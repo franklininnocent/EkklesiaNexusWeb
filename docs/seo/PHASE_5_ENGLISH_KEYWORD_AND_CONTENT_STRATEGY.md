@@ -26,7 +26,7 @@ EkklesiaNexus should compete in English search on **Catholic parish office workf
 
 **Top five content improvements (Phase 6 execution order):** see §10.
 
-**Blocked for data-driven iteration:** Google Search Console (verification **404** on production), hostname isolation on Matchpoint/IP, no GSC/analytics access in engineering environment.
+**Blocked for data-driven iteration:** Google Search Console (verification **404** on production), hostname isolation on an unauthorized host/IP, no GSC/analytics access in engineering environment.
 
 ---
 
@@ -245,7 +245,7 @@ Queries run **18 Oct 2026** (English web index sample). Results vary by location
 ### P0 (prerequisites)
 
 1. Production deploy of Phase 4 SEO + GSC file.  
-2. Apache hostname isolation (Matchpoint, raw IP).  
+2. Apache hostname isolation (the unauthorized host, raw IP).  
 3. GSC property verification and sitemap submission.
 
 ### P1 (highest content/SEO value after P0)

@@ -1,7 +1,7 @@
 # Phase 4 — English technical SEO audit, remediation, and validation
 
 **Overall Phase 4 status:** **FAIL** (production prerequisites) — **Repository remediation: PASS**  
-**Justification:** In-repo canonical/metadata/sitemap/robots/structured-data/internal-link fixes are implemented and tested, but **production** still has **GSC verification 404** and **hostname isolation FAIL** (Matchpoint + raw IP). Phase 4 cannot be marked fully PASS until operator deploy + Apache per [PHASE_3B_PRODUCTION_GATE_REMEDIATION.md](PHASE_3B_PRODUCTION_GATE_REMEDIATION.md).
+**Justification:** In-repo canonical/metadata/sitemap/robots/structured-data/internal-link fixes are implemented and tested, but **production** still has **GSC verification 404** and **hostname isolation FAIL** (the unauthorized host + raw IP). Phase 4 cannot be marked fully PASS until operator deploy + Apache per [PHASE_3B_PRODUCTION_GATE_REMEDIATION.md](PHASE_3B_PRODUCTION_GATE_REMEDIATION.md).
 
 **Last verified (production GET):** 2026-10-18 04:37 UTC  
 **Stack:** Next.js App Router (`src/app`), `siteConfig.url` / `officialBrand.websiteUrl` for canonical origin, middleware `src/proxy.ts` + `marketing-request-host.ts`  
@@ -23,9 +23,9 @@ Related: [PHASE_3_PREFLIGHT.md](PHASE_3_PREFLIGHT.md), [PHASE_4_RELEASE_DECISION
 | `https://ekklesianexus.com/robots.txt` | 200 | same | n/a | — | Allows `/`, disallows `/api/`, `/preview/` |
 | `https://ekklesianexus.com/sitemap.xml` | 200 | same | n/a | — | **13** `<loc>` URLs (official host only) |
 | GSC file URL | **404** | same | 404 page (noindex) | points to apex | **FAIL** — file in repo `public/` |
-| `http://dwm.matchpointgps.in/` | 200 | same | yes | **apex** | **FAIL** — leak host indexable body |
-| `https://dwm.matchpointgps.in/` | TLS error | — | — | — | Cert hostname mismatch (expected) |
-| `https://dwm.matchpointgps.in/` (-k) | 200 | same | yes | apex | **FAIL** |
+| Unauthorized hostname (HTTP) | 200 | same | yes | **apex** | **FAIL** — leak host indexable body |
+| Unauthorized hostname (HTTPS, verify peer) | TLS error | — | — | — | Cert hostname mismatch (expected) |
+| Unauthorized hostname (HTTPS, insecure) | 200 | same | yes | apex | **FAIL** |
 | `http://139.59.18.151/` | 200 | same | yes | apex | **FAIL** |
 | `https://139.59.18.151/` (-k) | 200 | same | yes | apex | **FAIL** |
 
@@ -78,7 +78,7 @@ Canonical construction: `buildPageMetadata` in `seo-metadata.ts`; home `/` uses 
 | ID | Issue | Severity | Search impact | User impact | Risk | Status |
 |----|--------|----------|---------------|-------------|------|--------|
 | E1 | GSC HTML file **404** on production; present in repo `public/google161c1efd34d8a358.html` | **Critical** | Cannot verify domain; weak indexing signals | Operator cannot use GSC | Low (deploy only) | **FAIL** — deploy required |
-| E2 | Matchpoint + raw IP serve **200** marketing HTML (hostname leak) | **Critical** | Duplicate indexable copies, wrong-host attribution | Brand confusion | Infra (Apache) | **FAIL** — operator Apache + deploy |
+| E2 | the unauthorized host + raw IP serve **200** marketing HTML (hostname leak) | **Critical** | Duplicate indexable copies, wrong-host attribution | Brand confusion | Infra (Apache) | **FAIL** — operator Apache + deploy |
 | E3 | English hero visible copy duplicated slogan (no value prop / keywords) | **High** | Weak relevance for “church management software” intents | Unclear offer above fold | Low | **Fixed** (repo) |
 | E4 | Homepage meta title omitted “The” from brand line; description long / generic | **Medium** | CTR and snippet quality | — | Low | **Fixed** (repo) |
 | E5 | Minimal footer (no crawlable links to `/features`, `/about`, `/contact`) | **Medium** | Weak internal PageRank to English hubs | Harder discovery | Low | **Fixed** (en-US footer) |
@@ -204,7 +204,7 @@ Sitemap: `indexableLocalizedSitemapEntries` — home, `/pt-br`, static English m
 | Production URL | `GET https://ekklesianexus.com/google161c1efd34d8a358.html` | **FAIL** (404) |
 | GSC UI “Verified” | — | **BLOCKED** |
 | Sitemap on production | `GET /sitemap.xml` **200** (prior audit) | **PASS** (assumed until redeploy) |
-| Host leak | Matchpoint HTTP **200** marketing (18 Oct 2026) | **FAIL** |
+| Host leak | Unauthorized-host HTTP **200** marketing (18 Oct 2026) | **FAIL** |
 
 **Operator checklist after deploy:** file 200 + exact body → GSC verify → submit sitemap → monitor Page indexing.
 

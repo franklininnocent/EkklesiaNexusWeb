@@ -15,7 +15,7 @@
 - GSC verification file 404 when deploy expected complete.
 - Important page excluded from indexing (GSC evidence).
 - Material broken internal links on key journeys.
-- Host leak (Matchpoint / raw IP serving marketing HTML).
+- Host leak (unauthorized host / raw IP serving marketing HTML).
 
 **Action:** Within 1–2 business days; reference [SEO_ISSUE_REGISTER.md](SEO_ISSUE_REGISTER.md).
 

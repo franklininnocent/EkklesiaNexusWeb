@@ -7,7 +7,7 @@
 | Pri | Task | Evidence | Owner | Success metric | Review |
 |-----|------|----------|-------|----------------|--------|
 | P0 | Deploy marketing build with GSC file + SEO copy | Phase 13 | DevOps | GSC file 200; live title matches repo | Deploy +1d |
-| P0 | Fix host leak (Matchpoint / IP) | Phase 13 | DevOps | Leak URLs not 200 marketing | Phase 3B |
+| P0 | Fix host leak (unauthorized host / IP) | Phase 13 | DevOps | Leak URLs not 200 marketing | Phase 3B |
 | P0 | Verify GSC property | Phase 13 runbook | Owner | Property verified | Week 2 |
 | P1 | First GSC 28d export | Baseline doc | SEO operator | CSV stored | Week 4 |
 | P1 | Confirm GA4 on production | SEO-006 | Owner | Events in DebugView | Week 3 |
