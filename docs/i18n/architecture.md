@@ -53,7 +53,7 @@ Homepage plan amounts come from `GET /api/public/subscription-plans` (`regional_
 
 Language does not select currency: Portuguese UI with INR prices is valid when the visitor country is India.
 
-Country for pricing (`visitorCountryForPricing`): trusted `X-EN-Geo-Country` + `X-EN-Geo-Token` from nginx, else `MARKETING_VISITOR_COUNTRY` in server env. Without trusted country, currency is USD.
+Country for pricing (`visitorCountryForPricing`): trusted `X-EN-Geo-Country` + `X-EN-Geo-Token` from the reverse proxy, else `MARKETING_VISITOR_COUNTRY` in server env, else the public client IP in `X-Forwarded-For`. IN→INR, BR→BRL, otherwise USD.
 
 Billing period (monthly vs annual) follows API data per currency (no invented annual USD/BRL). This is **marketing display only** — not tenant billing. Subscription onboarding must use the confirmed tenant country and the Laravel catalog.
 
