@@ -20,9 +20,13 @@ import {
   pickHomepagePricingPlans,
   pricingCatalogStateFromFetch,
 } from "@/lib/pricing/select-marketing-price";
-import { marketingCurrencyForRequest } from "@/lib/pricing/resolve-pricing-market";
+import {
+  marketingCurrencyForRequest,
+  visitorCountryForPricing,
+} from "@/lib/pricing/resolve-pricing-market";
 export async function MockupPage() {
   const headerList = await headers();
+  const visitorCountry = visitorCountryForPricing(headerList);
   const currency = marketingCurrencyForRequest(headerList);
   const plansResult = await fetchPublishedSubscriptionPlans();
   const pricingPlans = plansResult.ok ? pickHomepagePricingPlans(plansResult.plans) : [];
@@ -34,7 +38,7 @@ export async function MockupPage() {
     : { seed: null, growth: null, summit: null };
   const catalogState = pricingCatalogStateFromFetch(plansResult);
 
-  logMarketingPricingDiagnostics(plansResult, pricesByPlanId, currency);
+  logMarketingPricingDiagnostics(plansResult, pricesByPlanId, currency, visitorCountry);
 
   return (
     <>
