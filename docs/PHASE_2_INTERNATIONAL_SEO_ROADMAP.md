@@ -9,7 +9,7 @@
 
 ## Phase 2B / Phase 3 (blocked)
 
-**Prerequisite:** Phase 1 + **2A deploy** and production gates below — especially **host isolation** on `139.59.18.151` (Matchpoint and raw IP must not serve indexable marketing) and GSC verification live. Until then, expanding locales risks indexing on duplicate hosts.
+**Prerequisite:** Phase 1 + **2A deploy** and production gates below — especially **host isolation** on `139.59.18.151` (the unauthorized host and raw IP must not serve indexable marketing) and GSC verification live. Until then, expanding locales risks indexing on duplicate hosts.
 
 **First eligible new locale:** `/es` (Mexico + Colombia, one URL) after approved Spanish copy and native review.
 
@@ -22,7 +22,7 @@
 - [ ] Deploy latest `EkklesiaNexusWeb` build; restart Next.js.
 - [ ] `GET https://ekklesianexus.com/google161c1efd34d8a358.html` → **200**.
 - [ ] Apache: `apache2ctl -S`, backup configs, default vhost 404, `configtest`, reload ([example](deploy/apache-ekklesianexus.conf.example)).
-- [ ] Re-GET `http://dwm.matchpointgps.in/` and `http://139.59.18.151/` — not **200** marketing.
+- [ ] Re-GET `http://139.59.18.151/` and confirm unknown `Host` values — not **200** marketing.
 - [ ] GSC: domain property, sitemap `https://ekklesianexus.com/sitemap.xml`, monitor Coverage.
 - [ ] Optional: URL inspection for duplicate URLs; request removal only per Google guidelines if duplicates persist.
 

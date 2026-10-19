@@ -9,7 +9,7 @@
 | Task | Command / source | Escalate if |
 |------|------------------|-------------|
 | Availability + crawl | `bash scripts/check-production-seo-baseline.sh` | Apex non-200, sitemap ≠13, GSC file non-200 post-deploy |
-| Host leak | Same script leak section | Matchpoint/IP return marketing HTML |
+| Host leak | Same script leak section | the unauthorized host/IP return marketing HTML |
 | Issue triage | [PHASE_0_14_FINDINGS_REGISTER.md](PHASE_0_14_FINDINGS_REGISTER.md) | New P0/P1 |
 
 ## Monthly

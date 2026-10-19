@@ -10,7 +10,7 @@
 | `https://ekklesianexus.com/` | 200 | same | `https://ekklesianexus.com` | **PASS** |
 | `http://www.ekklesianexus.com/` | 200 | `https://ekklesianexus.com/` | apex | **PASS** — www → apex |
 | `https://www.ekklesianexus.com/` | 200 | `https://ekklesianexus.com/` | apex | **PASS** |
-| `http://dwm.matchpointgps.in/` | 200 | `http://dwm.matchpointgps.in/` | `https://ekklesianexus.com` | **FAIL P0** — wrong host indexable HTML |
+| `the unauthorized hostname` | 200 | `the unauthorized hostname` | `https://ekklesianexus.com` | **FAIL P0** — wrong host indexable HTML |
 | `http://139.59.18.151/` | 200 | `http://139.59.18.151/` | apex canonical in body | **FAIL P0** |
 
 **Remediation (authorized infra only):** [PHASE_3B_PRODUCTION_GATE_REMEDIATION.md](../PHASE_3B_PRODUCTION_GATE_REMEDIATION.md), `docs/deploy/apache-ekklesianexus.conf.example`.

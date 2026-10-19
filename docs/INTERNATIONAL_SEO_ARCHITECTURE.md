@@ -37,7 +37,7 @@
 
 ## Sitemap and robots
 
-- Sitemap host: `https://ekklesianexus.com` only — includes `/`, `/pt-br`, indexable marketing paths; excludes `app.`, `api.`, Matchpoint, privacy/terms (see `indexableLocalizedSitemapEntries` / unit tests).
+- Sitemap host: `https://ekklesianexus.com` only — includes `/`, `/pt-br`, indexable marketing paths; excludes `app.`, `api.`, the unauthorized host, privacy/terms (see `indexableLocalizedSitemapEntries` / unit tests).
 - `robots.txt` on official host allows marketing crawl; unauthorized production hosts should return disallow or 404 at edge (operator Apache + deployed proxy guard).
 
 ---

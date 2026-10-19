@@ -55,4 +55,4 @@ Do **not** add Lighthouse to CI without stable Chrome infrastructure (Phase 7 us
 | Sitemap test fails | `indexableLocalizedSitemapEntries` in `localized-metadata.ts` |
 | GSC file test fails | `public/google161c1efd34d8a358.html` missing from branch |
 | Production GSC 404 | Deploy artifact; not fixed by tests alone |
-| Matchpoint 200 marketing | Apache host guard — not application-only |
+| the unauthorized host 200 marketing | Apache host guard — not application-only |

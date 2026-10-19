@@ -12,7 +12,7 @@
 
 Local automated SEO, international, and pricing regression tests **pass** on the current working tree. The **official apex domain** redirects www/HTTP correctly and serves indexable marketing pages with expected sitemap/robots behavior.
 
-**Release is blocked** by three **P0 production issues**: GSC verification file **404**, duplicate marketing HTML on **Matchpoint hostname** and **raw server IP**, plus **undeployed** SEO improvements (Phases 4–11) on production.
+**Release is blocked** by three **P0 production issues**: GSC verification file **404**, duplicate marketing HTML on **the unauthorized hostname** and **raw server IP**, plus **undeployed** SEO improvements (Phases 4–11) on production.
 
 Recommendation: remediate P0 infrastructure + authorized deploy, then re-run post-release checklist and upgrade decision to **CONDITIONALLY READY** pending GSC and native pt-BR review.
 
