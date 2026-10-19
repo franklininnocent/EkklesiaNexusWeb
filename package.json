@@ -7,6 +7,8 @@
   },
   "scripts": {
     "dev": "next dev -p 3010",
+    "dev:visitor-in": "MARKETING_VISITOR_COUNTRY=IN next dev -p 3010",
+    "dev:visitor-br": "MARKETING_VISITOR_COUNTRY=BR next dev -p 3010",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",

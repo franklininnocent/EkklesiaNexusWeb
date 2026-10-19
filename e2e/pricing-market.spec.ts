@@ -8,6 +8,27 @@ const TAX_SNIPPET = {
   "pt-BR": "Os preços não incluem os impostos aplicáveis",
 };
 
+/** Matches MARKETING_PRICING_FIXTURE_JSON in playwright.config.ts (published API shape). */
+const HOMEPAGE_PLAN_AMOUNTS: Array<
+  Record<"INR" | "USD" | "BRL", { monthly: string; annual: string }>
+> = [
+  {
+    INR: { monthly: "1499.00", annual: "14990.00" },
+    USD: { monthly: "39.00", annual: "390.00" },
+    BRL: { monthly: "99.00", annual: "990.00" },
+  },
+  {
+    INR: { monthly: "2999.00", annual: "29990.00" },
+    USD: { monthly: "59.00", annual: "590.00" },
+    BRL: { monthly: "199.00", annual: "1990.00" },
+  },
+  {
+    INR: { monthly: "4999.00", annual: "49990.00" },
+    USD: { monthly: "89.00", annual: "890.00" },
+    BRL: { monthly: "399.00", annual: "3990.00" },
+  },
+];
+
 function trustedGeoHeaders(country: string | null): Record<string, string> {
   const headers: Record<string, string> = { "x-en-geo-token": GEO_SECRET };
   if (country) {
@@ -16,29 +37,37 @@ function trustedGeoHeaders(country: string | null): Record<string, string> {
   return headers;
 }
 
-async function openStarterPrice(page: import("@playwright/test").Page) {
-  await page.locator("#pricing").scrollIntoViewIfNeeded();
-  await page.getByRole("button", { name: /Show Price|Ver preço/i }).first().click();
+async function openPlanPrice(page: import("@playwright/test").Page, cardIndex: number) {
+  const card = page.locator("#pricing article").nth(cardIndex);
+  await card.scrollIntoViewIfNeeded();
+  const showButton = card.getByRole("button", { name: /Show Price|Ver preço/i });
+  await showButton.click();
+  await expect(card.getByRole("button", { name: /Hide Price|Ocultar preço/i })).toBeVisible({ timeout: 10_000 });
 }
 
-async function assertStarterMonthly(
+async function assertPlanMonthlyAndAnnual(
+  page: import("@playwright/test").Page,
+  cardIndex: number,
+  currency: "INR" | "USD" | "BRL",
+  locale: "en-US" | "pt-BR",
+) {
+  await openPlanPrice(page, cardIndex);
+  const amounts = HOMEPAGE_PLAN_AMOUNTS[cardIndex]![currency];
+  const monthly = formatMarketingMoneyFromDecimal(amounts.monthly, currency, locale);
+  const annual = formatMarketingMoneyFromDecimal(amounts.annual, currency, locale);
+  const card = page.locator("#pricing article").nth(cardIndex);
+  await expect(card).toContainText(monthly, { timeout: 15_000 });
+  await expect(card).toContainText(annual);
+}
+
+async function assertAllHomepagePlanPrices(
   page: import("@playwright/test").Page,
   currency: "INR" | "USD" | "BRL",
   locale: "en-US" | "pt-BR",
 ) {
-  await openStarterPrice(page);
-  const amounts =
-    currency === "INR"
-      ? { monthly: "1499.00", annual: "14990.00" }
-      : currency === "USD"
-        ? { monthly: "39.00", annual: "390.00" }
-        : { monthly: "99.00", annual: "990.00" };
-  const monthly = formatMarketingMoneyFromDecimal(amounts.monthly, currency, locale);
-  const annual = formatMarketingMoneyFromDecimal(amounts.annual, currency, locale);
-  await expect(page.locator("#pricing").getByText(monthly, { exact: true }).first()).toBeVisible({
-    timeout: 15_000,
-  });
-  await expect(page.locator("#pricing").getByText(annual, { exact: true }).first()).toBeVisible();
+  for (let cardIndex = 0; cardIndex < HOMEPAGE_PLAN_AMOUNTS.length; cardIndex += 1) {
+    await assertPlanMonthlyAndAnnual(page, cardIndex, currency, locale);
+  }
 }
 
 const matrix: Array<{
@@ -72,20 +101,20 @@ test("every plan shows Show Price while prices are hidden", async ({ page }) => 
 test("hiding a price does not change the revealed amount", async ({ page }) => {
   await page.setExtraHTTPHeaders(trustedGeoHeaders("US"));
   await page.goto("/#pricing", { waitUntil: "domcontentloaded" });
-  await openStarterPrice(page);
+  await openPlanPrice(page, 0);
   const usd = formatMarketingMoneyFromDecimal("39.00", "USD", "en-US");
-  await expect(page.locator("#pricing").getByText(usd, { exact: true }).first()).toBeVisible();
-  await page.locator("#pricing").getByRole("button", { name: /Hide Price|Ocultar preço/i }).click();
+  await expect(page.locator("#pricing").getByText(usd).first()).toBeVisible();
+  await page.locator("#pricing").getByRole("button", { name: /Hide Price|Ocultar preço/i }).first().click();
   await expect(page.locator("#pricing").getByRole("button", { name: /Show Price|Ver preço/i })).toHaveCount(3);
-  await openStarterPrice(page);
-  await expect(page.locator("#pricing").getByText(usd, { exact: true }).first()).toBeVisible();
+  await openPlanPrice(page, 0);
+  await expect(page.locator("#pricing").getByText(usd).first()).toBeVisible();
 });
 
 for (const row of matrix) {
-  test(`geo ${row.country ?? "none"} ${row.path} → ${row.currency}`, async ({ page }) => {
+  test(`geo ${row.country ?? "none"} ${row.path} → ${row.currency} (all plans)`, async ({ page }) => {
     await page.setExtraHTTPHeaders(trustedGeoHeaders(row.country));
     await page.goto(`${row.path}#pricing`, { waitUntil: "domcontentloaded" });
-    await assertStarterMonthly(page, row.currency, row.locale);
+    await assertAllHomepagePlanPrices(page, row.currency, row.locale);
     await expect(page.locator("#pricing")).toContainText(TAX_SNIPPET[row.locale]);
     await expect(page.locator("#pricing")).not.toContainText("%");
   });
@@ -94,9 +123,7 @@ for (const row of matrix) {
 test("spoofed cf-ipcountry without geo token does not change currency", async ({ page }) => {
   await page.setExtraHTTPHeaders({ "cf-ipcountry": "IN" });
   await page.goto("/#pricing", { waitUntil: "domcontentloaded" });
-  await openStarterPrice(page);
-  const usd = formatMarketingMoneyFromDecimal("39.00", "USD", "en-US");
-  await expect(page.locator("#pricing").getByText(usd, { exact: true }).first()).toBeVisible();
+  await assertPlanMonthlyAndAnnual(page, 0, "USD", "en-US");
 });
 
 test("featured Standard plan Show Price uses primary button styling", async ({ page }) => {
@@ -110,18 +137,24 @@ test("featured Standard plan Show Price uses primary button styling", async ({ p
 test("Show Price expands via keyboard", async ({ page }) => {
   await page.setExtraHTTPHeaders(trustedGeoHeaders("US"));
   await page.goto("/#pricing", { waitUntil: "domcontentloaded" });
-  const button = page.locator("#pricing article").first().getByRole("button", { name: /Show Price/i });
-  await button.focus();
-  await page.keyboard.press("Enter");
-  await expect(page.locator("#pricing").getByRole("button", { name: /Hide Price/i }).first()).toBeVisible();
+  await page.locator("#pricing").scrollIntoViewIfNeeded();
+  const card = page.locator("#pricing article").first();
+  const priceToggle = card.locator('button[aria-controls^="plan-price-"]');
+  await expect(priceToggle).toHaveAttribute("aria-expanded", "false");
+  await expect(priceToggle).toHaveAccessibleName(/Show Price|Ver preço/i);
+  await priceToggle.press("Enter");
+  const hideButton = card.getByRole("button", { name: /Hide Price|Ocultar preço/i });
+  await expect(hideButton).toBeVisible({ timeout: 15_000 });
+  await expect(hideButton).toHaveAttribute("aria-expanded", "true");
 });
 
 test("India with English shows INR; Portuguese UI in India still INR", async ({ page }) => {
   await page.setExtraHTTPHeaders(trustedGeoHeaders("IN"));
   await page.goto("/#pricing", { waitUntil: "domcontentloaded" });
-  await assertStarterMonthly(page, "INR", "en-US");
+  await assertAllHomepagePlanPrices(page, "INR", "en-US");
 
   await page.getByRole("navigation", { name: "Language" }).getByRole("link", { name: "Português (Brasil)", exact: true }).click();
-  await page.locator("#pricing").scrollIntoViewIfNeeded();
-  await assertStarterMonthly(page, "INR", "pt-BR");
+  await page.waitForURL(/\/pt-br\/?$/);
+  await page.goto("/pt-br#pricing", { waitUntil: "domcontentloaded" });
+  await assertAllHomepagePlanPrices(page, "INR", "pt-BR");
 });
