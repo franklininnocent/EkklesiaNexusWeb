@@ -14,7 +14,7 @@ Before any deploy or Apache reload, record:
 | **Authorized by** | _(name / role)_ |
 | **Timestamp (UTC)** | _(ISO-8601)_ |
 | **Scope approved** | Marketing `EkklesiaNexusWeb` deploy; Apache vhost isolation per [deploy/apache-ekklesianexus.conf.example](deploy/apache-ekklesianexus.conf.example) on `139.59.18.151` |
-| **Out of scope (unless separate approval)** | DNS changes; TLS/certificate changes for third-party hostnames; unrelated vhosts; Matchpoint → EkklesiaNexus redirect; publish `/es` |
+| **Out of scope (unless separate approval)** | DNS changes; TLS/certificate changes for third-party hostnames; unrelated vhosts; an unauthorized host → EkklesiaNexus redirect; publish `/es` |
 | **Rollback plan** | Restore Apache `*.bak` after `apache2ctl configtest`; redeploy previous marketing artifact; restart Next.js |
 
 ### Authorization log
@@ -23,7 +23,7 @@ Before any deploy or Apache reload, record:
 |--------|-------------|---------|------------|-------------------|
 | Marketing site deploy + Next restart (`NODE_ENV=production`) | **No** | — | — | Previous build artifact tag/commit |
 | Apache `configtest` + reload (hostname isolation) | **No** | — | — | Timestamped `sites-available/*.bak` |
-| DNS / TLS for Matchpoint or other domains | **No** | — | — | N/A — not in scope |
+| DNS / TLS for an unauthorized host or other domains | **No** | — | — | N/A — not in scope |
 | Google Search Console UI verification | **No** | — | — | Remove property only if wrongly added |
 | Publish `/es` or add `SUPPORTED_LOCALES` | **No** | — | — | Revert locale commit |
 
@@ -51,7 +51,7 @@ Adapt [deploy/apache-ekklesianexus.conf.example](deploy/apache-ekklesianexus.con
 3. **Catch-all** `*:80` / `*:443`: must **not** `ProxyPass` to Next.js; must **not** set `X-Forwarded-Host: ekklesianexus.com`.
 4. **Named** `ekklesianexus.com`: `ProxyPreserveHost On`, `X-Forwarded-Proto https`, proxy to Next (confirm port, e.g. `3000`).
 5. `sudo apache2ctl configtest` → **Syntax OK** only then `sudo systemctl reload apache2`.
-6. **Matchpoint / other domains:** must serve their intended application or **404** — not full EkklesiaNexus marketing HTML. Do not break unrelated services.
+6. **Unauthorized hosts and other domains:** must serve their intended application or **404** — not full EkklesiaNexus marketing HTML. Do not break unrelated services.
 
 **Canonical domain:** `https://ekklesianexus.com` remains the marketing HTTPS origin.
 
@@ -68,17 +68,16 @@ bash scripts/record-production-gates.sh
 
 Required URLs:
 
-- `http://dwm.matchpointgps.in/`
-- `https://dwm.matchpointgps.in/` (note TLS vs `-k` insecure separately)
+- HTTP and HTTPS requests for the unauthorized hostname (compare strict TLS with an insecure request separately; do not add that hostname to repository scripts)
 - `http://139.59.18.151/` and `https://139.59.18.151/` where applicable
 - `https://ekklesianexus.com/google161c1efd34d8a358.html`
 - `https://ekklesianexus.com/` and `https://ekklesianexus.com/pt-br`
 
-**Gate rule:** Matchpoint and raw IP must **not** return **200** with full EkklesiaNexus marketing HTML. GSC URL must **200** with body `google-site-verification: google161c1efd34d8a358.html`.
+**Gate rule:** the unauthorized host and raw IP must **not** return **200** with full EkklesiaNexus marketing HTML. GSC URL must **200** with body `google-site-verification: google161c1efd34d8a358.html`.
 
 ### Latest engineering read-only recheck (no deploy)
 
-**2026-10-18 04:33 UTC (Phase 4):** Matchpoint HTTP/HTTPS-insecure and raw IP HTTP/HTTPS still **200** marketing HTML; GSC file **404**; `/`, `/pt-br`, `www`→apex **200**. Gates **B** and **D** (file) remain **FAIL**. Authorization log unchanged (**No**).
+**2026-10-18 04:33 UTC (Phase 4):** Unauthorized-host HTTP/HTTPS-insecure and raw IP HTTP/HTTPS still **200** marketing HTML; GSC file **404**; `/`, `/pt-br`, `www`→apex **200**. Gates **B** and **D** (file) remain **FAIL**. Authorization log unchanged (**No**).
 
 ---
 
@@ -110,7 +109,7 @@ Use approval table in [ES_LOCALE_IMPLEMENTATION_SPEC.md](ES_LOCALE_IMPLEMENTATIO
 
 Shared IP `139.59.18.151`; Apache routes unknown `Host` to marketing Next.js. Repo guard helps only after deploy with real `Host`. Durable fix: Apache catch-all **404** without Next proxy.
 
-Do **not** 301 Matchpoint → `ekklesianexus.com`.
+Do **not** 301 an unauthorized host → `ekklesianexus.com`.
 
 ---
 

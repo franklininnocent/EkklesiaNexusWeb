@@ -14,7 +14,7 @@
 
 **Repo:** Marketing SEO implementation (locales, metadata, sitemap, structured data, content validators, pricing unit tests, host guard in `proxy.ts`) is **substantially implemented and covered by automated tests**. Phases 8–12 and 14 monitoring artifacts exist.
 
-**Production:** **P0 blockers persist** — GSC verification file **404**, duplicate marketing HTML on **Matchpoint** and **raw IP**, and **metadata drift** (live home still “Next-Generation” / **360°** copy; repo corrected). Local tests **do not** prove production parity.
+**Production:** **P0 blockers persist** — GSC verification file **404**, duplicate marketing HTML on **the unauthorized host** and **raw IP**, and **metadata drift** (live home still “Next-Generation” / **360°** copy; repo corrected). Local tests **do not** prove production parity.
 
 **No deploy, infra, pricing logic, or external account changes** were made in this audit.
 

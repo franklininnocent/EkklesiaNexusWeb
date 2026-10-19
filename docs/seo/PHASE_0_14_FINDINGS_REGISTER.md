@@ -5,7 +5,7 @@ Maps legacy [SEO_ISSUE_REGISTER.md](SEO_ISSUE_REGISTER.md) IDs where applicable.
 | ID | Sev | Category | Phases | Title | Evidence | Impact | In-scope fix | Status |
 |----|-----|----------|--------|-------|----------|--------|--------------|--------|
 | SEO-AUDIT-001 | **High** | Technical / GSC | 8,12,13 | GSC verification 404 on apex | Live curl 2026-10-18; file in `public/` | Cannot verify property | **No** — deploy | **Open** |
-| SEO-AUDIT-002 | **High** | Crawl / host | 1,3,12,13 | Matchpoint host serves marketing | `http://dwm.matchpointgps.in/` 200 + EkklesiaNexus HTML | Duplicate indexing risk | **No** — Apache | **Open** |
+| SEO-AUDIT-002 | **High** | Crawl / host | 1,3,12,13 | the unauthorized host serves marketing | `the unauthorized hostname` 200 + EkklesiaNexus HTML | Duplicate indexing risk | **No** — Apache | **Open** |
 | SEO-AUDIT-003 | **High** | Crawl / host | 1,3,12,13 | Raw IP serves marketing | `http://139.59.18.151/` 200 | Same as 002 | **No** — Apache | **Open** |
 | SEO-AUDIT-004 | **High** | Content / drift | 4,11,13 | Live home meta 360° / old title | Live: “Next-Generation”, 360° description; repo without 360° | Snippet mismatch, trust | **No** — deploy | **Open** |
 | SEO-AUDIT-005 | Medium | Measurement | 8,14 | No GSC access in engineering | SEO-004 | No organic baseline | **No** — owner access | **Open** |

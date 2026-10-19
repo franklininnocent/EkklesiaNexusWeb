@@ -65,7 +65,7 @@ See [PHASE_0_14_REGRESSION_TEST_RESULTS.md](PHASE_0_14_REGRESSION_TEST_RESULTS.m
 ## Top 5 next actions
 
 1. Deploy marketing site (GSC file + SEO metadata bundle).  
-2. Fix host leak (Matchpoint + IP).  
+2. Fix host leak (the unauthorized host + IP).  
 3. Verify GSC; store first 28-day export.  
 4. Confirm GA4 on production.  
 5. Weekly `check-production-seo-baseline.sh` + first monthly report ([templates/PHASE_14_MONTHLY_SEO_REPORT.md](templates/PHASE_14_MONTHLY_SEO_REPORT.md)).

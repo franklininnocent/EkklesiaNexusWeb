@@ -21,7 +21,7 @@ Follow [DEPLOYMENT.md](../DEPLOYMENT.md) — symlink release, `systemctl restart
 3. View-source `/` and `/pt-br` — canonical + hreflang
 4. Spot-check `#pricing` with test country headers (operator)
 5. GSC verify + sitemap submit (operator)
-6. Re-check `dwm.matchpointgps.in` and raw IP — must **not** serve marketing HTML
+6. Re-check unknown hosts and the raw IP — must **not** serve marketing HTML
 
 ## Rollback triggers
 

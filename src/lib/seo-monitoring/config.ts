@@ -11,9 +11,8 @@ export const MONITORING_PRIMARY_PATHS = [
   "/contact",
 ] as const;
 
-/** Historical duplicate-host risks — read-only leak checks. */
+/** Non-canonical production origins — read-only leak checks. Raw IP only. */
 export const MONITORING_LEAK_URLS = [
-  "http://dwm.matchpointgps.in/",
   "http://139.59.18.151/",
 ] as const;
 

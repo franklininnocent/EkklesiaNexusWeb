@@ -5,7 +5,7 @@
 | ID | Category | Topic / query group | Page | Evidence | GSC metrics | Proposed action | Effort | Confidence | Status |
 |----|----------|---------------------|------|----------|-------------|-----------------|--------|------------|--------|
 | OPP-001 | Technical | Indexing eligibility | All indexable | Phase 13 crawlability | UNAVAILABLE | Close P0 deploy + GSC verify | S (ops) | High | **Blocked** |
-| OPP-002 | Technical | Duplicate host | Matchpoint / IP | Phase 13 live GET | N/A | Apache Phase 3B | M (ops) | High | **Blocked** |
+| OPP-002 | Technical | Duplicate host | unauthorized host / IP | Phase 13 live GET | N/A | Apache Phase 3B | M (ops) | High | **Blocked** |
 | OPP-003 | Snippet | Home title/desc drift | `/` | Live vs repo | UNAVAILABLE | **Deploy** repo metadata; then measure CTR | S | Medium | **Pending deploy** |
 | OPP-004 | Content | Catholic parish software | `/solutions/catholic-parishes` | Phase 5 intent | UNAVAILABLE | Monitor post-GSC; keep page | — | Medium | **Watch** |
 | OPP-005 | Content | Sacramental registers | `/features/sacramental-registers` | Phase 5/6 | UNAVAILABLE | No new URL | — | Medium | **Watch** |

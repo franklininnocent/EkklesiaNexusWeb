@@ -17,7 +17,7 @@ Phase 2A implemented Host-authoritative marketing host resolution so unauthorize
 |------|--------|
 | `src/lib/marketing/marketing-request-host.ts` | `effectiveMarketingHostFromHeaders`, `effectiveMarketingRequestHost`, `isLoopbackMarketingHost`, IPv6-safe `normalizeHostHeader`; `parseMarketingRequestHost` delegates to effective host |
 | `src/proxy.ts` | Uses `effectiveMarketingRequestHost` for allowlist and redirects |
-| `scripts/marketing-request-host.test.ts` | Host vs XFH conflict cases, `www` + XFH, loopback + Matchpoint XFH |
+| `scripts/marketing-request-host.test.ts` | Host vs XFH conflict cases, `www` + XFH, loopback + the unauthorized host XFH |
 | `docs/deploy/apache-ekklesianexus.conf.example` | Catch-all must not proxy; XFH-to-apex only on named apex vhost; `ProxyPreserveHost` note |
 | `e2e/seo-public-pages.spec.ts` | Footer test: brand + copyright (no `/features` href requirement) |
 | `docs/PHASE_2_PREFLIGHT_AND_GAP_ASSESSMENT.md` | **New** — baseline GET, gaps, operator checklist |
@@ -43,7 +43,7 @@ Phase 2A implemented Host-authoritative marketing host resolution so unauthorize
 
 | URL | HTTP |
 |-----|------|
-| `http://dwm.matchpointgps.in/` | **200** (marketing HTML — **leak still open**) |
+| `the unauthorized hostname` | **200** (marketing HTML — **leak still open**) |
 | `http://139.59.18.151/` | **200** (marketing HTML — **leak still open**) |
 | `https://ekklesianexus.com/google161c1efd34d8a358.html` | **404** (**GSC not live**) |
 
@@ -53,7 +53,7 @@ Phase 2A implemented Host-authoritative marketing host resolution so unauthorize
 
 ## Rollback
 
-Revert Phase 2A commits in `EkklesiaNexusWeb`. Do not restore a Matchpoint → EkklesiaNexus redirect. Apache: restore operator `*.bak` after `configtest` if vhosts were changed separately.
+Revert Phase 2A commits in `EkklesiaNexusWeb`. Do not restore a redirect from an unauthorized host to EkklesiaNexus. Apache: restore operator `*.bak` after `configtest` if vhosts were changed separately.
 
 ---
 

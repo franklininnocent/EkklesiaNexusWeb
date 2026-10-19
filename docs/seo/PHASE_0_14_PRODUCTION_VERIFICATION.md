@@ -39,7 +39,7 @@
 
 | URL | Result |
 |-----|--------|
-| `http://dwm.matchpointgps.in/` | **200** — marketing HTML — **FAIL** |
+| `the unauthorized hostname` | **200** — marketing HTML — **FAIL** |
 | `http://139.59.18.151/` | **200** — marketing HTML — **FAIL** |
 
 ## Metadata snapshot (SSR)

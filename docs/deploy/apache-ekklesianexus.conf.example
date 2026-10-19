@@ -10,12 +10,12 @@
 #   sudo apache2ctl configtest
 #   sudo systemctl reload apache2
 #
-# Do NOT request certificates for unauthorized hostnames (e.g. dwm.matchpointgps.in).
+# Do NOT request certificates for unauthorized hostnames.
 # Do NOT 301 unauthorized hosts to ekklesianexus.com.
 
 # --- Default catch-all: refuse marketing on unknown Host / raw IP ---
 # This vhost must NOT ProxyPass to Next.js and must NOT set X-Forwarded-Host to the apex.
-# If an unknown Host (Matchpoint, raw IP) still reaches Next.js, fix vhost matching first.
+# If an unknown Host (raw IP or any name outside the official allowlist) still reaches Next.js, fix vhost matching first.
 <VirtualHost *:80>
     ServerName default.invalid
     DocumentRoot /var/www/html-default-empty

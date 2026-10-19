@@ -91,7 +91,7 @@ See [PHASE_13_LIVE_PRODUCTION_BASELINE.md](PHASE_13_LIVE_PRODUCTION_BASELINE.md)
 
 ## Owner manual steps (ordered)
 
-1. **Apache:** stop serving marketing on `dwm.matchpointgps.in` and raw IP (P13-002/003).  
+1. **Apache:** stop serving marketing on `the unauthorized hostname` and raw IP (P13-002/003).  
 2. **Deploy** current `EkklesiaNexusWeb` marketing build; record git SHA on server.  
 3. **Verify** GSC file → **200**; complete GSC property verification.  
 4. **Re-run** `bash scripts/record-phase13-live-verification.sh` — confirm home title/description match repo.  
