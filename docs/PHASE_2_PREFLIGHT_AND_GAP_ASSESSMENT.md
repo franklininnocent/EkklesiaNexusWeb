@@ -36,9 +36,9 @@ Repository root for marketing: `EkklesiaNexusWeb` on branch `price-implementatio
 |-------|-----|------|-----------|---------------------|------------------|----------------|
 | Official home | `https://ekklesianexus.com/` | 200 | same | `https://ekklesianexus.com` | index, follow | yes |
 | Portuguese home | `https://ekklesianexus.com/pt-br` | 200 | same | `https://ekklesianexus.com/pt-br` | index, follow | yes |
-| Matchpoint HTTP | `http://dwm.matchpointgps.in/` | 200 | same | `https://ekklesianexus.com` | index, follow | yes |
-| Matchpoint HTTPS (strict TLS) | `https://dwm.matchpointgps.in/` | — | — | — | — | TLS verify failed (cert mismatch) |
-| Matchpoint HTTPS (insecure) | `https://dwm.matchpointgps.in/` | 200 | same | `https://ekklesianexus.com` | index, follow | yes |
+| Unauthorized-host HTTP | `the unauthorized hostname` | 200 | same | `https://ekklesianexus.com` | index, follow | yes |
+| Unauthorized-host HTTPS (strict TLS) | `the unauthorized hostname` | — | — | — | — | TLS verify failed (cert mismatch) |
+| Unauthorized-host HTTPS (insecure) | `the unauthorized hostname` | 200 | same | `https://ekklesianexus.com` | index, follow | yes |
 | Raw IP | `http://139.59.18.151/` | 200 | same | `https://ekklesianexus.com` | index, follow | yes |
 | GSC file | `https://ekklesianexus.com/google161c1efd34d8a358.html` | **404** | same | — | — | no |
 
@@ -50,7 +50,7 @@ Repository root for marketing: `EkklesiaNexusWeb` on branch `price-implementatio
 
 ### Fact (repo) — prior defect
 
-`parseMarketingRequestHost` preferred `X-Forwarded-Host` over `Host`, so a request with `Host: dwm.matchpointgps.in` and `X-Forwarded-Host: ekklesianexus.com` could be allowlisted.
+`parseMarketingRequestHost` preferred `X-Forwarded-Host` over `Host`, so a request with `Host: unrelated.example` and `X-Forwarded-Host: ekklesianexus.com` could be allowlisted.
 
 ### Phase 2A fix (Fact (repo) after this cycle)
 
@@ -69,10 +69,10 @@ Loopback `Host` + official `X-Forwarded-Host` still allowlists marketing for loc
 1. Deploy latest `EkklesiaNexusWeb` build; restart Next.js (`NODE_ENV=production`).
 2. `GET https://ekklesianexus.com/google161c1efd34d8a358.html` → **200**.
 3. On server `139.59.18.151`: `sudo apache2ctl -S`; backup sites; apply catch-all that does **not** proxy; `apache2ctl configtest`; reload only if OK.
-4. Re-GET `http://dwm.matchpointgps.in/` and `http://139.59.18.151/` — must **not** be 200 full marketing HTML.
+4. Re-GET `http://139.59.18.151/` and confirm unknown `Host` values — must **not** be 200 full marketing HTML.
 5. GSC: domain property, HTML-file verification, submit `https://ekklesianexus.com/sitemap.xml`.
 
-**Not isolated until post-change GET proves it.** No Matchpoint → EkklesiaNexus redirect. No DNS changes from engineering laptop.
+**Not isolated until post-change GET proves it.** Do not redirect an unauthorized host to EkklesiaNexus. No DNS changes from engineering laptop.
 
 Details: [SEO_OPERATOR_RUNBOOK.md](SEO_OPERATOR_RUNBOOK.md).
 
@@ -91,7 +91,7 @@ Details: [SEO_OPERATOR_RUNBOOK.md](SEO_OPERATOR_RUNBOOK.md).
 
 All required:
 
-- Matchpoint and raw IP not serving indexable marketing HTML
+- the unauthorized host and raw IP not serving indexable marketing HTML
 - GSC verification file **200** and GSC property verified
 - Explicit approval to deploy and to add `/es`
 - Approved Spanish homepage copy + native review

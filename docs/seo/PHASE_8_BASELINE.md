@@ -30,7 +30,7 @@ Re-run: `bash scripts/check-production-seo-baseline.sh` or `bash scripts/record-
 | URL | HTTP | Issue | Severity | Status |
 |-----|------|-------|----------|--------|
 | `https://ekklesianexus.com/google161c1efd34d8a358.html` | **404** | GSC HTML file not on production | **P0** measurement | **Fail** |
-| `http://dwm.matchpointgps.in/` | 200 | Serves EkklesiaNexus marketing HTML | **P0** duplicate host | **Fail** |
+| `the unauthorized hostname` | 200 | Serves EkklesiaNexus marketing HTML | **P0** duplicate host | **Fail** |
 | `http://139.59.18.151/` | 200 | Serves EkklesiaNexus marketing HTML | **P0** duplicate host | **Fail** |
 
 **GSC property verified in UI:** **Not verified** (no account access). File **200 ≠ verified**.

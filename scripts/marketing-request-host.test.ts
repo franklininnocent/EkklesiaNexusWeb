@@ -12,8 +12,8 @@ async function run(): Promise<void> {
   const apex = "ekklesianexus.com";
 
   assert.equal(
-    effectiveMarketingHostFromHeaders("dwm.matchpointgps.in", apex),
-    "dwm.matchpointgps.in",
+    effectiveMarketingHostFromHeaders("unrelated.example", apex),
+    "unrelated.example",
   );
   assert.equal(
     effectiveMarketingHostFromHeaders("www.ekklesianexus.com", apex),
@@ -21,8 +21,8 @@ async function run(): Promise<void> {
   );
   assert.equal(effectiveMarketingHostFromHeaders("127.0.0.1", apex), apex);
   assert.equal(
-    effectiveMarketingHostFromHeaders("127.0.0.1", "dwm.matchpointgps.in"),
-    "dwm.matchpointgps.in",
+    effectiveMarketingHostFromHeaders("127.0.0.1", "unrelated.example"),
+    "unrelated.example",
   );
   assert.equal(effectiveMarketingHostFromHeaders("::1", null), "::1");
 
@@ -31,7 +31,7 @@ async function run(): Promise<void> {
   assert.equal(isProductionMarketingRequestHost("localhost"), true);
   assert.equal(isProductionMarketingRequestHost("127.0.0.1"), true);
   assert.equal(isProductionMarketingRequestHost("::1"), true);
-  assert.equal(isProductionMarketingRequestHost("dwm.matchpointgps.in"), false);
+  assert.equal(isProductionMarketingRequestHost("unrelated.example"), false);
   assert.equal(isProductionMarketingRequestHost("139.59.18.151"), false);
   assert.equal(isProductionMarketingRequestHost(""), false);
 
@@ -42,15 +42,15 @@ async function run(): Promise<void> {
   const reject = (host: string | null, xfh: string | null) =>
     shouldRejectUnauthorizedMarketingHost(effectiveMarketingHostFromHeaders(host, xfh));
 
-  assert.equal(reject("dwm.matchpointgps.in", apex), true);
+  assert.equal(reject("unrelated.example", apex), true);
   assert.equal(reject(apex, null), false);
   assert.equal(reject("127.0.0.1", apex), false);
-  assert.equal(reject("127.0.0.1", "dwm.matchpointgps.in"), true);
+  assert.equal(reject("127.0.0.1", "unrelated.example"), true);
   assert.equal(reject("139.59.18.151", null), true);
-  assert.equal(reject("dwm.matchpointgps.in", null), true);
+  assert.equal(reject("unrelated.example", null), true);
 
   env.NODE_ENV = "development";
-  assert.equal(reject("dwm.matchpointgps.in", apex), false);
+  assert.equal(reject("unrelated.example", apex), false);
 
   env.NODE_ENV = prevNodeEnv;
 

@@ -21,7 +21,7 @@ No redirect loops observed. Trailing slash: home final URL includes `/`; canonic
 
 | Host | Status | Title (sample) | Canonical declared | SEO implication |
 |------|--------|----------------|-------------------|-----------------|
-| `http://dwm.matchpointgps.in/` | 200 | EkklesiaNexus — Next-Generation… | `https://ekklesianexus.com` | **P0** — duplicate crawlable HTML on wrong host |
+| `the unauthorized hostname` | 200 | EkklesiaNexus — Next-Generation… | `https://ekklesianexus.com` | **P0** — duplicate crawlable HTML on wrong host |
 | `http://139.59.18.151/` | 200 | same | apex | **P0** — same |
 
 **Remediation:** Apache default vhost / stop proxying marketing to catch-all Host — [PHASE_3B_PRODUCTION_GATE_REMEDIATION.md](../PHASE_3B_PRODUCTION_GATE_REMEDIATION.md). **Not performed in Phase 13.**

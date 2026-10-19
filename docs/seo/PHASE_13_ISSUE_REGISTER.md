@@ -3,7 +3,7 @@
 | ID | Sev | Finding | Evidence (2026-10-18 UTC) | Fix | Status |
 |----|-----|---------|---------------------------|-----|--------|
 | P13-001 | **P0** | GSC file 404 | Live GET 404 | Deploy `public/google*.html` | **Open** |
-| P13-002 | **P0** | Matchpoint host serves marketing | Live 200 + EkklesiaNexus title | Apache Phase 3B | **Open** |
+| P13-002 | **P0** | the unauthorized host serves marketing | Live 200 + EkklesiaNexus title | Apache Phase 3B | **Open** |
 | P13-003 | **P0** | Raw IP serves marketing | Live 200 | Apache + host guard deploy | **Open** |
 | P13-004 | **P1** | Home title/desc drift (360°, old title) | Live vs `site.ts` | Deploy SEO bundle | **Open** |
 | P13-005 | **P1** | pt-br SEO desc drift (360°) | Live vs Phase 11 messages | Deploy | **Open** |

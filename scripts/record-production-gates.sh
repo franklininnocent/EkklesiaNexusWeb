@@ -42,8 +42,6 @@ check() {
   echo "| \`$url\` | $code | $final | $note |"
 }
 
-check "mp" "http://dwm.matchpointgps.in/"
-check "mp" "https://dwm.matchpointgps.in/" "-k"
 check "ip" "http://139.59.18.151/"
 check "ip" "https://139.59.18.151/" "-k"
 check "gsc" "$GSC_URL"

@@ -27,7 +27,7 @@ Re-checked via `scripts/check-production-seo-baseline.sh`:
 | `https://ekklesianexus.com/` marketing | 200, indexable | Correct target for earned links |
 | Sitemap | 13 apex URLs | Outreach should cite canonical URLs |
 | GSC verification file | **404** | Weak property verification; links report blocked |
-| Matchpoint / raw IP host | **200 marketing** | **P0** — splits signals; fix before aggressive PR |
+| unauthorized host / raw IP host | **200 marketing** | **P0** — splits signals; fix before aggressive PR |
 | Phase 4–9 repo deploy | **Unverified on prod** | Third parties may see stale copy |
 
 ---

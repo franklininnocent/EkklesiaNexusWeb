@@ -131,7 +131,7 @@ Canonical, hreflang, robots: **unchanged architecture**.
 
 1. Operator deploy (Phase 4 + Phase 6 content live on production).  
 2. GSC verification file **200** + UI verify.  
-3. Hostname isolation (Matchpoint, raw IP).  
+3. Hostname isolation (the unauthorized host, raw IP).  
 4. `/resources/evaluating-church-management-software` — product/legal approval before build.  
 5. Security marketing page — engineering fact sheet required.
 

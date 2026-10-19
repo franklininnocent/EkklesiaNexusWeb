@@ -22,9 +22,9 @@ Related: [PHASE_3B_PRODUCTION_GATE_REMEDIATION.md](PHASE_3B_PRODUCTION_GATE_REME
 | www HTTPS | `https://www.ekklesianexus.com/` | **200** | final `https://ekklesianexus.com/` (apex) | yes (expected) |
 | Portuguese home | `https://ekklesianexus.com/pt-br` | **200** | canonical `https://ekklesianexus.com/pt-br` | yes (expected) |
 | GSC file | `https://ekklesianexus.com/google161c1efd34d8a358.html` | **404** | — | **FAIL** |
-| Matchpoint HTTP | `http://dwm.matchpointgps.in/` | **200** | canonical → `https://ekklesianexus.com` | **FAIL** (leak) |
-| Matchpoint HTTPS (verify-peer) | `https://dwm.matchpointgps.in/` | TLS error | hostname mismatch | not marketing over valid TLS |
-| Matchpoint HTTPS (insecure) | `https://dwm.matchpointgps.in/` | **200** | canonical → official home | **FAIL** (leak) |
+| Unauthorized-host HTTP | `the unauthorized hostname` | **200** | canonical → `https://ekklesianexus.com` | **FAIL** (leak) |
+| Unauthorized-host HTTPS (verify-peer) | `the unauthorized hostname` | TLS error | hostname mismatch | not marketing over valid TLS |
+| Unauthorized-host HTTPS (insecure) | `the unauthorized hostname` | **200** | canonical → official home | **FAIL** (leak) |
 | Raw IP HTTP | `http://139.59.18.151/` | **200** | canonical → official home | **FAIL** (leak) |
 | Raw IP HTTPS | `https://139.59.18.151/` | **200** | canonical → official home | **FAIL** (leak) |
 
@@ -37,7 +37,7 @@ Parish app / API: unchanged from Phase 3B (`app.ekklesianexus.com` noindex; `api
 | Gate | Requirement | Status | Evidence | Verified (UTC) | Outstanding action |
 |------|-------------|--------|----------|----------------|-------------------|
 | **A** | Explicit operator authorization (deploy, Apache, GSC, `/es`) | **FAIL** | [PHASE_3B_PRODUCTION_GATE_REMEDIATION.md](PHASE_3B_PRODUCTION_GATE_REMEDIATION.md) §1 — all **No** | 2026-10-18 04:33 | Operator signs authorization log |
-| **B** | Hostname isolation (Matchpoint, raw IP ≠ indexable marketing) | **FAIL** | GET **200** marketing on Matchpoint HTTP, Matchpoint HTTPS-insecure, raw IP HTTP/HTTPS | 2026-10-18 04:33 | Deploy + Apache catch-all; `record-production-gates.sh` |
+| **B** | Hostname isolation (the unauthorized host, raw IP ≠ indexable marketing) | **FAIL** | GET **200** marketing on Unauthorized-host HTTP, Unauthorized-host HTTPS-insecure, raw IP HTTP/HTTPS | 2026-10-18 04:33 | Deploy + Apache catch-all; `record-production-gates.sh` |
 | **C** | HTTPS + canonical (`https://ekklesianexus.com`; www policy; canonical tags) | **PASS** | Official + `/pt-br` canonicals correct; www → apex; HTTP → HTTPS apex | 2026-10-18 04:33 | Re-check after B fix (leak hosts) |
 | **D** | Google Search Console (file **200** + UI verified) | **FAIL** / **BLOCKED** | File URL **404** on production; repo file OK locally; no GSC UI evidence | 2026-10-18 04:33 | Deploy file; operator verifies in GSC |
 | **E** | `/`, `/pt-br`, `SUPPORTED_LOCALES` integrity | **PASS** | Production GET; repo `en-US` + `pt-BR` only; no `/es` | 2026-10-18 04:33 | None until Spanish authorized |

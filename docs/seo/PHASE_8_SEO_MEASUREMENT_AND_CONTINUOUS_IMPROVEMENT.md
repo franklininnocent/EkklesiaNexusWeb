@@ -32,7 +32,7 @@
 ## Production observations (verified read-only)
 
 - **Pass:** Apex HTTPS marketing routes, sitemap (13 URLs), robots, canonicals on sampled pages.
-- **Fail (P0):** GSC HTML file **404**; Matchpoint hostname and raw IP **200** with marketing HTML.
+- **Fail (P0):** GSC HTML file **404**; the unauthorized hostname and raw IP **200** with marketing HTML.
 - **Not verified:** Google indexing, impressions, GA4 on production.
 
 ---

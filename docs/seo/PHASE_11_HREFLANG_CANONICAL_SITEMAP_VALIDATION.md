@@ -62,4 +62,4 @@ English-only pages: **self-canonical** only — no false pt-BR canonical.
 
 Re-run after deploy: view-source on `/` and `/pt-br` for `<link rel="alternate" hreflang="...">` — **not executed in Phase 11 automation** (local metadata tests are source of truth for generation).
 
-P0 host leak (Matchpoint / IP) can still affect which host Google associates with hreflang targets — see [SEO_ISSUE_REGISTER.md](SEO_ISSUE_REGISTER.md).
+P0 host leak (unauthorized host / IP) can still affect which host Google associates with hreflang targets — see [SEO_ISSUE_REGISTER.md](SEO_ISSUE_REGISTER.md).

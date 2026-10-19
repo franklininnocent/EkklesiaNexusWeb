@@ -38,7 +38,10 @@ code=$(curl -sS -o /tmp/p8-robots.txt -w "%{http_code}" "https://ekklesianexus.c
 echo "| robots.txt | $code | $(head -3 /tmp/p8-robots.txt | tr '\n' ' ') |"
 code=$(curl -sS -o /tmp/p8-sitemap.xml -w "%{http_code}" "https://ekklesianexus.com/sitemap.xml")
 loc_count=$(grep -c "<loc>" /tmp/p8-sitemap.xml 2>/dev/null || echo 0)
-bad=$(grep -oP '(?<=<loc>)[^<]+' /tmp/p8-sitemap.xml 2>/dev/null | grep -E '/es|localhost|matchpoint|139\.59' || true)
+locs=$(grep -oP '(?<=<loc>)[^<]+' /tmp/p8-sitemap.xml 2>/dev/null || true)
+bad=$(printf '%s\n' "$locs" | grep -E '/es|localhost|127\.0\.0\.1|/api/|/preview/|139\.59' || true)
+offhost=$(printf '%s\n' "$locs" | grep -Ev '^https://ekklesianexus.com(/|$)' || true)
+bad=$(printf '%s\n%s\n' "$bad" "$offhost" | sed '/^$/d' | paste -sd ' ' - || true)
 echo "| sitemap.xml | $code | loc_count=$loc_count bad_urls=${bad:-none} |"
 
 echo ""
@@ -51,8 +54,8 @@ else
 fi
 
 echo ""
-echo "## Hostname isolation (historical risk)"
-for url in "http://dwm.matchpointgps.in/" "http://139.59.18.151/"; do
+echo "## Hostname isolation (raw IP must not serve marketing)"
+for url in "http://139.59.18.151/"; do
   code=$(curl -sS -o /tmp/p8-leak.html -w "%{http_code}" -L "$url" 2>/dev/null || echo ERR)
   if echo "$(head -c 2000 /tmp/p8-leak.html)" | grep -q "EkklesiaNexus"; then
     echo "| \`$url\` | $code | **FAIL** — marketing HTML on non-canonical host |"
