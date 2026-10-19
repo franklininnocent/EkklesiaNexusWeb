@@ -119,6 +119,7 @@ export function logMarketingPricingDiagnostics(
   plansResult: FetchPublicPlansResult,
   pricesByPlanId: Record<PricingPlanId, SelectedMarketingPrice | null>,
   currency: MarketingCurrency,
+  visitorCountry: string | null = null,
 ): void {
   if (!plansResult.ok) {
     console.info("marketing.pricing.catalog_unavailable", { status: plansResult.status });
@@ -128,6 +129,10 @@ export function logMarketingPricingDiagnostics(
     console.info("marketing.pricing.catalog_unpublished");
     return;
   }
+  console.info("marketing.pricing.resolved", {
+    visitor_country: visitorCountry,
+    currency,
+  });
   for (const planId of Object.keys(PLAN_CODE_BY_CARD_ID) as PricingPlanId[]) {
     if (pricesByPlanId[planId]?.monthly == null) {
       logMissingMarketingListPrice(PLAN_CODE_BY_CARD_ID[planId], currency);

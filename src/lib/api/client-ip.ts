@@ -43,7 +43,7 @@ export function visitorIpFromRequest(request: Request): string {
   return "unknown";
 }
 
-function trustForwardedClientIp(): boolean {
+export function trustForwardedClientIp(): boolean {
   const flag = process.env.MARKETING_TRUST_PROXY?.trim().toLowerCase();
   if (flag === "true" || flag === "1" || flag === "yes") {
     return true;

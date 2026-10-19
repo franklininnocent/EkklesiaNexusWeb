@@ -98,9 +98,12 @@ NEXT_PUBLIC_SITE_URL=https://ekklesianexus.com
 NEXT_PUBLIC_APPLICATION_URL=https://app.ekklesianexus.com
 NEXT_PUBLIC_ANALYTICS_ENABLED=false
 MARKETING_CONTACT_EMAIL=contact@ekklesianexus.com
+MARKETING_GEO_HEADER_SECRET=<LONG_RANDOM_SECRET_MATCHES_APACHE_X_EN_GEO_TOKEN>
 ```
 
-Set `MARKETING_CONTENT_SOURCE=api` only after a super admin has published CMS content on that environment. Optional keys from `env.example`: `MARKETING_CONTENT_API_PATH`, `MARKETING_CONTENT_STRICT`, `MARKETING_VISITOR_COUNTRY`, `MARKETING_CONTACT_PHONE`, `MARKETING_CONTACT_ADDRESS`, `MARKETING_PREVIEW_FRAME_ANCESTORS`.
+Set `MARKETING_CONTENT_SOURCE=api` only after a super admin has published CMS content on that environment. Optional keys from `env.example`: `MARKETING_CONTENT_API_PATH`, `MARKETING_CONTENT_STRICT`, `MARKETING_CONTACT_PHONE`, `MARKETING_CONTACT_ADDRESS`, `MARKETING_PREVIEW_FRAME_ANCESTORS`.
+
+**Regional pricing (`#pricing`):** amounts come from `GET /api/public/subscription-plans` (`regional_prices`). Currency is chosen from the visitor country: IN→INR, BR→BRL, otherwise USD. Preferred source is trusted **`X-EN-Geo-Country`** plus **`X-EN-Geo-Token`** equal to `MARKETING_GEO_HEADER_SECRET`, set by Apache/Nginx (see `docs/deploy/apache-ekklesianexus.conf.example` or `docs/deploy/nginx-ekklesianexus.conf.example`). When those headers are absent, Production uses the rightmost public address in `X-Forwarded-For` (Apache’s client IP) and the bundled DB-IP country database. Do not use `MARKETING_VISITOR_COUNTRY` in Production unless the whole site should use one country’s prices for every visitor (dev-only override).
 
 `MARKETING_TRUST_PROXY=true` is correct only when Nginx overwrites `X-Forwarded-For`. Do not enable it if clients can reach the Node port directly.
 
@@ -203,9 +206,13 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Regional pricing — see docs/deploy/nginx-ekklesianexus.conf.example (strip client geo, set X-EN-Geo-* + token).
     }
 }
 ```
+
+Production on Apache uses the same `X-EN-Geo-Country` / `X-EN-Geo-Token` pattern in `docs/deploy/apache-ekklesianexus.conf.example`.
 
 Next.js already sends content-security policy and related headers from `next.config.ts`. Leave those in the application. Add HSTS at Nginx as shown.
 
@@ -230,6 +237,7 @@ SMOKE_BASE_URL=https://<MARKETING_HOST> npm run smoke
 Record the result. Also confirm manually:
 
 - Home page returns 200 over HTTPS
+- Regional pricing: a public request from an Indian IP renders Starter around `1499` (INR). A request from Brazil renders BRL. Other countries render USD. Trusted `X-EN-Geo-Country` still overrides the IP lookup when Apache sets it with `X-EN-Geo-Token`.
 - Contact submission is stored by the API for this environment and does not send parish mail from UAT
 - Demo request, when that form is routed, uses the same rule
 - Images and canonical URLs use `<MARKETING_HOST>`
