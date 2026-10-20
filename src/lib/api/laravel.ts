@@ -21,7 +21,7 @@ export type LaravelValidationError = {
   errors?: Record<string, string[]>;
 };
 
-const TIMEOUT_MS = 12_000;
+const TIMEOUT_MS = 25_000;
 
 function marketingProxyHeaders(clientIp?: string): Record<string, string> {
   const secret = process.env.MARKETING_BFF_SECRET?.trim();
